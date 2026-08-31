@@ -19,8 +19,9 @@ interface CircuitGridProps {
   circuitWidth: number
   placementMode: PlacementMode
   selectedOpId: string | null
-  onCellClick: (qubit: number, moment: number) => void
-  onSelectOp: (op: CircuitOperation | null) => void
+  onCellClick?: (qubit: number, moment: number) => void
+  onSelectOp?: (op: CircuitOperation | null) => void
+  readOnly?: boolean
 }
 
 // ── Gate chip rendered inside a cell ─────────────────────────────────────────
@@ -29,10 +30,11 @@ interface GateCellProps {
   op: CircuitOperation
   qubit: number
   isSelected: boolean
-  onSelect: (op: CircuitOperation) => void
+  onSelect?: (op: CircuitOperation) => void
+  readOnly: boolean
 }
 
-function GateCell({ op, qubit, isSelected, onSelect }: GateCellProps) {
+function GateCell({ op, qubit, isSelected, onSelect, readOnly }: GateCellProps) {
   const meta = getGateMeta(op.gate)
   const role = getQubitRole(op, qubit)
 
@@ -42,7 +44,8 @@ function GateCell({ op, qubit, isSelected, onSelect }: GateCellProps) {
       <button
         type="button"
         className={`gate-cell gate-cell-control${isSelected ? ' is-selected' : ''}`}
-        onClick={() => onSelect(op)}
+        onClick={() => onSelect?.(op)}
+        disabled={readOnly}
         aria-label={`${op.gate} control on qubit ${qubit}`}
         title={`${op.gate} — Control qubit`}
       >
@@ -56,7 +59,8 @@ function GateCell({ op, qubit, isSelected, onSelect }: GateCellProps) {
       <button
         type="button"
         className={`gate-cell gate-cell-target${isSelected ? ' is-selected' : ''}`}
-        onClick={() => onSelect(op)}
+        onClick={() => onSelect?.(op)}
+        disabled={readOnly}
         aria-label={`CNOT target on qubit ${qubit}`}
         title="CNOT — Target qubit"
       >
@@ -70,7 +74,8 @@ function GateCell({ op, qubit, isSelected, onSelect }: GateCellProps) {
       <button
         type="button"
         className={`gate-cell gate-cell-swap${isSelected ? ' is-selected' : ''}`}
-        onClick={() => onSelect(op)}
+        onClick={() => onSelect?.(op)}
+        disabled={readOnly}
         aria-label={`SWAP on qubit ${qubit}`}
       >
         <span>×</span>
@@ -83,7 +88,8 @@ function GateCell({ op, qubit, isSelected, onSelect }: GateCellProps) {
       <button
         type="button"
         className={`gate-cell gate-cell-measure${isSelected ? ' is-selected' : ''}`}
-        onClick={() => onSelect(op)}
+        onClick={() => onSelect?.(op)}
+        disabled={readOnly}
         aria-label={`Measure qubit ${qubit}`}
         title="Measure"
       >
@@ -98,7 +104,8 @@ function GateCell({ op, qubit, isSelected, onSelect }: GateCellProps) {
       type="button"
       className={`gate-cell${isSelected ? ' is-selected' : ''}`}
       style={{ background: meta.color, color: meta.textColor }}
-      onClick={() => onSelect(op)}
+      onClick={() => onSelect?.(op)}
+      disabled={readOnly}
       aria-label={`${meta.label} on qubit ${qubit}`}
       title={meta.description}
     >
@@ -136,7 +143,7 @@ interface ConnectorProps {
   colIndex: number
 }
 
-function MultiQubitConnector({ fromQubit, toQubit }: ConnectorProps) {
+function MultiQubitConnector({ fromQubit, toQubit, colIndex }: ConnectorProps) {
   const top = Math.min(fromQubit, toQubit)
   const bottom = Math.max(fromQubit, toQubit)
   const span = bottom - top
@@ -145,8 +152,9 @@ function MultiQubitConnector({ fromQubit, toQubit }: ConnectorProps) {
     <div
       className="multi-qubit-connector"
       style={{
-        top: `calc(${top} * var(--wire-row-height) + var(--wire-row-height) / 2)`,
+        top: `calc(20px + ${top} * var(--wire-row-height) + var(--wire-row-height) / 2)`,
         height: `calc(${span} * var(--wire-row-height))`,
+        left: `calc(${colIndex} * var(--moment-col-width) + var(--moment-col-width) / 2 - 1px)`,
       }}
       aria-hidden="true"
     />
@@ -162,6 +170,7 @@ export default function CircuitGrid({
   selectedOpId,
   onCellClick,
   onSelectOp,
+  readOnly = false,
 }: CircuitGridProps) {
   const moments = useMemo(
     () => Array.from({ length: circuitWidth }, (_, i) => i),
@@ -177,27 +186,28 @@ export default function CircuitGrid({
 
   return (
     <div
-      className={`circuit-grid-wrapper${isPlacing ? ' placing-mode' : ''}`}
+      className={`circuit-grid-wrapper${isPlacing ? ' placing-mode' : ''}${readOnly ? ' circuit-grid-readonly' : ''}`}
       role="grid"
       aria-label="Quantum circuit grid"
     >
-      {/* Qubit labels */}
-      <div className="circuit-qubit-labels" aria-hidden="true">
-        {qubitIndices.map(q => (
-          <div key={q} className="circuit-qubit-label">
-            q{q}
-          </div>
-        ))}
-      </div>
+      <div className="circuit-quantum-register">
+        {/* Qubit labels */}
+        <div className="circuit-qubit-labels" aria-hidden="true">
+          {qubitIndices.map(q => (
+            <div key={q} className="circuit-qubit-label">
+              q{q}
+            </div>
+          ))}
+        </div>
 
-      {/* Grid area */}
-      <div className="circuit-grid-area">
+        {/* Grid area */}
+        <div className="circuit-grid-area">
         {/* Horizontal wire lines */}
         {qubitIndices.map(q => (
           <div
             key={`wire-${q}`}
             className="circuit-wire-line"
-            style={{ top: `calc(${q} * var(--wire-row-height) + var(--wire-row-height) / 2)` }}
+            style={{ top: `calc(20px + ${q} * var(--wire-row-height) + var(--wire-row-height) / 2)` }}
             aria-hidden="true"
           />
         ))}
@@ -239,10 +249,11 @@ export default function CircuitGrid({
                   role="gridcell"
                   aria-label={op ? `${op.gate} at qubit ${qubit}, moment ${moment}` : `Empty cell, qubit ${qubit}, moment ${moment}`}
                   onClick={() => {
+                    if (readOnly) return
                     if (op) {
-                      onSelectOp(op)
+                      onSelectOp?.(op)
                     } else {
-                      onCellClick(qubit, moment)
+                      onCellClick?.(qubit, moment)
                     }
                   }}
                 >
@@ -252,6 +263,7 @@ export default function CircuitGrid({
                       qubit={qubit}
                       isSelected={op.id === selectedOpId}
                       onSelect={onSelectOp}
+                      readOnly={readOnly}
                     />
                   ) : isControlWaitCell ? (
                     <div className="control-wait-dot" aria-hidden="true" />
@@ -261,6 +273,7 @@ export default function CircuitGrid({
             })}
           </div>
         ))}
+        </div>
       </div>
 
       {/* Classical bit lines */}

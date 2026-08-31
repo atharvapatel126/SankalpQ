@@ -86,7 +86,9 @@ export default function AppShell({ children }: AppShellProps) {
           <nav className="app-nav" aria-label={translations.app.dashboardNavigation}>
             {NAV_ITEMS.map(item => {
               const Icon = item.icon
-              const isActive = pathname === item.href
+              const isActive =
+                pathname === item.href ||
+                (item.href !== '/dashboard' && pathname.startsWith(`${item.href}/`))
               return (
                 <Link
                   key={item.href}

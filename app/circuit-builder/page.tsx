@@ -5,7 +5,8 @@
 // Assembles all circuit builder components using the useCircuit hook
 // ─────────────────────────────────────────────────────────────────────────────
 
-import { useCallback } from 'react'
+import { useCallback, useEffect, useRef } from 'react'
+import { useRouter } from 'next/navigation'
 import AppShell from '@/components/AppShell'
 import GatePalette from '@/components/circuit/GatePalette'
 import CircuitGrid from '@/components/circuit/CircuitGrid'
@@ -14,8 +15,12 @@ import CircuitToolbar from '@/components/circuit/CircuitToolbar'
 import CircuitResultsPreview from '@/components/circuit/CircuitResultsPreview'
 import { useCircuit } from '@/hooks/useCircuit'
 import type { GateId } from '@/lib/quantum/types'
+import { saveCircuit, setCurrentCircuit } from '@/lib/quantum/circuit-storage'
+import { STARTER_CIRCUIT_MAP } from '@/lib/quantum/starter-circuits'
 
 export default function CircuitBuilderPage() {
+  const router = useRouter()
+  const queryHandled = useRef(false)
   const {
     circuit,
     selectedOp,
@@ -43,7 +48,16 @@ export default function CircuitBuilderPage() {
     onClearResult,
   } = useCircuit()
 
+  useEffect(() => {
+    if (queryHandled.current) return
+    queryHandled.current = true
+
+    const starterId = new URLSearchParams(window.location.search).get('starter')
+    if (starterId && STARTER_CIRCUIT_MAP[starterId]) onLoadStarterCircuit(starterId)
+  }, [onLoadStarterCircuit])
+
   const handleSave = useCallback(() => {
+    saveCircuit(circuit)
     const json = JSON.stringify(circuit, null, 2)
     const blob = new Blob([json], { type: 'application/json' })
     const url = URL.createObjectURL(blob)
@@ -53,6 +67,11 @@ export default function CircuitBuilderPage() {
     a.click()
     URL.revokeObjectURL(url)
   }, [circuit])
+
+  const handleOpenSimulator = useCallback(() => {
+    setCurrentCircuit(circuit)
+    router.push('/simulator?source=builder')
+  }, [circuit, router])
 
   return (
     <AppShell>
@@ -90,6 +109,7 @@ export default function CircuitBuilderPage() {
           onRedo={onRedo}
           onRun={onRunSimulation}
           onSave={handleSave}
+          onOpenSimulator={handleOpenSimulator}
           onLoadStarter={onLoadStarterCircuit}
           onShotsChange={shots => setSimulationConfig({ shots })}
         />

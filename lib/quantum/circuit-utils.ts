@@ -63,10 +63,11 @@ export function placeGate(
   moment: number,
   params?: { angle?: number }
 ): QuantumCircuit {
-  // Remove any existing gate at this exact cell (same qubit + moment)
-  const filtered = circuit.operations.filter(
-    op => !(op.targets.includes(qubit) && op.moment === moment)
-  )
+  // Remove any target or control occupying this qubit at the same moment.
+  const filtered = circuit.operations.filter(op => {
+    if (op.moment !== moment) return true
+    return ![...op.targets, ...(op.controls ?? [])].includes(qubit)
+  })
   const newOp: CircuitOperation = {
     id: newOpId(),
     gate,
@@ -166,26 +167,84 @@ export function validateCircuit(circuit: QuantumCircuit): CircuitValidationResul
   const errors: string[] = []
   const warnings: string[] = []
 
-  if (circuit.qubits === 0) errors.push('Circuit must have at least 1 qubit.')
-  if (circuit.operations.length === 0) warnings.push('Circuit is empty — add some gates.')
+  if (!Number.isInteger(circuit.qubits) || circuit.qubits < 1 || circuit.qubits > 8) {
+    errors.push('Circuit must contain between 1 and 8 qubits.')
+  }
+  if (!Number.isInteger(circuit.classicalBits) || circuit.classicalBits < 1 || circuit.classicalBits > 8) {
+    errors.push('Circuit must contain between 1 and 8 classical bits.')
+  }
+  if (circuit.operations.length === 0) {
+    warnings.push('Circuit is empty - add a gate to explore a transformation.')
+  }
 
-  // Check qubit indices are in bounds
-  for (const op of circuit.operations) {
+  const occupiedCells = new Map<string, string>()
+  const operationIds = new Set<string>()
+  const firstMeasurementByQubit = new Map<number, number>()
+
+  const orderedOperations = [...circuit.operations].sort((a, b) => a.moment - b.moment)
+  for (const op of orderedOperations) {
+    if (operationIds.has(op.id)) errors.push(`Operation id "${op.id}" is duplicated.`)
+    operationIds.add(op.id)
+
+    if (!Number.isInteger(op.moment) || op.moment < 0) {
+      errors.push(`Gate "${op.gate}" has an invalid moment.`)
+    }
+    if (op.targets.length !== 1) {
+      errors.push(`Gate "${op.gate}" must have exactly one target in this circuit model.`)
+    }
+
     const allQubits = [...op.targets, ...(op.controls ?? [])]
     for (const q of allQubits) {
-      if (q < 0 || q >= circuit.qubits) {
+      if (!Number.isInteger(q) || q < 0 || q >= circuit.qubits) {
         errors.push(`Gate "${op.gate}" references out-of-bounds qubit ${q}.`)
+        continue
+      }
+
+      const cellKey = `${op.moment}:${q}`
+      const occupyingOperation = occupiedCells.get(cellKey)
+      if (occupyingOperation && occupyingOperation !== op.id) {
+        errors.push(`Qubit ${q} has overlapping operations at moment ${op.moment}.`)
+      } else {
+        occupiedCells.set(cellKey, op.id)
+      }
+
+      const measuredAt = firstMeasurementByQubit.get(q)
+      if (op.gate !== 'MEASURE' && measuredAt !== undefined && op.moment > measuredAt) {
+        warnings.push(`Qubit ${q} has a gate after measurement; educational simulation treats measurement as terminal.`)
       }
     }
-    // Check CNOT has distinct control and target
-    if ((op.gate === 'CNOT' || op.gate === 'CZ') && op.controls) {
-      if (op.controls[0] === op.targets[0]) {
-        errors.push(`${op.gate} gate has the same control and target qubit.`)
+
+    if (op.gate === 'MEASURE') {
+      const target = op.targets[0]
+      if (target !== undefined) {
+        const previous = firstMeasurementByQubit.get(target)
+        firstMeasurementByQubit.set(target, Math.min(previous ?? op.moment, op.moment))
       }
+      if (!Number.isInteger(op.classicalBit) || (op.classicalBit ?? -1) < 0 || (op.classicalBit ?? 0) >= circuit.classicalBits) {
+        errors.push('Every measurement must write to an in-range classical bit.')
+      }
+    }
+
+    if (op.gate === 'CNOT' || op.gate === 'CZ' || op.gate === 'SWAP') {
+      if (op.controls?.length !== 1 || op.targets.length !== 1) {
+        errors.push(`${op.gate} requires two distinct qubits.`)
+      } else if (op.controls[0] === op.targets[0]) {
+        errors.push(`${op.gate} gate has the same source and target qubit.`)
+      }
+    } else if (op.controls && op.controls.length > 0) {
+      errors.push(`Gate "${op.gate}" cannot have control qubits.`)
+    }
+
+    if (op.params?.angle !== undefined && !Number.isFinite(op.params.angle)) {
+      errors.push(`Gate "${op.gate}" has an invalid rotation angle.`)
     }
   }
 
-  return { valid: errors.length === 0, errors, warnings }
+  return {
+    valid: errors.length === 0,
+    errors: Array.from(new Set(errors)),
+    warnings: Array.from(new Set(warnings)),
+  }
 }
 
 // ── Circuit summary (for AI Tutor / Simulator context) ───────────────────────

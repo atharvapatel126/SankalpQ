@@ -34,11 +34,12 @@ interface CircuitToolbarProps {
   onRedo: () => void
   onRun: () => void
   onSave: () => void
+  onOpenSimulator?: () => void
   onLoadStarter: (id: string) => void
   onShotsChange: (shots: number) => void
 }
 
-const SHOT_OPTIONS = [128, 512, 1024, 4096]
+const SHOT_OPTIONS = [128, 256, 512, 1024, 2048, 4096]
 
 export default function CircuitToolbar({
   circuit,
@@ -54,6 +55,7 @@ export default function CircuitToolbar({
   onRedo,
   onRun,
   onSave,
+  onOpenSimulator,
   onLoadStarter,
   onShotsChange,
 }: CircuitToolbarProps) {
@@ -231,12 +233,24 @@ export default function CircuitToolbar({
           )}
         </button>
 
+        {onOpenSimulator && (
+          <button
+            type="button"
+            className="btn-outline toolbar-simulator-btn"
+            onClick={onOpenSimulator}
+            title="Review this circuit in the Simulator"
+          >
+            <FlaskConical size={14} aria-hidden="true" />
+            Simulator
+          </button>
+        )}
+
         <button
           type="button"
           className="btn-outline toolbar-save-btn"
           onClick={onSave}
           aria-label="Save circuit"
-          title="Save circuit (JSON)"
+          title="Save circuit"
         >
           <Save size={14} aria-hidden="true" />
         </button>
