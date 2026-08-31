@@ -2,17 +2,19 @@
 
 import { Users, Boxes, FlaskConical, BookOpen, Star } from 'lucide-react'
 import { useEffect, useRef } from 'react'
+import { useLanguage } from './LanguageProvider'
 
 const STATS = [
-  { icon: Users,       number: '10,000+', label: 'Active Learners' },
-  { icon: Boxes,       number: '2,500+',  label: 'Circuits Built' },
-  { icon: FlaskConical,number: '1,200+',  label: 'Experiments Run' },
-  { icon: BookOpen,    number: '150+',    label: 'Quantum Concepts' },
-  { icon: Star,        number: '4.8/5',   label: 'Learner Rating' },
+  { icon: Users,        number: '10,000+', key: 'activeLearners' as const },
+  { icon: Boxes,        number: '2,500+',  key: 'circuitsBuilt' as const },
+  { icon: FlaskConical, number: '1,200+',  key: 'experimentsRun' as const },
+  { icon: BookOpen,     number: '150+',    key: 'quantumConcepts' as const },
+  { icon: Star,         number: '4.8/5',   key: 'learnerRating' as const },
 ]
 
 export default function StatsBar() {
   const ref = useRef<HTMLDivElement>(null)
+  const { translations } = useLanguage()
 
   useEffect(() => {
     const el = ref.current
@@ -54,7 +56,7 @@ export default function StatsBar() {
           const Icon = stat.icon
           return (
             <div
-              key={stat.label}
+              key={stat.key}
               style={{
                 display: 'flex',
                 flexDirection: 'column',
@@ -108,7 +110,7 @@ export default function StatsBar() {
                   lineHeight: 1.4,
                 }}
               >
-                {stat.label}
+                {translations.stats[stat.key]}
               </span>
             </div>
           )

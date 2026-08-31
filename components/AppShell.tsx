@@ -18,14 +18,15 @@ import { useEffect, useState } from 'react'
 import LanguageSwitcher from '@/components/LanguageSwitcher'
 import LogoMark from '@/components/LogoMark'
 import ThemeToggle from '@/components/ThemeToggle'
+import { useLanguage } from '@/components/LanguageProvider'
 
-const NAV_ITEMS: Array<{ label: string; href: string; icon: LucideIcon }> = [
-  { label: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
-  { label: 'Courses', href: '/courses', icon: BookOpen },
-  { label: 'Circuit Builder', href: '/circuit-builder', icon: CircuitBoard },
-  { label: 'Simulator', href: '/simulator', icon: FlaskConical },
-  { label: 'AI Tutor', href: '/ai-tutor', icon: Sparkles },
-  { label: 'Challenges', href: '/challenges', icon: Target },
+const NAV_ITEMS: Array<{ key: 'dashboard' | 'courses' | 'circuitBuilder' | 'simulator' | 'aiTutor' | 'challenges'; href: string; icon: LucideIcon }> = [
+  { key: 'dashboard', href: '/dashboard', icon: LayoutDashboard },
+  { key: 'courses', href: '/courses', icon: BookOpen },
+  { key: 'circuitBuilder', href: '/circuit-builder', icon: CircuitBoard },
+  { key: 'simulator', href: '/simulator', icon: FlaskConical },
+  { key: 'aiTutor', href: '/ai-tutor', icon: Sparkles },
+  { key: 'challenges', href: '/challenges', icon: Target },
 ]
 
 interface AppShellProps {
@@ -35,6 +36,7 @@ interface AppShellProps {
 export default function AppShell({ children }: AppShellProps) {
   const pathname = usePathname()
   const [mobileOpen, setMobileOpen] = useState(false)
+  const { translations } = useLanguage()
 
   useEffect(() => {
     document.body.style.overflow = mobileOpen ? 'hidden' : ''
@@ -50,7 +52,7 @@ export default function AppShell({ children }: AppShellProps) {
   return (
     <div className="app-shell">
       <div className="app-mobile-topbar">
-        <Link href="/dashboard" className="app-brand" aria-label="SankalpQ dashboard">
+        <Link href="/dashboard" className="app-brand" aria-label={translations.app.dashboardHome}>
           <LogoMark size={28} />
           <span>SankalpQ</span>
         </Link>
@@ -58,7 +60,7 @@ export default function AppShell({ children }: AppShellProps) {
           type="button"
           className="app-menu-button"
           onClick={() => setMobileOpen(open => !open)}
-          aria-label={mobileOpen ? 'Close navigation' : 'Open navigation'}
+          aria-label={mobileOpen ? translations.app.closeNavigation : translations.app.openNavigation}
           aria-expanded={mobileOpen}
         >
           {mobileOpen ? <X size={18} /> : <Menu size={18} />}
@@ -69,19 +71,19 @@ export default function AppShell({ children }: AppShellProps) {
         <button
           type="button"
           className="app-sidebar-overlay"
-          aria-label="Close navigation"
+          aria-label={translations.app.closeNavigation}
           onClick={() => setMobileOpen(false)}
         />
       )}
 
       <aside className={`app-sidebar${mobileOpen ? ' is-open' : ''}`}>
         <div className="app-sidebar-inner">
-          <Link href="/dashboard" className="app-brand" aria-label="SankalpQ dashboard">
+          <Link href="/dashboard" className="app-brand" aria-label={translations.app.dashboardHome}>
             <LogoMark size={28} />
             <span>SankalpQ</span>
           </Link>
 
-          <nav className="app-nav" aria-label="Dashboard navigation">
+          <nav className="app-nav" aria-label={translations.app.dashboardNavigation}>
             {NAV_ITEMS.map(item => {
               const Icon = item.icon
               const isActive = pathname === item.href
@@ -95,7 +97,7 @@ export default function AppShell({ children }: AppShellProps) {
                 >
                   <span className="app-nav-indicator" aria-hidden="true" />
                   <Icon size={20} strokeWidth={1.5} />
-                  <span>{item.label}</span>
+                  <span>{translations.app[item.key]}</span>
                 </Link>
               )
             })}
@@ -110,7 +112,7 @@ export default function AppShell({ children }: AppShellProps) {
               <div className="app-avatar" aria-hidden="true">AS</div>
               <div className="app-user-details">
                 <span>Ananya Sharma</span>
-                <Link href="/" onClick={() => setMobileOpen(false)}>Log out</Link>
+                <Link href="/" onClick={() => setMobileOpen(false)}>{translations.app.logOut}</Link>
               </div>
               <ArrowRight size={14} strokeWidth={1.5} className="app-user-arrow" aria-hidden="true" />
             </div>

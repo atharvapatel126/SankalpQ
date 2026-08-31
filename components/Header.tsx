@@ -5,13 +5,14 @@ import { useState, useEffect } from 'react'
 import { Menu, X } from 'lucide-react'
 import ThemeToggle from './ThemeToggle'
 import LanguageSwitcher from './LanguageSwitcher'
+import { useLanguage } from './LanguageProvider'
 
 const NAV_LINKS = [
-  { label: 'Learn',      href: '#' },
-  { label: 'Explore',   href: '#features' },
-  { label: 'Labs',      href: '#' },
-  { label: 'Resources', href: '#' },
-  { label: 'About Us',  href: '#' },
+  { key: 'learn', href: '#' },
+  { key: 'explore', href: '#features' },
+  { key: 'labs', href: '#' },
+  { key: 'resources', href: '#' },
+  { key: 'about', href: '#' },
 ]
 
 // Logo mark: three orbital ellipses around a center dot, stroke only
@@ -48,6 +49,7 @@ function LogoMark() {
 export default function Header() {
   const [scrolled, setScrolled] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
+  const { translations } = useLanguage()
 
   useEffect(() => {
     function onScroll() {
@@ -91,7 +93,7 @@ export default function Header() {
           {/* ── Logo zone ─────────────────────────────────── */}
           <Link
             href="/"
-            aria-label="SankalpQ home"
+            aria-label={translations.header.home}
             style={{
               display: 'inline-flex',
               alignItems: 'center',
@@ -127,8 +129,8 @@ export default function Header() {
             className="hidden-mobile"
           >
             {NAV_LINKS.map(link => (
-              <a key={link.label} href={link.href} className="nav-link">
-                {link.label}
+              <a key={link.key} href={link.href} className="nav-link">
+                {translations.header.nav[link.key as keyof typeof translations.header.nav]}
               </a>
             ))}
           </nav>
@@ -155,7 +157,7 @@ export default function Header() {
               className="btn-outline hidden-mobile"
               style={{ height: '40px' }}
             >
-              Sign In
+              {translations.header.signIn}
             </Link>
 
             {/* Get Started */}
@@ -164,14 +166,14 @@ export default function Header() {
               className="btn-primary"
               style={{ height: '40px' }}
             >
-              Get Started
+              {translations.header.getStarted}
             </Link>
 
             {/* Hamburger — mobile only */}
             <button
               className="show-mobile"
               onClick={() => setMobileOpen(o => !o)}
-              aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
+              aria-label={mobileOpen ? translations.header.closeMenu : translations.header.openMenu}
               aria-expanded={mobileOpen}
               style={{
                 display: 'none',
@@ -197,12 +199,12 @@ export default function Header() {
         <nav className="mobile-menu show-mobile" aria-label="Mobile navigation">
           {NAV_LINKS.map(link => (
             <a
-              key={link.label}
+              key={link.key}
               href={link.href}
               className="mobile-nav-link"
               onClick={() => setMobileOpen(false)}
             >
-              {link.label}
+              {translations.header.nav[link.key as keyof typeof translations.header.nav]}
             </a>
           ))}
           <div style={{ marginTop: '16px' }}>
