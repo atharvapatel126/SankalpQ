@@ -11,5 +11,6 @@ build/
 .env.production.local
 
 *.log
+*.tsbuildinfo
 .DS_Store
 Thumbs.db
