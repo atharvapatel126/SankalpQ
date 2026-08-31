@@ -5,6 +5,7 @@ import Link from 'next/link'
 import LogoMark from './LogoMark'
 import LanguageSwitcher from './LanguageSwitcher'
 import ThemeToggle from './ThemeToggle'
+import { useLanguage } from './LanguageProvider'
 
 interface AuthLayoutProps {
   children: React.ReactNode
@@ -15,6 +16,8 @@ export default function AuthLayout({
   children,
   showLanguageSwitcher = true,
 }: AuthLayoutProps) {
+  const { translations } = useLanguage()
+
   return (
     <div
       style={{
@@ -50,7 +53,7 @@ export default function AuthLayout({
           {/* Logo mark + wordmark */}
           <Link
             href="/"
-            aria-label="SankalpQ home"
+            aria-label={translations.header.home}
             style={{
               display: 'inline-flex',
               alignItems: 'center',
@@ -102,13 +105,6 @@ export default function AuthLayout({
         {children}
       </main>
 
-      <style>{`
-        @media (max-width: 639px) {
-          .auth-main {
-            padding: 40px 16px 48px !important;
-          }
-        }
-      `}</style>
     </div>
   )
 }

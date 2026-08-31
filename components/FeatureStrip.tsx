@@ -1,24 +1,29 @@
 'use client'
 
 import { useEffect, useRef } from 'react'
+import Link from 'next/link'
 import { useLanguage } from './LanguageProvider'
 
 const FEATURES = [
   {
     index: '01',
     kind: 'learning' as const,
+    href: '/courses',
   },
   {
     index: '02',
     kind: 'circuit' as const,
+    href: '/circuit-builder',
   },
   {
     index: '03',
     kind: 'experiment' as const,
+    href: '/simulator',
   },
   {
     index: '04',
     kind: 'assistance' as const,
+    href: '/ai-tutor',
   },
 ]
 
@@ -118,8 +123,9 @@ export default function FeatureStrip() {
       >
         {FEATURES.map((feature, i) => {
           return (
-            <div
+            <Link
               key={feature.kind}
+              href={feature.href}
               className="feature-card"
               style={{
                 padding: '28px 24px',
@@ -146,7 +152,7 @@ export default function FeatureStrip() {
               <p className="feature-card-description">
                 {translations.features[feature.kind].description}
               </p>
-            </div>
+            </Link>
           )
         })}
       </div>

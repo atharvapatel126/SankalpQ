@@ -2,6 +2,7 @@
 
 import { createContext, useContext, useEffect, useMemo, useState } from 'react'
 import { LANGUAGES, Language } from '@/lib/languages'
+import { AuthTranslations, getAuthTranslations } from '@/lib/auth-translations'
 import { getTranslations, TranslationSet } from '@/lib/translations'
 
 const LANGUAGE_STORAGE_KEY = 'sankalpq-language'
@@ -11,6 +12,7 @@ interface LanguageContextValue {
   language: Language
   setLanguage: (code: string) => void
   translations: TranslationSet
+  auth: AuthTranslations
 }
 
 const LanguageContext = createContext<LanguageContextValue | undefined>(undefined)
@@ -43,6 +45,7 @@ export default function LanguageProvider({ children }: { children: React.ReactNo
 
   const language = LANGUAGES.find(item => item.code === languageCode) ?? DEFAULT_LANGUAGE
   const translations = useMemo(() => getTranslations(language.code), [language.code])
+  const auth = useMemo(() => getAuthTranslations(language.code), [language.code])
 
   useEffect(() => {
     document.documentElement.lang = language.code.toLowerCase()
@@ -56,8 +59,9 @@ export default function LanguageProvider({ children }: { children: React.ReactNo
         if (LANGUAGES.some(item => item.code === code)) setLanguageCode(code)
       },
       translations,
+      auth,
     }),
-    [language, translations]
+    [auth, language, translations]
   )
 
   return <LanguageContext.Provider value={value}>{children}</LanguageContext.Provider>

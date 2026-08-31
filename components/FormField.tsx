@@ -14,6 +14,8 @@ interface FormFieldProps {
   helperText?: string
   autoComplete?: string
   required?: boolean
+  showPasswordLabel?: string
+  hidePasswordLabel?: string
 }
 
 export default function FormField({
@@ -27,6 +29,8 @@ export default function FormField({
   helperText,
   autoComplete,
   required,
+  showPasswordLabel = 'Show password',
+  hidePasswordLabel = 'Hide password',
 }: FormFieldProps) {
   const [showPassword, setShowPassword] = useState(false)
   const isPassword = type === 'password'
@@ -56,7 +60,7 @@ export default function FormField({
             type="button"
             className="field-icon-btn"
             onClick={() => setShowPassword(!showPassword)}
-            aria-label={showPassword ? 'Hide password' : 'Show password'}
+            aria-label={showPassword ? hidePasswordLabel : showPasswordLabel}
             tabIndex={-1}
           >
             {showPassword ? (

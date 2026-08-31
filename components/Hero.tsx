@@ -108,7 +108,7 @@ export default function Hero() {
               marginBottom: '40px',
             }}
           >
-            <Link href="/register" className="btn-primary">
+            <Link href="/courses" className="btn-primary">
               {translations.hero.startLearning}
               <ArrowRight size={16} strokeWidth={2} />
             </Link>

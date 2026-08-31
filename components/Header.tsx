@@ -8,11 +8,11 @@ import LanguageSwitcher from './LanguageSwitcher'
 import { useLanguage } from './LanguageProvider'
 
 const NAV_LINKS = [
-  { key: 'learn', href: '#' },
-  { key: 'explore', href: '#features' },
-  { key: 'labs', href: '#' },
-  { key: 'resources', href: '#' },
-  { key: 'about', href: '#' },
+  { key: 'learn', href: '/courses' },
+  { key: 'explore', href: '/challenges' },
+  { key: 'labs', href: '/simulator' },
+  { key: 'resources', href: '/courses' },
+  { key: 'about', href: '/#features' },
 ]
 
 // Logo mark: three orbital ellipses around a center dot, stroke only
@@ -122,16 +122,17 @@ export default function Header() {
             style={{
               display: 'flex',
               alignItems: 'center',
-              gap: '32px',
-              marginLeft: '48px',
+              gap: 'clamp(12px, 2.5vw, 32px)',
+              marginLeft: 'clamp(16px, 3.5vw, 48px)',
               flex: 1,
+              minWidth: 0,
             }}
             className="hidden-mobile"
           >
             {NAV_LINKS.map(link => (
-              <a key={link.key} href={link.href} className="nav-link">
+              <Link key={link.key} href={link.href} className="nav-link">
                 {translations.header.nav[link.key as keyof typeof translations.header.nav]}
-              </a>
+              </Link>
             ))}
           </nav>
 
@@ -140,8 +141,9 @@ export default function Header() {
             style={{
               display: 'flex',
               alignItems: 'center',
-              gap: '12px',
+              gap: 'clamp(8px, 1.5vw, 12px)',
               marginLeft: 'auto',
+              flexShrink: 0,
             }}
           >
             {/* Language switcher — hidden on mobile */}
@@ -198,14 +200,14 @@ export default function Header() {
       {mobileOpen && (
         <nav className="mobile-menu show-mobile" aria-label="Mobile navigation">
           {NAV_LINKS.map(link => (
-            <a
+            <Link
               key={link.key}
               href={link.href}
               className="mobile-nav-link"
               onClick={() => setMobileOpen(false)}
             >
               {translations.header.nav[link.key as keyof typeof translations.header.nav]}
-            </a>
+            </Link>
           ))}
           <div style={{ marginTop: '16px' }}>
             <LanguageSwitcher />

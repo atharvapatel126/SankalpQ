@@ -19,6 +19,7 @@ import LanguageSwitcher from '@/components/LanguageSwitcher'
 import LogoMark from '@/components/LogoMark'
 import ThemeToggle from '@/components/ThemeToggle'
 import { useLanguage } from '@/components/LanguageProvider'
+import { getSupabaseBrowserClient } from '@/lib/supabase/client'
 
 const NAV_ITEMS: Array<{ key: 'dashboard' | 'courses' | 'circuitBuilder' | 'simulator' | 'aiTutor' | 'challenges'; href: string; icon: LucideIcon }> = [
   { key: 'dashboard', href: '/dashboard', icon: LayoutDashboard },
@@ -36,6 +37,7 @@ interface AppShellProps {
 export default function AppShell({ children }: AppShellProps) {
   const pathname = usePathname()
   const [mobileOpen, setMobileOpen] = useState(false)
+  const [userName, setUserName] = useState('Account')
   const { translations } = useLanguage()
 
   useEffect(() => {
@@ -48,6 +50,30 @@ export default function AppShell({ children }: AppShellProps) {
   useEffect(() => {
     setMobileOpen(false)
   }, [pathname])
+
+  useEffect(() => {
+    let active = true
+    getSupabaseBrowserClient().auth.getUser().then(({ data }) => {
+      if (!active || !data.user) return
+      const metadataName = data.user.user_metadata?.full_name
+      setUserName(typeof metadataName === 'string' && metadataName.trim() ? metadataName : data.user.email ?? 'Account')
+    }).catch(() => {
+      // The route boundary handles missing or invalid authentication configuration.
+    })
+    return () => { active = false }
+  }, [])
+
+  const userInitials = userName === 'Account'
+    ? 'A'
+    : userName.split(/\s+/).slice(0, 2).map(part => part[0]).join('').toUpperCase()
+
+  const handleSignOut = async () => {
+    try {
+      await getSupabaseBrowserClient().auth.signOut()
+    } finally {
+      window.location.assign('/')
+    }
+  }
 
   return (
     <div className="app-shell">
@@ -109,10 +135,10 @@ export default function AppShell({ children }: AppShellProps) {
               <ThemeToggle />
             </div>
             <div className="app-user-row">
-              <div className="app-avatar" aria-hidden="true">AS</div>
+              <div className="app-avatar" aria-hidden="true">{userInitials}</div>
               <div className="app-user-details">
-                <span>Ananya Sharma</span>
-                <Link href="/" onClick={() => setMobileOpen(false)}>{translations.app.logOut}</Link>
+                <span>{userName}</span>
+                <button type="button" onClick={handleSignOut}>{translations.app.logOut}</button>
               </div>
               <ArrowRight size={14} strokeWidth={1.5} className="app-user-arrow" aria-hidden="true" />
             </div>

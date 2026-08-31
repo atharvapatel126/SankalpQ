@@ -9,287 +9,114 @@ import AuthCard from '@/components/AuthCard'
 import FormField from '@/components/FormField'
 import SocialButtons from '@/components/SocialButtons'
 import LogoMark from '@/components/LogoMark'
+import { useLanguage } from '@/components/LanguageProvider'
+import { getSafeNextPath } from '@/lib/auth'
+import { getSupabaseBrowserClient } from '@/lib/supabase/client'
+
+interface RegisterErrors {
+  fullName?: string
+  email?: string
+  password?: string
+  confirmPassword?: string
+  terms?: string
+  form?: string
+}
 
 export default function RegisterPage() {
   const router = useRouter()
+  const { auth } = useLanguage()
   const [role, setRole] = useState<'Student' | 'Instructor'>('Student')
   const [fullName, setFullName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
   const [agreedToTerms, setAgreedToTerms] = useState(false)
-  const [errors, setErrors] = useState<{
-    fullName?: string
-    email?: string
-    password?: string
-    confirmPassword?: string
-    terms?: string
-  }>({})
+  const [errors, setErrors] = useState<RegisterErrors>({})
+  const [success, setSuccess] = useState('')
   const [loading, setLoading] = useState(false)
 
   const validate = () => {
-    const newErrors: {
-      fullName?: string
-      email?: string
-      password?: string
-      confirmPassword?: string
-      terms?: string
-    } = {}
+    const newErrors: RegisterErrors = {}
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-
-    if (!fullName.trim()) {
-      newErrors.fullName = 'Full name is required'
-    }
-
-    if (!email.trim()) {
-      newErrors.email = 'Email address is required'
-    } else if (!emailRegex.test(email.trim())) {
-      newErrors.email = 'Please enter a valid email address'
-    }
-
-    if (!password) {
-      newErrors.password = 'Password is required'
-    } else if (password.length < 8) {
-      newErrors.password = 'Password must be at least 8 characters'
-    }
-
-    if (!confirmPassword) {
-      newErrors.confirmPassword = 'Confirm password is required'
-    } else if (confirmPassword !== password) {
-      newErrors.confirmPassword = 'Passwords do not match'
-    }
-
-    if (!agreedToTerms) {
-      newErrors.terms = 'You must accept the Terms of Service to continue'
-    }
-
+    if (!fullName.trim()) newErrors.fullName = auth.fullNameRequired
+    if (!email.trim()) newErrors.email = auth.emailRequired
+    else if (!emailRegex.test(email.trim())) newErrors.email = auth.emailInvalid
+    if (!password) newErrors.password = auth.passwordRequired
+    else if (password.length < 8) newErrors.password = auth.passwordLength
+    if (!confirmPassword) newErrors.confirmPassword = auth.confirmPasswordRequired
+    else if (confirmPassword !== password) newErrors.confirmPassword = auth.passwordsDoNotMatch
+    if (!agreedToTerms) newErrors.terms = auth.termsRequired
     setErrors(newErrors)
     return Object.keys(newErrors).length === 0
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!validate()) return
-
     setLoading(true)
-    // Simulate 600ms registration delay, then route to dashboard
-    setTimeout(() => {
+    setSuccess('')
+    setErrors({})
+    try {
+      const { data, error } = await getSupabaseBrowserClient().auth.signUp({
+        email: email.trim(),
+        password,
+        options: { data: { full_name: fullName.trim(), role } },
+      })
+      if (error) {
+        const message = error.message.toLowerCase()
+        setErrors({ form: message.includes('already registered') || message.includes('already exists') ? auth.emailAlreadyRegistered : auth.signUpFailed })
+        return
+      }
+      if (data.session) {
+        const next = getSafeNextPath(new URLSearchParams(window.location.search).get('next'))
+        router.replace(next)
+        router.refresh()
+      } else {
+        setSuccess(auth.checkEmail)
+      }
+    } catch (error) {
+      setErrors({ form: error instanceof Error && error.message.includes('environment') ? auth.authUnavailable : auth.signUpFailed })
+    } finally {
       setLoading(false)
-      router.push('/dashboard')
-    }, 600)
+    }
   }
 
   return (
     <AuthLayout>
       <AuthCard>
-        {/* ── 1. Top Logo ─────────────────────────────────── */}
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'center',
-            marginBottom: '16px',
-            color: 'var(--text-primary)',
-          }}
-        >
-          <LogoMark size={28} />
-        </div>
-
-        {/* ── 2. H1 & 3. Subtext ─────────────────────────── */}
+        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '16px', color: 'var(--text-primary)' }}><LogoMark size={28} /></div>
         <div style={{ textAlign: 'center', marginBottom: '20px' }}>
-          <h1
-            style={{
-              fontSize: '32px',
-              fontWeight: 700,
-              letterSpacing: '-0.02em',
-              color: 'var(--text-primary)',
-              lineHeight: 1.15,
-              marginBottom: '8px',
-            }}
-          >
-            Create your account
-          </h1>
-          <p
-            style={{
-              fontSize: '14px',
-              color: 'var(--text-secondary)',
-              lineHeight: 1.5,
-            }}
-          >
-            Join thousands of learners building the future of quantum computing.
-          </p>
+          <h1 style={{ fontSize: '32px', fontWeight: 700, letterSpacing: '-0.02em', color: 'var(--text-primary)', lineHeight: 1.15, marginBottom: '8px' }}>{auth.registerTitle}</h1>
+          <p style={{ fontSize: '14px', color: 'var(--text-secondary)', lineHeight: 1.5 }}>{auth.registerDescription}</p>
         </div>
 
-        {/* ── 4. Role Toggle ──────────────────────────────── */}
-        <div className="role-toggle" role="group" aria-label="Select role">
-          <button
-            type="button"
-            className={`role-btn ${role === 'Student' ? 'active' : ''}`}
-            onClick={() => setRole('Student')}
-            aria-pressed={role === 'Student'}
-          >
-            Student
-          </button>
-          <button
-            type="button"
-            className={`role-btn ${role === 'Instructor' ? 'active' : ''}`}
-            onClick={() => setRole('Instructor')}
-            aria-pressed={role === 'Instructor'}
-          >
-            Instructor
-          </button>
+        <div className="role-toggle" role="group" aria-label={auth.selectRole}>
+          <button type="button" className={`role-btn ${role === 'Student' ? 'active' : ''}`} onClick={() => setRole('Student')} aria-pressed={role === 'Student'}>{auth.student}</button>
+          <button type="button" className={`role-btn ${role === 'Instructor' ? 'active' : ''}`} onClick={() => setRole('Instructor')} aria-pressed={role === 'Instructor'}>{auth.instructor}</button>
         </div>
 
-        {/* ── 5. Form ─────────────────────────────────────── */}
         <form onSubmit={handleSubmit} noValidate>
-          <FormField
-            id="register-name"
-            label="Full name"
-            type="text"
-            placeholder="Ada Lovelace"
-            value={fullName}
-            onChange={e => {
-              setFullName(e.target.value)
-              if (errors.fullName) setErrors(prev => ({ ...prev, fullName: undefined }))
-            }}
-            error={errors.fullName}
-            autoComplete="name"
-            required
-          />
+          <FormField id="register-name" label={auth.fullName} type="text" placeholder={auth.fullNamePlaceholder} value={fullName} onChange={e => { setFullName(e.target.value); if (errors.fullName || errors.form) setErrors(prev => ({ ...prev, fullName: undefined, form: undefined })) }} error={errors.fullName} autoComplete="name" required />
+          <FormField id="register-email" label={auth.email} type="email" placeholder={auth.emailPlaceholder} value={email} onChange={e => { setEmail(e.target.value); if (errors.email || errors.form) setErrors(prev => ({ ...prev, email: undefined, form: undefined })) }} error={errors.email} autoComplete="email" required />
+          <FormField id="register-password" label={auth.password} type="password" placeholder={auth.passwordPlaceholder} value={password} onChange={e => { setPassword(e.target.value); if (errors.password || errors.form) setErrors(prev => ({ ...prev, password: undefined, form: undefined })) }} error={errors.password} helperText={auth.passwordHint} autoComplete="new-password" required showPasswordLabel={auth.showPassword} hidePasswordLabel={auth.hidePassword} />
+          <FormField id="register-confirm-password" label={auth.confirmPassword} type="password" placeholder={auth.passwordPlaceholder} value={confirmPassword} onChange={e => { setConfirmPassword(e.target.value); if (errors.confirmPassword || errors.form) setErrors(prev => ({ ...prev, confirmPassword: undefined, form: undefined })) }} error={errors.confirmPassword} autoComplete="new-password" required showPasswordLabel={auth.showPassword} hidePasswordLabel={auth.hidePassword} />
 
-          <FormField
-            id="register-email"
-            label="Email"
-            type="email"
-            placeholder="you@example.com"
-            value={email}
-            onChange={e => {
-              setEmail(e.target.value)
-              if (errors.email) setErrors(prev => ({ ...prev, email: undefined }))
-            }}
-            error={errors.email}
-            autoComplete="email"
-            required
-          />
-
-          <FormField
-            id="register-password"
-            label="Password"
-            type="password"
-            placeholder="••••••••"
-            value={password}
-            onChange={e => {
-              setPassword(e.target.value)
-              if (errors.password) setErrors(prev => ({ ...prev, password: undefined }))
-            }}
-            error={errors.password}
-            helperText="At least 8 characters"
-            autoComplete="new-password"
-            required
-          />
-
-          <FormField
-            id="register-confirm-password"
-            label="Confirm password"
-            type="password"
-            placeholder="••••••••"
-            value={confirmPassword}
-            onChange={e => {
-              setConfirmPassword(e.target.value)
-              if (errors.confirmPassword)
-                setErrors(prev => ({ ...prev, confirmPassword: undefined }))
-            }}
-            error={errors.confirmPassword}
-            autoComplete="new-password"
-            required
-          />
-
-          {/* Terms checkbox */}
           <div style={{ marginBottom: '20px' }}>
             <label className="auth-checkbox">
-              <input
-                type="checkbox"
-                checked={agreedToTerms}
-                onChange={e => {
-                  setAgreedToTerms(e.target.checked)
-                  if (errors.terms) setErrors(prev => ({ ...prev, terms: undefined }))
-                }}
-              />
-              <span>
-                I agree to the{' '}
-                <a
-                  href="#"
-                  onClick={e => e.preventDefault()}
-                  style={{ color: 'var(--accent)', textDecoration: 'none' }}
-                >
-                  Terms of Service
-                </a>{' '}
-                and{' '}
-                <a
-                  href="#"
-                  onClick={e => e.preventDefault()}
-                  style={{ color: 'var(--accent)', textDecoration: 'none' }}
-                >
-                  Privacy Policy
-                </a>
-              </span>
+              <input type="checkbox" checked={agreedToTerms} onChange={e => { setAgreedToTerms(e.target.checked); if (errors.terms || errors.form) setErrors(prev => ({ ...prev, terms: undefined, form: undefined })) }} />
+              <span>{auth.agreeTo}{' '}<a href="#" onClick={e => e.preventDefault()} style={{ color: 'var(--accent)', textDecoration: 'none' }}>{auth.terms}</a>{' '}{auth.and}{' '}<a href="#" onClick={e => e.preventDefault()} style={{ color: 'var(--accent)', textDecoration: 'none' }}>{auth.privacy}</a></span>
             </label>
-            {errors.terms && (
-              <span className="form-error" style={{ display: 'block' }} role="alert">
-                {errors.terms}
-              </span>
-            )}
+            {errors.terms && <span className="form-error" style={{ display: 'block' }} role="alert">{errors.terms}</span>}
           </div>
-
-          {/* Submit button */}
-          <button
-            type="submit"
-            disabled={loading}
-            className="btn-primary"
-            style={{
-              width: '100%',
-              justifyContent: 'center',
-              height: '42px',
-              opacity: loading ? 0.8 : 1,
-              cursor: loading ? 'not-allowed' : 'pointer',
-            }}
-          >
-            <span>Create Account</span>
-            {loading ? (
-              <span className="spinner" aria-hidden="true" />
-            ) : (
-              <ArrowRight size={16} strokeWidth={2} />
-            )}
+          {errors.form && <div className="form-error auth-form-error" role="alert">{errors.form}</div>}
+          {success && <div className="auth-success" role="status">{success}</div>}
+          <button type="submit" disabled={loading || Boolean(success)} className="btn-primary" style={{ width: '100%', justifyContent: 'center', height: '42px', opacity: loading ? 0.8 : 1, cursor: loading ? 'not-allowed' : 'pointer' }}>
+            <span>{auth.createAccount}</span>{loading ? <span className="spinner" aria-hidden="true" /> : <ArrowRight size={16} strokeWidth={2} />}
           </button>
         </form>
-
-        {/* ── 6. Divider & Social Buttons ─────────────────── */}
-        <div className="auth-divider">
-          <span>or</span>
-        </div>
-
+        <div className="auth-divider"><span>{auth.or}</span></div>
         <SocialButtons />
-
-        {/* ── 7. Footer ───────────────────────────────────── */}
-        <div
-          style={{
-            marginTop: '24px',
-            textAlign: 'center',
-            fontSize: '14px',
-            color: 'var(--text-secondary)',
-          }}
-        >
-          Already have an account?{' '}
-          <Link
-            href="/login"
-            style={{
-              color: 'var(--accent)',
-              fontWeight: 500,
-              textDecoration: 'none',
-            }}
-          >
-            Sign in
-          </Link>
-        </div>
+        <div style={{ marginTop: '24px', textAlign: 'center', fontSize: '14px', color: 'var(--text-secondary)' }}>{auth.alreadyHaveAccount}{' '}<Link href="/login" style={{ color: 'var(--accent)', fontWeight: 500, textDecoration: 'none' }}>{auth.signIn}</Link></div>
       </AuthCard>
     </AuthLayout>
   )

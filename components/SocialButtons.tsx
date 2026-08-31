@@ -1,6 +1,7 @@
 'use client'
 
 import React from 'react'
+import { useLanguage } from '@/components/LanguageProvider'
 
 // Simple monochrome Google icon
 function GoogleIcon() {
@@ -37,6 +38,8 @@ function GitHubIcon() {
 }
 
 export default function SocialButtons() {
+  const { auth } = useLanguage()
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', width: '100%' }}>
       {/* 
@@ -47,20 +50,20 @@ export default function SocialButtons() {
         type="button"
         className="btn-social"
         onClick={e => e.preventDefault()}
-        aria-label="Continue with Google (Placeholder)"
+        aria-label={auth.continueGoogle}
       >
         <GoogleIcon />
-        <span>Continue with Google</span>
+        <span>{auth.continueGoogle}</span>
       </button>
 
       <button
         type="button"
         className="btn-social"
         onClick={e => e.preventDefault()}
-        aria-label="Continue with GitHub (Placeholder)"
+        aria-label={auth.continueGithub}
       >
         <GitHubIcon />
-        <span>Continue with GitHub</span>
+        <span>{auth.continueGithub}</span>
       </button>
     </div>
   )

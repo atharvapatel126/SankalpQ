@@ -259,6 +259,9 @@ html.light .card-shadow {
 /* CSS-only feature card background hover (no JS needed) */
 .feature-card {
   position: relative;
+  color: inherit;
+  cursor: pointer;
+  text-decoration: none;
   transition: background-color 150ms ease-out, border-color 150ms ease-out;
 }
 .feature-card:hover {
@@ -445,6 +448,23 @@ html.light .card-shadow {
   line-height: 1.4;
 }
 
+.auth-form-error {
+  margin: -4px 0 12px;
+}
+
+.auth-success {
+  margin: -4px 0 12px;
+  color: var(--text-secondary);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+@media (max-width: 639px) {
+  .auth-main {
+    padding: 40px 16px 48px !important;
+  }
+}
+
 .form-field {
   display: flex;
   flex-direction: column;
@@ -561,6 +581,7 @@ html.light .card-shadow {
 /* ── Nav link ────────────────────────────────────────────────── */
 .nav-link {
   position: relative;
+  white-space: nowrap;
   color: var(--text-secondary);
   font-size: 15px;
   text-decoration: none;
@@ -799,15 +820,22 @@ html.light .lang-dropdown {
   white-space: nowrap;
 }
 
-.app-user-details a {
+.app-user-details a,
+.app-user-details button {
   width: fit-content;
   color: var(--text-secondary);
   font-size: 13px;
   text-decoration: none;
+  font-family: inherit;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
   transition: color 150ms ease-out;
 }
 
-.app-user-details a:hover {
+.app-user-details a:hover,
+.app-user-details button:hover {
   color: var(--text-primary);
 }
 
