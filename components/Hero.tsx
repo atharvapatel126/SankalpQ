@@ -3,11 +3,14 @@
 import Link from 'next/link'
 import { ArrowRight, Play, Sparkles } from 'lucide-react'
 import QuantumCircuitDiagram from './QuantumCircuitDiagram'
+import { useLanguage } from './LanguageProvider'
 
 // Avatar initials for the trust row
 const AVATARS = ['AS', 'KP', 'MR']
 
 export default function Hero() {
+  const { translations } = useLanguage()
+
   return (
     <section
       aria-labelledby="hero-headline"
@@ -55,7 +58,7 @@ export default function Hero() {
               strokeWidth={1.5}
               style={{ color: 'var(--accent)', flexShrink: 0 }}
             />
-            <span>Quantum Learning. Reinvented.</span>
+            <span>{translations.hero.eyebrow}</span>
           </div>
 
           {/* H1 Headline */}
@@ -70,15 +73,15 @@ export default function Hero() {
               marginBottom: '20px',
             }}
           >
-            Learn. Build. Simulate.
+            {translations.hero.headlineLead}
             <br />
-            Master{' '}
+            {translations.hero.headlineMaster}{' '}
             <span
               style={{
                 color: 'var(--accent)',
               }}
             >
-              Quantum Computing.
+              {translations.hero.headlineAccent}
             </span>
           </h1>
 
@@ -92,9 +95,7 @@ export default function Hero() {
               marginBottom: '32px',
             }}
           >
-            SankalpQ is an all-in-one platform to learn quantum concepts, build
-            circuits, run simulations, and get AI-powered assistance every step
-            of the way.
+            {translations.hero.description}
           </p>
 
           {/* CTA row */}
@@ -108,12 +109,12 @@ export default function Hero() {
             }}
           >
             <Link href="/register" className="btn-primary">
-              Start Learning
+              {translations.hero.startLearning}
               <ArrowRight size={16} strokeWidth={2} />
             </Link>
             <Link href="/#features" className="btn-outline">
               <Play size={16} strokeWidth={2} />
-              Explore Platform
+              {translations.hero.explorePlatform}
             </Link>
           </div>
 
@@ -167,11 +168,11 @@ export default function Hero() {
                 lineHeight: 1.4,
               }}
             >
-              Trusted by{' '}
+              {translations.hero.trustedBy}{' '}
               <span style={{ color: 'var(--text-secondary)', fontWeight: 500 }}>
                 10,000+
               </span>{' '}
-              learners and educators worldwide
+              {translations.hero.learnersWorldwide}
             </p>
           </div>
         </div>
@@ -266,21 +267,6 @@ export default function Hero() {
       </div>
 
       {/* ── Responsive overrides ───────────────────────────── */}
-      <style>{`
-        @media (max-width: 1023px) {
-          .hero-grid {
-            grid-template-columns: 1fr !important;
-          }
-          .circuit-panel {
-            order: 2;
-          }
-        }
-        @media (max-width: 639px) {
-          section[aria-labelledby="hero-headline"] {
-            padding: 48px 16px 48px !important;
-          }
-        }
-      `}</style>
     </section>
   )
 }

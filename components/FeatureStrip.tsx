@@ -1,37 +1,80 @@
 'use client'
 
-import { GraduationCap, CircuitBoard, FlaskConical, Cpu } from 'lucide-react'
 import { useEffect, useRef } from 'react'
+import { useLanguage } from './LanguageProvider'
 
 const FEATURES = [
   {
-    icon: GraduationCap,
-    title: 'Interactive Learning',
-    description:
-      'Learn quantum concepts with interactive lessons, animations, and real-world examples.',
+    index: '01',
+    kind: 'learning' as const,
   },
   {
-    icon: CircuitBoard,
-    title: 'Build & Visualize',
-    description:
-      'Drag-and-drop circuit builder with code support and beautiful visualizations.',
+    index: '02',
+    kind: 'circuit' as const,
   },
   {
-    icon: FlaskConical,
-    title: 'Simulate & Experiment',
-    description:
-      'Run simulations, explore quantum algorithms, and experiment in virtual labs.',
+    index: '03',
+    kind: 'experiment' as const,
   },
   {
-    icon: Cpu,
-    title: 'AI-Powered Assistance',
-    description:
-      'AI Tutor, Debugger, and personalized learning paths to accelerate your quantum journey.',
+    index: '04',
+    kind: 'assistance' as const,
   },
 ]
 
+type FeatureMarkKind = (typeof FEATURES)[number]['kind']
+
+function FeatureMark({ kind }: { kind: FeatureMarkKind }) {
+  if (kind === 'learning') {
+    return (
+      <svg viewBox="0 0 64 56" aria-hidden="true">
+        <path d="M8 38h48" />
+        <path d="M8 38c8-18 15-18 24 0s15 18 24 0" className="feature-mark-accent" />
+        <circle cx="8" cy="38" r="3" />
+        <circle cx="32" cy="38" r="3" className="feature-mark-accent" />
+        <circle cx="56" cy="38" r="3" />
+      </svg>
+    )
+  }
+
+  if (kind === 'circuit') {
+    return (
+      <svg viewBox="0 0 64 56" aria-hidden="true">
+        <path d="M8 12h48M8 28h48M8 44h48" />
+        <rect x="17" y="5" width="14" height="14" rx="3" className="feature-mark-accent" />
+        <rect x="36" y="21" width="14" height="14" rx="3" />
+        <circle cx="24" cy="44" r="4" className="feature-mark-accent" />
+        <circle cx="43" cy="44" r="4" />
+        <path d="M24 40V32M24 32h19V35" />
+      </svg>
+    )
+  }
+
+  if (kind === 'experiment') {
+    return (
+      <svg viewBox="0 0 64 56" aria-hidden="true">
+        <path d="M8 43h48" />
+        <path d="M8 32c6-18 10-18 16 0s10 18 16 0 10-18 16 0" className="feature-mark-accent" />
+        <rect x="13" y="37" width="5" height="6" />
+        <rect x="29" y="28" width="5" height="15" className="feature-mark-accent" />
+        <rect x="45" y="34" width="5" height="9" />
+      </svg>
+    )
+  }
+
+  return (
+    <svg viewBox="0 0 64 56" aria-hidden="true">
+      <rect x="8" y="12" width="38" height="30" rx="5" />
+      <path d="M16 22h20M16 29h14M16 36h9" />
+      <path d="M52 7l1.8 5.2L59 14l-5.2 1.8L52 21l-1.8-5.2L45 14l5.2-1.8L52 7Z" className="feature-mark-accent" />
+      <path d="M46 42h8" className="feature-mark-accent" />
+    </svg>
+  )
+}
+
 export default function FeatureStrip() {
   const ref = useRef<HTMLDivElement>(null)
+  const { translations } = useLanguage()
 
   // Scroll reveal
   useEffect(() => {
@@ -74,10 +117,9 @@ export default function FeatureStrip() {
         }}
       >
         {FEATURES.map((feature, i) => {
-          const Icon = feature.icon
           return (
             <div
-              key={feature.title}
+              key={feature.kind}
               className="feature-card"
               style={{
                 padding: '28px 24px',
@@ -90,49 +132,19 @@ export default function FeatureStrip() {
               }}
             >
               {/* Icon container — no color fill, flat bordered box */}
-              <div
-                className="feature-icon-wrap"
-                style={{
-                  width: 40,
-                  height: 40,
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  border: '1px solid var(--border)',
-                  borderRadius: '8px',
-                  flexShrink: 0,
-                  marginBottom: '14px',
-                }}
-              >
-                <Icon
-                  size={20}
-                  strokeWidth={1.5}
-                  style={{ color: 'var(--text-secondary)' }}
-                />
+              <span className="feature-card-index">{feature.index}</span>
+              <div className={`feature-mark feature-mark-${feature.kind}`}>
+                <FeatureMark kind={feature.kind} />
               </div>
 
               {/* Title */}
-              <h3
-                style={{
-                  fontSize: '16px',
-                  fontWeight: 600,
-                  color: 'var(--text-primary)',
-                  marginBottom: '8px',
-                  lineHeight: 1.3,
-                }}
-              >
-                {feature.title}
+              <h3 className="feature-card-title">
+                {translations.features[feature.kind].title}
               </h3>
 
               {/* Description */}
-              <p
-                style={{
-                  fontSize: '14px',
-                  color: 'var(--text-secondary)',
-                  lineHeight: 1.55,
-                }}
-              >
-                {feature.description}
+              <p className="feature-card-description">
+                {translations.features[feature.kind].description}
               </p>
             </div>
           )
@@ -140,40 +152,6 @@ export default function FeatureStrip() {
       </div>
 
       {/* Responsive: stack on mobile */}
-      <style>{`
-        @media (max-width: 767px) {
-          #features > div {
-            grid-template-columns: 1fr !important;
-          }
-          #features > div > div {
-            border-right: none !important;
-            border-bottom: 1px solid var(--border) !important;
-          }
-          #features > div > div:last-child {
-            border-bottom: none !important;
-          }
-        }
-        @media (min-width: 768px) and (max-width: 1023px) {
-          #features > div {
-            grid-template-columns: repeat(2, 1fr) !important;
-          }
-          #features > div > div:nth-child(2) {
-            border-right: none !important;
-          }
-          #features > div > div:nth-child(1),
-          #features > div > div:nth-child(2) {
-            border-bottom: 1px solid var(--border) !important;
-          }
-          #features > div > div:nth-child(4) {
-            border-right: none !important;
-          }
-        }
-        @media (max-width: 639px) {
-          #features {
-            padding: 0 16px 48px !important;
-          }
-        }
-      `}</style>
     </section>
   )
 }

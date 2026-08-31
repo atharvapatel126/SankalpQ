@@ -2,12 +2,13 @@
 
 import { useState, useRef, useEffect } from 'react'
 import { Globe, Check } from 'lucide-react'
-import { LANGUAGES, Language } from '@/lib/languages'
+import { LANGUAGES } from '@/lib/languages'
+import { useLanguage } from './LanguageProvider'
 
 export default function LanguageSwitcher() {
   const [open, setOpen] = useState(false)
-  const [selected, setSelected] = useState<Language>(LANGUAGES[0])
   const ref = useRef<HTMLDivElement>(null)
+  const { language, setLanguage, translations } = useLanguage()
 
   // Close on outside click
   useEffect(() => {
@@ -35,7 +36,7 @@ export default function LanguageSwitcher() {
         onClick={() => setOpen(o => !o)}
         aria-expanded={open}
         aria-haspopup="listbox"
-        aria-label="Select language"
+        aria-label={translations.header.selectLanguage}
         style={{
           display: 'inline-flex',
           alignItems: 'center',
@@ -63,23 +64,23 @@ export default function LanguageSwitcher() {
         }}
       >
         <Globe size={14} strokeWidth={1.5} />
-        <span>{selected.code}</span>
+        <span>{language.code}</span>
       </button>
 
       {open && (
         <div
           className="lang-dropdown"
           role="listbox"
-          aria-label="Language options"
+          aria-label={translations.header.languageOptions}
         >
           {LANGUAGES.map(lang => (
             <div
               key={lang.code}
               role="option"
-              aria-selected={selected.code === lang.code}
-              className={`lang-option${selected.code === lang.code ? ' selected' : ''}`}
+              aria-selected={language.code === lang.code}
+              className={`lang-option${language.code === lang.code ? ' selected' : ''}`}
               onClick={() => {
-                setSelected(lang)
+                setLanguage(lang.code)
                 setOpen(false)
               }}
               // Arabic: apply RTL direction to this row only
@@ -91,7 +92,7 @@ export default function LanguageSwitcher() {
                 </span>
                 {lang.native}
               </span>
-              {selected.code === lang.code && (
+              {language.code === lang.code && (
                 <Check size={14} strokeWidth={2} style={{ color: 'var(--accent)', flexShrink: 0, marginLeft: '8px' }} />
               )}
             </div>

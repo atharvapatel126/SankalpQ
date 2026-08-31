@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { ThemeProvider } from 'next-themes'
+import LanguageProvider from '@/components/LanguageProvider'
 import '@/styles/globals.css'
 
 export const metadata: Metadata = {
@@ -38,12 +39,6 @@ export default function RootLayout({
           href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap"
           rel="stylesheet"
         />
-        <style>{`
-          :root {
-            --font-geist-sans: 'Inter', system-ui, sans-serif;
-            --font-geist-mono: 'JetBrains Mono', monospace;
-          }
-        `}</style>
       </head>
       <body suppressHydrationWarning>
         <ThemeProvider
@@ -53,7 +48,7 @@ export default function RootLayout({
           disableTransitionOnChange={false}
           storageKey="sankalpq-theme"
         >
-          {children}
+          <LanguageProvider>{children}</LanguageProvider>
         </ThemeProvider>
       </body>
     </html>
