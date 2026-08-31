@@ -38,6 +38,33 @@ export const STARTER_CIRCUITS: QuantumCircuit[] = [
 
   // ── 3. Quantum NOT (X gate) ───────────────────────────────────────────────
   {
+    id: 'starter-basic-measurement',
+    name: 'Basic Measurement',
+    qubits: 1,
+    classicalBits: 1,
+    operations: [
+      { id: 'bm-m0', gate: 'MEASURE', targets: [0], classicalBit: 0, moment: 0 },
+    ],
+    createdAt: '2026-01-01T00:00:00Z',
+    updatedAt: '2026-01-01T00:00:00Z',
+  },
+
+  {
+    id: 'starter-entanglement',
+    name: 'Entanglement Example',
+    qubits: 2,
+    classicalBits: 2,
+    operations: [
+      { id: 'ent-h0', gate: 'H', targets: [0], moment: 0 },
+      { id: 'ent-cnot', gate: 'CNOT', controls: [0], targets: [1], moment: 1 },
+      { id: 'ent-m0', gate: 'MEASURE', targets: [0], classicalBit: 0, moment: 2 },
+      { id: 'ent-m1', gate: 'MEASURE', targets: [1], classicalBit: 1, moment: 2 },
+    ],
+    createdAt: '2026-01-01T00:00:00Z',
+    updatedAt: '2026-01-01T00:00:00Z',
+  },
+
+  {
     id: 'starter-not',
     name: 'Quantum NOT',
     qubits: 1,

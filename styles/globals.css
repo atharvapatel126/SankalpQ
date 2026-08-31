@@ -1980,6 +1980,12 @@ html.light .lang-dropdown {
   justify-content: center;
 }
 
+.toolbar-simulator-btn {
+  height: 34px;
+  padding: 0 12px;
+  font-size: 13px;
+}
+
 /* ── Gate Palette ──────────────────────────────────────────────────────────── */
 .gate-palette {
   display: flex;
@@ -2153,6 +2159,11 @@ html.light .lang-dropdown {
   cursor: crosshair;
 }
 
+.circuit-quantum-register {
+  display: flex;
+  align-items: flex-start;
+}
+
 .circuit-qubit-labels {
   display: flex;
   flex-direction: column;
@@ -2160,6 +2171,9 @@ html.light .lang-dropdown {
   position: sticky;
   left: 0;
   z-index: 10;
+  flex-shrink: 0;
+  padding-top: 20px;
+  background-color: var(--surface);
 }
 
 .circuit-qubit-label {
@@ -2179,7 +2193,6 @@ html.light .lang-dropdown {
   display: flex;
   flex-direction: row;
   align-items: flex-start;
-  margin-left: 36px;
 }
 
 .circuit-wire-line {
@@ -2275,6 +2288,15 @@ html.light .lang-dropdown {
 .gate-cell:hover {
   transform: scale(1.05);
   box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+
+.circuit-grid-readonly .gate-cell {
+  cursor: default;
+}
+
+.circuit-grid-readonly .gate-cell:hover {
+  transform: none;
+  box-shadow: none;
 }
 
 .gate-cell.is-selected {
@@ -2889,7 +2911,17 @@ html.light .lang-dropdown {
   }
 
   .toolbar-right {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    width: 100%;
     margin-left: 0;
   }
-}
 
+  .toolbar-shots-select {
+    width: 100%;
+  }
+
+  .toolbar-simulator-btn {
+    justify-content: center;
+  }
+}

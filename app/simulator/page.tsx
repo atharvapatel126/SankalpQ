@@ -1,12 +1,11 @@
-import { FlaskConical } from 'lucide-react'
-import ComingSoon from '@/components/ComingSoon'
+import AppShell from '@/components/AppShell'
+import SimulatorWorkspace from '@/components/simulator/SimulatorWorkspace'
+import '@/styles/simulator.css'
 
 export default function SimulatorPage() {
   return (
-    <ComingSoon
-      title="Quantum Simulator"
-      description="This module is coming in the next phase of the build."
-      icon={FlaskConical}
-    />
+    <AppShell>
+      <SimulatorWorkspace />
+    </AppShell>
   )
 }

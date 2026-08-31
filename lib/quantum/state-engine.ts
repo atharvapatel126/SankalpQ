@@ -4,7 +4,7 @@
 // Computes exact statevectors for ≤8 qubits using complex number arithmetic.
 // ─────────────────────────────────────────────────────────────────────────────
 
-import type { GateId, CircuitOperation, QuantumCircuit } from './types'
+import type { GateId, QuantumCircuit } from './types'
 
 // ── Complex number ────────────────────────────────────────────────────────────
 export type Complex = { re: number; im: number }
@@ -213,7 +213,6 @@ export interface BlochAngles {
 
 export function qubitBlochAngles(alpha: Complex, beta: Complex): BlochAngles {
   const normA = C.abs(alpha)
-  const normB = C.abs(beta)
   const theta = 2 * Math.acos(Math.min(1, normA))
   const phaseA = C.phase(alpha)
   const phaseB = C.phase(beta)
@@ -243,9 +242,7 @@ export function allQubitBlochAngles(sv: StateVector, n: number): BlochAngles[] {
     }
     // Simplified: just use the amplitudes projected on |0⟩ and |1⟩
     const a2 = sv.reduce((s, c, i) => ((i >> bit) & 1) === 0 ? s + C.abs2(c) : s, 0)
-    const b2 = sv.reduce((s, c, i) => ((i >> bit) & 1) === 1 ? s + C.abs2(c) : s, 0)
     const normA = Math.sqrt(a2)
-    const normB = Math.sqrt(b2)
     const theta = 2 * Math.acos(Math.min(1, normA))
     return {
       theta,

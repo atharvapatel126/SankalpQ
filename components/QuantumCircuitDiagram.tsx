@@ -50,7 +50,6 @@ export default function QuantumCircuitDiagram() {
   const H_SVG = 260
   const LEFT_PAD = 52   // left label area
   const RIGHT_PAD = 36  // measurement area
-  const WIRE_SPACING = 72
   const WIRE_Y = [72, 144, 216]  // y for q0, q1, q2
   const WIRE_END_X = W - RIGHT_PAD - 20
   const GATE_W = 32

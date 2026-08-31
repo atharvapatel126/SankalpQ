@@ -5,7 +5,7 @@
 // All circuit builder state management in one place
 // ─────────────────────────────────────────────────────────────────────────────
 
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect, useRef } from 'react'
 import type {
   QuantumCircuit,
   CircuitOperation,
@@ -27,9 +27,19 @@ import {
 import { runMockSimulation } from '@/lib/quantum/mock-simulator'
 import { STARTER_CIRCUITS } from '@/lib/quantum/starter-circuits'
 import { getGateMeta } from '@/lib/quantum/gate-meta'
+import {
+  cloneCircuit,
+  getCurrentCircuit,
+  setCurrentCircuit,
+} from '@/lib/quantum/circuit-storage'
 
 
 const MAX_HISTORY = 30
+
+interface UseCircuitOptions {
+  initialCircuit?: QuantumCircuit
+  persist?: boolean
+}
 
 interface UseCircuitReturn {
   // State
@@ -49,6 +59,7 @@ interface UseCircuitReturn {
   onRemoveQubit: () => void
   onClearCircuit: () => void
   onLoadStarterCircuit: (id: string) => void
+  loadCircuit: (circuit: QuantumCircuit) => void
 
   // Gate placement
   setActiveTool: (gate: GateId | null) => void
@@ -67,8 +78,14 @@ interface UseCircuitReturn {
   onClearResult: () => void
 }
 
-export function useCircuit(): UseCircuitReturn {
-  const [circuit, setCircuit] = useState<QuantumCircuit>(() => createEmptyCircuit())
+export function useCircuit(options: UseCircuitOptions = {}): UseCircuitReturn {
+  const initialCircuit = options.initialCircuit
+  const shouldPersist = options.persist ?? true
+  const hydrationStarted = useRef(false)
+  const [circuit, setCircuit] = useState<QuantumCircuit>(() =>
+    initialCircuit ? cloneCircuit(initialCircuit) : createEmptyCircuit()
+  )
+  const [storageReady, setStorageReady] = useState(Boolean(initialCircuit))
   const [past, setPast] = useState<QuantumCircuit[]>([])
   const [future, setFuture] = useState<QuantumCircuit[]>([])
   const [selectedOp, setSelectedOp] = useState<CircuitOperation | null>(null)
@@ -79,6 +96,24 @@ export function useCircuit(): UseCircuitReturn {
     shots: 1024,
     backend: 'mock',
   })
+
+  useEffect(() => {
+    if (hydrationStarted.current) return
+    hydrationStarted.current = true
+
+    if (initialCircuit) {
+      setStorageReady(true)
+      return
+    }
+
+    const stored = getCurrentCircuit()
+    if (stored) setCircuit(stored)
+    setStorageReady(true)
+  }, [initialCircuit])
+
+  useEffect(() => {
+    if (shouldPersist && storageReady) setCurrentCircuit(circuit)
+  }, [circuit, shouldPersist, storageReady])
 
   // ── History helpers ────────────────────────────────────────────────────────
   const pushHistory = useCallback((prev: QuantumCircuit) => {
@@ -124,6 +159,14 @@ export function useCircuit(): UseCircuitReturn {
     [mutate]
   )
 
+  const loadCircuit = useCallback(
+    (nextCircuit: QuantumCircuit) => {
+      mutate(() => cloneCircuit(nextCircuit))
+      setPlacementMode({ type: 'idle' })
+    },
+    [mutate]
+  )
+
   // ── Placement mode ─────────────────────────────────────────────────────────
   const setActiveTool = useCallback((gate: GateId | null) => {
     setPlacementMode(gate ? { type: 'single', gateId: gate } : { type: 'idle' })
@@ -150,7 +193,10 @@ export function useCircuit(): UseCircuitReturn {
         }
 
         // Single qubit gate — place immediately
-        mutate(c => placeGate(c, gateId, qubit, moment))
+        const params = meta.isParameterized
+          ? { angle: meta.defaultParam ?? 0 }
+          : undefined
+        mutate(c => placeGate(c, gateId, qubit, moment, params))
         return
       }
 
@@ -250,6 +296,7 @@ export function useCircuit(): UseCircuitReturn {
     onRemoveQubit,
     onClearCircuit,
     onLoadStarterCircuit,
+    loadCircuit,
     setActiveTool,
     onCellClick,
     onSelectOp,

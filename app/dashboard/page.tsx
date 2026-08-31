@@ -12,6 +12,12 @@ import {
   Target,
 } from 'lucide-react'
 import AppShell from '@/components/AppShell'
+import { useCourseProgress } from '@/hooks/useCourseProgress'
+import {
+  getOverallCompletion,
+  getResumeLesson,
+} from '@/lib/courses/progress'
+import { ALL_LESSONS } from '@/lib/courses/course-data'
 
 const displayFont = Fredoka({
   variable: '--font-display',
@@ -19,7 +25,6 @@ const displayFont = Fredoka({
   weight: ['500', '600'],
 })
 
-const COMPLETION = 68
 const DIAL_RADIUS = 52
 const DIAL_CIRCUMFERENCE = 2 * Math.PI * DIAL_RADIUS
 
@@ -62,9 +67,18 @@ const MODULES = [
 ]
 
 const RECOMMENDATIONS = [
-  'Revise: Entanglement',
-  'Try: Bell-State Challenge',
-  'Continue to: Deutsch–Jozsa Algorithm',
+  {
+    label: 'Revise: Entanglement',
+    href: '/courses/quantum-circuits/entanglement',
+  },
+  {
+    label: 'Try: Bell-State Challenge',
+    href: '/challenges/build-bell-state',
+  },
+  {
+    label: 'Continue to: Deutsch-Jozsa Algorithm',
+    href: '/courses/quantum-algorithms/deutsch-jozsa-algorithm',
+  },
 ]
 
 const ACTIVITY = [
@@ -74,7 +88,7 @@ const ACTIVITY = [
   { lead: 'Started Quantum Entanglement', time: '6d' },
 ]
 
-function ProgressDial() {
+function ProgressDial({ completion }: { completion: number }) {
   const [ready, setReady] = useState(false)
 
   useEffect(() => {
@@ -88,10 +102,10 @@ function ProgressDial() {
     return () => window.cancelAnimationFrame(frame)
   }, [])
 
-  const progressOffset = DIAL_CIRCUMFERENCE * (1 - COMPLETION / 100)
+  const progressOffset = DIAL_CIRCUMFERENCE * (1 - completion / 100)
 
   return (
-    <div className="progress-dial" role="img" aria-label={`${COMPLETION}% complete`}>
+    <div className="progress-dial" role="img" aria-label={`${completion}% complete`}>
       <svg viewBox="0 0 120 120" aria-hidden="true">
         <circle
           className="progress-dial-track"
@@ -114,7 +128,7 @@ function ProgressDial() {
         />
       </svg>
       <span className="progress-dial-label">
-        <strong>{COMPLETION}%</strong>
+        <strong>{completion}%</strong>
         <small>Complete</small>
       </span>
     </div>
@@ -122,6 +136,15 @@ function ProgressDial() {
 }
 
 export default function DashboardPage() {
+  const { progress } = useCourseProgress()
+  const completion = getOverallCompletion(progress)
+  const courseComplete = completion === 100
+  const resume = getResumeLesson(progress)
+  const resumeLessonNumber = resume.course.lessons.findIndex(
+    lesson => lesson.id === resume.lesson.id
+  ) + 1
+  const resumeHref = `/courses/${resume.course.slug}/${resume.lesson.slug}`
+
   return (
     <AppShell>
       <div className={`dashboard-page ${displayFont.variable}`}>
@@ -132,13 +155,24 @@ export default function DashboardPage() {
 
         <section className="progress-hero-panel" aria-label="Current learning progress">
           <div className="progress-hero-main">
-            <ProgressDial />
+            <ProgressDial completion={completion} />
             <div className="progress-hero-copy">
-              <span className="dashboard-eyebrow dashboard-eyebrow-mono">Resuming</span>
-              <h2>Quantum Entanglement</h2>
-              <p>Lesson 4 of 8</p>
-              <Link href="/courses" className="btn-primary progress-resume-button">
-                Resume
+              <span className="dashboard-eyebrow dashboard-eyebrow-mono">
+                {courseComplete ? 'Learning path complete' : 'Resuming'}
+              </span>
+              <h2>
+                {courseComplete ? 'All course levels completed' : resume.lesson.title}
+              </h2>
+              <p>
+                {courseComplete
+                  ? `${progress.completedLessonIds.length} of ${ALL_LESSONS.length} lessons complete`
+                  : `Lesson ${resumeLessonNumber} of ${resume.course.lessons.length}`}
+              </p>
+              <Link
+                href={courseComplete ? '/courses' : resumeHref}
+                className="btn-primary progress-resume-button"
+              >
+                {courseComplete ? 'Review courses' : 'Resume'}
                 <ArrowRight size={16} strokeWidth={1.5} />
               </Link>
             </div>
@@ -188,9 +222,13 @@ export default function DashboardPage() {
             <div className="dashboard-feed">
               <span className="dashboard-eyebrow dashboard-eyebrow-mono">Recommended next</span>
               <div className="recommendation-list">
-                {RECOMMENDATIONS.map(label => (
-                  <Link href="/courses" className="recommendation-row" key={label}>
-                    <span>{label}</span>
+                {RECOMMENDATIONS.map(recommendation => (
+                  <Link
+                    href={recommendation.href}
+                    className="recommendation-row"
+                    key={recommendation.href}
+                  >
+                    <span>{recommendation.label}</span>
                     <ArrowRight size={16} strokeWidth={1.5} aria-hidden="true" />
                   </Link>
                 ))}
