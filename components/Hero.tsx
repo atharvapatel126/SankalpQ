@@ -266,21 +266,6 @@ export default function Hero() {
       </div>
 
       {/* ── Responsive overrides ───────────────────────────── */}
-      <style>{`
-        @media (max-width: 1023px) {
-          .hero-grid {
-            grid-template-columns: 1fr !important;
-          }
-          .circuit-panel {
-            order: 2;
-          }
-        }
-        @media (max-width: 639px) {
-          section[aria-labelledby="hero-headline"] {
-            padding: 48px 16px 48px !important;
-          }
-        }
-      `}</style>
     </section>
   )
 }

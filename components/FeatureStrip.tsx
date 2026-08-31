@@ -140,40 +140,6 @@ export default function FeatureStrip() {
       </div>
 
       {/* Responsive: stack on mobile */}
-      <style>{`
-        @media (max-width: 767px) {
-          #features > div {
-            grid-template-columns: 1fr !important;
-          }
-          #features > div > div {
-            border-right: none !important;
-            border-bottom: 1px solid var(--border) !important;
-          }
-          #features > div > div:last-child {
-            border-bottom: none !important;
-          }
-        }
-        @media (min-width: 768px) and (max-width: 1023px) {
-          #features > div {
-            grid-template-columns: repeat(2, 1fr) !important;
-          }
-          #features > div > div:nth-child(2) {
-            border-right: none !important;
-          }
-          #features > div > div:nth-child(1),
-          #features > div > div:nth-child(2) {
-            border-bottom: 1px solid var(--border) !important;
-          }
-          #features > div > div:nth-child(4) {
-            border-right: none !important;
-          }
-        }
-        @media (max-width: 639px) {
-          #features {
-            padding: 0 16px 48px !important;
-          }
-        }
-      `}</style>
     </section>
   )
 }

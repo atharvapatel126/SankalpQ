@@ -212,15 +212,6 @@ export default function Header() {
       )}
 
       {/* ── Responsive visibility helpers ─────────────────── */}
-      <style>{`
-        @media (max-width: 639px) {
-          .hidden-mobile { display: none !important; }
-          .show-mobile { display: inline-flex !important; }
-        }
-        @media (min-width: 640px) {
-          .show-mobile { display: none !important; }
-        }
-      `}</style>
     </>
   )
 }

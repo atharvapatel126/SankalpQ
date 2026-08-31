@@ -116,21 +116,6 @@ export default function StatsBar() {
       </div>
 
       {/* Responsive: 2-column grid on mobile */}
-      <style>{`
-        @media (max-width: 639px) {
-          section[aria-label="Platform statistics"] {
-            padding: 0 16px 64px !important;
-          }
-          section[aria-label="Platform statistics"] > div {
-            display: grid !important;
-            grid-template-columns: 1fr 1fr !important;
-            gap: 32px !important;
-          }
-          .stat-divider {
-            display: none !important;
-          }
-        }
-      `}</style>
     </section>
   )
 }
