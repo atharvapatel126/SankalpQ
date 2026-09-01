@@ -74,7 +74,7 @@ export default function Header() {
           zIndex: 80,
           height: '72px',
           borderBottom: '1px solid var(--border)',
-          backgroundColor: scrolled ? 'rgba(10,10,11,0.85)' : 'var(--bg)',
+          backgroundColor: scrolled ? 'var(--surface)' : 'var(--bg)',
           backdropFilter: scrolled ? 'blur(12px)' : 'none',
           transition: 'background-color 200ms ease-out, backdrop-filter 200ms ease-out',
         }}

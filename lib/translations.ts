@@ -52,6 +52,145 @@ export type TranslationSet = {
     dashboardHome: string
     logOut: string
   }
+  dashboard: DashboardTranslations
+}
+
+export type DashboardTranslations = {
+  welcomeBack: (name: string) => string
+  leftOff: string
+  learningPathComplete: string
+  resuming: string
+  allCourseLevelsCompleted: string
+  lessonsComplete: (completed: number, total: number) => string
+  lessonProgress: (current: number, total: number) => string
+  reviewCourses: string
+  resume: string
+  currentLearningProgress: string
+  modules: string
+  streak: string
+  streakDays: (days: number) => string
+  circuitsBuilt: string
+  badges: string
+  courses: string
+  qubitsToAlgorithms: string
+  circuitBuilder: string
+  dragDropBuild: string
+  simulator: string
+  runAndExplore: string
+  aiTutor: string
+  askAnytime: string
+  challenges: string
+  testYourUnderstanding: string
+  recommendedNext: string
+  recentActivity: string
+  complete: string
+  progressDialAriaLabel: (completion: number) => string
+  learningStatistics: string
+  dashboardActivityAndModules: string
+  recommendations: {
+    reviseEntanglement: string
+    tryBellState: string
+    continueDeutschJozsa: string
+  }
+  activity: {
+    completedQuantumGates: string
+    builtBellState: string
+    scoredSuperposition: string
+    startedQuantumEntanglement: string
+    relativeDays: (days: number) => string
+  }
+}
+
+const ENGLISH_DASHBOARD: DashboardTranslations = {
+  welcomeBack: name => `Welcome back, ${name}`,
+  leftOff: "Here's where you left off.",
+  learningPathComplete: 'Learning path complete',
+  resuming: 'Resuming',
+  allCourseLevelsCompleted: 'All course levels completed',
+  lessonsComplete: (completed, total) => `${completed} of ${total} lessons complete`,
+  lessonProgress: (current, total) => `Lesson ${current} of ${total}`,
+  reviewCourses: 'Review courses',
+  resume: 'Resume',
+  currentLearningProgress: 'Current learning progress',
+  modules: 'Modules',
+  streak: 'Streak',
+  streakDays: days => `${days} days`,
+  circuitsBuilt: 'Circuits built',
+  badges: 'Badges',
+  courses: 'Courses',
+  qubitsToAlgorithms: 'Qubits to algorithms',
+  circuitBuilder: 'Circuit builder',
+  dragDropBuild: 'Drag, drop, build',
+  simulator: 'Simulator',
+  runAndExplore: 'Run and explore',
+  aiTutor: 'AI tutor',
+  askAnytime: 'Ask, anytime',
+  challenges: 'Challenges',
+  testYourUnderstanding: 'Test your understanding',
+  recommendedNext: 'Recommended next',
+  recentActivity: 'Recent activity',
+  complete: 'Complete',
+  progressDialAriaLabel: completion => `${completion}% complete`,
+  learningStatistics: 'Learning statistics',
+  dashboardActivityAndModules: 'Dashboard activity and modules',
+  recommendations: {
+    reviseEntanglement: 'Revise: Entanglement',
+    tryBellState: 'Try: Bell-State Challenge',
+    continueDeutschJozsa: 'Continue to: Deutsch-Jozsa Algorithm',
+  },
+  activity: {
+    completedQuantumGates: 'Completed Quantum Gates',
+    builtBellState: 'Built a Bell State circuit',
+    scoredSuperposition: 'Scored 90% on Superposition',
+    startedQuantumEntanglement: 'Started Quantum Entanglement',
+    relativeDays: days => `${days}d`,
+  },
+}
+
+const HINDI_DASHBOARD: DashboardTranslations = {
+  welcomeBack: name => `वापसी पर स्वागत है, ${name}`,
+  leftOff: 'आपने यहाँ से सीखना छोड़ा था।',
+  learningPathComplete: 'लर्निंग पथ पूरा हुआ',
+  resuming: 'जारी है',
+  allCourseLevelsCompleted: 'सभी पाठ्यक्रम स्तर पूरे हो गए',
+  lessonsComplete: (completed, total) => `${total} में से ${completed} पाठ पूरे हुए`,
+  lessonProgress: (current, total) => `${total} में से पाठ ${current}`,
+  reviewCourses: 'पाठ्यक्रम देखें',
+  resume: 'जारी रखें',
+  currentLearningProgress: 'वर्तमान सीखने की प्रगति',
+  modules: 'मॉड्यूल',
+  streak: 'लगातार सीखने के दिन',
+  streakDays: days => `${days} दिन`,
+  circuitsBuilt: 'बनाए गए सर्किट',
+  badges: 'बैज',
+  courses: 'पाठ्यक्रम',
+  qubitsToAlgorithms: 'क्यूबिट से एल्गोरिदम तक',
+  circuitBuilder: 'सर्किट बिल्डर',
+  dragDropBuild: 'खींचें, छोड़ें, बनाएँ',
+  simulator: 'सिमुलेटर',
+  runAndExplore: 'चलाएँ और जानें',
+  aiTutor: 'AI ट्यूटर',
+  askAnytime: 'कभी भी पूछें',
+  challenges: 'चुनौतियाँ',
+  testYourUnderstanding: 'अपनी समझ परखें',
+  recommendedNext: 'आगे के सुझाव',
+  recentActivity: 'हाल की गतिविधि',
+  complete: 'पूरा',
+  progressDialAriaLabel: completion => `${completion}% पूरा`,
+  learningStatistics: 'सीखने के आँकड़े',
+  dashboardActivityAndModules: 'डैशबोर्ड गतिविधि और मॉड्यूल',
+  recommendations: {
+    reviseEntanglement: 'दोबारा सीखें: एंटैंगलमेंट',
+    tryBellState: 'आज़माएँ: बेल-स्टेट चुनौती',
+    continueDeutschJozsa: 'जारी रखें: ड्यूश-जोज़्सा एल्गोरिदम',
+  },
+  activity: {
+    completedQuantumGates: 'क्वांटम गेट्स पूरे किए',
+    builtBellState: 'बेल स्टेट सर्किट बनाया',
+    scoredSuperposition: 'सुपरपोज़िशन पर 90% अंक',
+    startedQuantumEntanglement: 'क्वांटम एंटैंगलमेंट शुरू किया',
+    relativeDays: days => `${days} दिन`,
+  },
 }
 
 const ENGLISH: TranslationSet = {
@@ -125,6 +264,7 @@ const ENGLISH: TranslationSet = {
     dashboardHome: 'SankalpQ dashboard',
     logOut: 'Log out',
   },
+  dashboard: ENGLISH_DASHBOARD,
 }
 
 export const TRANSLATIONS: Record<string, TranslationSet> = {
@@ -148,6 +288,7 @@ export const TRANSLATIONS: Record<string, TranslationSet> = {
     },
     stats: { activeLearners: 'सक्रिय शिक्षार्थी', circuitsBuilt: 'बने हुए सर्किट', experimentsRun: 'चलाए गए प्रयोग', quantumConcepts: 'क्वांटम अवधारणाएँ', learnerRating: 'शिक्षार्थी रेटिंग' },
     app: { dashboard: 'डैशबोर्ड', courses: 'पाठ्यक्रम', circuitBuilder: 'सर्किट बिल्डर', simulator: 'सिमुलेटर', aiTutor: 'AI ट्यूटर', challenges: 'चुनौतियाँ', dashboardNavigation: 'डैशबोर्ड नेविगेशन', closeNavigation: 'नेविगेशन बंद करें', openNavigation: 'नेविगेशन खोलें', dashboardHome: 'संकल्पQ डैशबोर्ड', logOut: 'लॉग आउट' },
+    dashboard: HINDI_DASHBOARD,
   },
   BN: {
     header: {
@@ -166,6 +307,7 @@ export const TRANSLATIONS: Record<string, TranslationSet> = {
     },
     stats: { activeLearners: 'সক্রিয় শিক্ষার্থী', circuitsBuilt: 'তৈরি সার্কিট', experimentsRun: 'চালানো পরীক্ষা', quantumConcepts: 'কোয়ান্টাম ধারণা', learnerRating: 'শিক্ষার্থী রেটিং' },
     app: { dashboard: 'ড্যাশবোর্ড', courses: 'কোর্স', circuitBuilder: 'সার্কিট বিল্ডার', simulator: 'সিমুলেটর', aiTutor: 'AI টিউটর', challenges: 'চ্যালেঞ্জ', dashboardNavigation: 'ড্যাশবোর্ড নেভিগেশন', closeNavigation: 'নেভিগেশন বন্ধ করুন', openNavigation: 'নেভিগেশন খুলুন', dashboardHome: 'সঙ্কল্পQ ড্যাশবোর্ড', logOut: 'লগ আউট' },
+    dashboard: ENGLISH_DASHBOARD,
   },
   TA: {
     header: {
@@ -184,6 +326,7 @@ export const TRANSLATIONS: Record<string, TranslationSet> = {
     },
     stats: { activeLearners: 'செயலில் உள்ள கற்றவர்கள்', circuitsBuilt: 'உருவாக்கிய சர்க்யூட்கள்', experimentsRun: 'இயக்கிய பரிசோதனைகள்', quantumConcepts: 'குவாண்டம் கருத்துகள்', learnerRating: 'கற்றவர் மதிப்பீடு' },
     app: { dashboard: 'டாஷ்போர்டு', courses: 'பாடங்கள்', circuitBuilder: 'சர்க்யூட் பில்டர்', simulator: 'சிமுலேட்டர்', aiTutor: 'AI டியூட்டர்', challenges: 'சவால்கள்', dashboardNavigation: 'டாஷ்போர்டு வழிசெலுத்தல்', closeNavigation: 'வழிசெலுத்தலை மூடவும்', openNavigation: 'வழிசெலுத்தலைத் திறக்கவும்', dashboardHome: 'சங்கல்பQ டாஷ்போர்டு', logOut: 'வெளியேறு' },
+    dashboard: ENGLISH_DASHBOARD,
   },
   MR: {
     header: {
@@ -201,6 +344,7 @@ export const TRANSLATIONS: Record<string, TranslationSet> = {
     },
     stats: { activeLearners: 'सक्रिय विद्यार्थी', circuitsBuilt: 'तयार केलेली सर्किट्स', experimentsRun: 'चालवलेले प्रयोग', quantumConcepts: 'क्वांटम संकल्पना', learnerRating: 'विद्यार्थी रेटिंग' },
     app: { dashboard: 'डॅशबोर्ड', courses: 'अभ्यासक्रम', circuitBuilder: 'सर्किट बिल्डर', simulator: 'सिम्युलेटर', aiTutor: 'AI ट्यूटर', challenges: 'आव्हाने', dashboardNavigation: 'डॅशबोर्ड नेव्हिगेशन', closeNavigation: 'नेव्हिगेशन बंद करा', openNavigation: 'नेव्हिगेशन उघडा', dashboardHome: 'संकल्पQ डॅशबोर्ड', logOut: 'लॉग आउट' },
+    dashboard: ENGLISH_DASHBOARD,
   },
   ZH: {
     header: {
@@ -218,6 +362,7 @@ export const TRANSLATIONS: Record<string, TranslationSet> = {
     },
     stats: { activeLearners: '活跃学习者', circuitsBuilt: '已构建电路', experimentsRun: '已运行实验', quantumConcepts: '量子概念', learnerRating: '学习者评分' },
     app: { dashboard: '仪表盘', courses: '课程', circuitBuilder: '电路构建器', simulator: '模拟器', aiTutor: 'AI 导师', challenges: '挑战', dashboardNavigation: '仪表盘导航', closeNavigation: '关闭导航', openNavigation: '打开导航', dashboardHome: 'SankalpQ 仪表盘', logOut: '退出登录' },
+    dashboard: ENGLISH_DASHBOARD,
   },
   ES: {
     header: {
@@ -235,6 +380,7 @@ export const TRANSLATIONS: Record<string, TranslationSet> = {
     },
     stats: { activeLearners: 'Estudiantes activos', circuitsBuilt: 'Circuitos creados', experimentsRun: 'Experimentos ejecutados', quantumConcepts: 'Conceptos cuánticos', learnerRating: 'Valoración de estudiantes' },
     app: { dashboard: 'Panel', courses: 'Cursos', circuitBuilder: 'Constructor de circuitos', simulator: 'Simulador', aiTutor: 'Tutor de IA', challenges: 'Desafíos', dashboardNavigation: 'Navegación del panel', closeNavigation: 'Cerrar navegación', openNavigation: 'Abrir navegación', dashboardHome: 'Panel de SankalpQ', logOut: 'Cerrar sesión' },
+    dashboard: ENGLISH_DASHBOARD,
   },
   FR: {
     header: {
@@ -252,6 +398,7 @@ export const TRANSLATIONS: Record<string, TranslationSet> = {
     },
     stats: { activeLearners: 'Apprenants actifs', circuitsBuilt: 'Circuits construits', experimentsRun: 'Expériences lancées', quantumConcepts: 'Concepts quantiques', learnerRating: 'Évaluation des apprenants' },
     app: { dashboard: 'Tableau de bord', courses: 'Cours', circuitBuilder: 'Constructeur de circuits', simulator: 'Simulateur', aiTutor: 'Tuteur IA', challenges: 'Défis', dashboardNavigation: 'Navigation du tableau de bord', closeNavigation: 'Fermer la navigation', openNavigation: 'Ouvrir la navigation', dashboardHome: 'Tableau de bord SankalpQ', logOut: 'Se déconnecter' },
+    dashboard: ENGLISH_DASHBOARD,
   },
   AR: {
     header: {
@@ -269,6 +416,7 @@ export const TRANSLATIONS: Record<string, TranslationSet> = {
     },
     stats: { activeLearners: 'متعلمون نشطون', circuitsBuilt: 'دوائر مبنية', experimentsRun: 'تجارب منفذة', quantumConcepts: 'مفاهيم كمّية', learnerRating: 'تقييم المتعلمين' },
     app: { dashboard: 'لوحة التحكم', courses: 'الدورات', circuitBuilder: 'منشئ الدوائر', simulator: 'المحاكي', aiTutor: 'المعلّم الذكي', challenges: 'التحديات', dashboardNavigation: 'التنقل في لوحة التحكم', closeNavigation: 'إغلاق التنقل', openNavigation: 'فتح التنقل', dashboardHome: 'لوحة تحكم SankalpQ', logOut: 'تسجيل الخروج' },
+    dashboard: ENGLISH_DASHBOARD,
   },
   PT: {
     header: {
@@ -286,6 +434,7 @@ export const TRANSLATIONS: Record<string, TranslationSet> = {
     },
     stats: { activeLearners: 'Alunos ativos', circuitsBuilt: 'Circuitos criados', experimentsRun: 'Experimentos executados', quantumConcepts: 'Conceitos quânticos', learnerRating: 'Avaliação dos alunos' },
     app: { dashboard: 'Painel', courses: 'Cursos', circuitBuilder: 'Construtor de circuitos', simulator: 'Simulador', aiTutor: 'Tutor de IA', challenges: 'Desafios', dashboardNavigation: 'Navegação do painel', closeNavigation: 'Fechar navegação', openNavigation: 'Abrir navegação', dashboardHome: 'Painel SankalpQ', logOut: 'Sair' },
+    dashboard: ENGLISH_DASHBOARD,
   },
 }
 
