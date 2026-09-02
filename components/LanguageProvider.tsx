@@ -1,6 +1,6 @@
 'use client'
 
-import { createContext, useContext, useEffect, useMemo, useState } from 'react'
+import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import { LANGUAGES, Language } from '@/lib/languages'
 import { AuthTranslations, getAuthTranslations } from '@/lib/auth-translations'
 import { getTranslations, TranslationSet } from '@/lib/translations'
@@ -20,6 +20,19 @@ const LanguageContext = createContext<LanguageContextValue | undefined>(undefine
 export default function LanguageProvider({ children }: { children: React.ReactNode }) {
   const [languageCode, setLanguageCode] = useState(DEFAULT_LANGUAGE.code)
   const [storageReady, setStorageReady] = useState(false)
+
+  const setLanguage = useCallback((code: string) => {
+    if (!LANGUAGES.some(item => item.code === code)) return
+
+    setLanguageCode(code)
+    try {
+      // Write at selection time so navigation or auth redirects cannot race
+      // the persistence effect below.
+      window.localStorage.setItem(LANGUAGE_STORAGE_KEY, code)
+    } catch {
+      // Language selection still works for the current session.
+    }
+  }, [])
 
   useEffect(() => {
     try {
@@ -55,13 +68,11 @@ export default function LanguageProvider({ children }: { children: React.ReactNo
   const value = useMemo(
     () => ({
       language,
-      setLanguage: (code: string) => {
-        if (LANGUAGES.some(item => item.code === code)) setLanguageCode(code)
-      },
+      setLanguage,
       translations,
       auth,
     }),
-    [auth, language, translations]
+    [auth, language, setLanguage, translations]
   )
 
   return <LanguageContext.Provider value={value}>{children}</LanguageContext.Provider>

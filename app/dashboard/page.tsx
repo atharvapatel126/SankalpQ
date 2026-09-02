@@ -12,6 +12,7 @@ import {
   Target,
 } from 'lucide-react'
 import AppShell from '@/components/AppShell'
+import { useLanguage } from '@/components/LanguageProvider'
 import { useCourseProgress } from '@/hooks/useCourseProgress'
 import {
   getOverallCompletion,
@@ -32,63 +33,71 @@ const MODULES = [
   {
     icon: BookOpen,
     category: 'course',
-    title: 'Courses',
-    description: 'Qubits to algorithms',
+    titleKey: 'courses',
+    descriptionKey: 'qubitsToAlgorithms',
     href: '/courses',
   },
   {
     icon: CircuitBoard,
     category: 'circuit',
-    title: 'Circuit builder',
-    description: 'Drag, drop, build',
+    titleKey: 'circuitBuilder',
+    descriptionKey: 'dragDropBuild',
     href: '/circuit-builder',
   },
   {
     icon: FlaskConical,
     category: 'simulator',
-    title: 'Simulator',
-    description: 'Run and explore',
+    titleKey: 'simulator',
+    descriptionKey: 'runAndExplore',
     href: '/simulator',
   },
   {
     icon: Sparkles,
     category: 'tutor',
-    title: 'AI tutor',
-    description: 'Ask, anytime',
+    titleKey: 'aiTutor',
+    descriptionKey: 'askAnytime',
     href: '/ai-tutor',
   },
   {
     icon: Target,
     category: 'challenge',
-    title: 'Challenges',
-    description: 'Test your understanding',
+    titleKey: 'challenges',
+    descriptionKey: 'testYourUnderstanding',
     href: '/challenges',
   },
-]
+] as const
 
 const RECOMMENDATIONS = [
   {
-    label: 'Revise: Entanglement',
+    labelKey: 'reviseEntanglement',
     href: '/courses/quantum-circuits/entanglement',
   },
   {
-    label: 'Try: Bell-State Challenge',
+    labelKey: 'tryBellState',
     href: '/challenges/build-bell-state',
   },
   {
-    label: 'Continue to: Deutsch-Jozsa Algorithm',
+    labelKey: 'continueDeutschJozsa',
     href: '/courses/quantum-algorithms/deutsch-jozsa-algorithm',
   },
-]
+] as const
 
 const ACTIVITY = [
-  { lead: 'Completed Quantum Gates', time: '2d' },
-  { lead: 'Built a Bell State circuit', time: '3d' },
-  { lead: 'Scored 90% on Superposition', time: '5d' },
-  { lead: 'Started Quantum Entanglement', time: '6d' },
-]
+  { leadKey: 'completedQuantumGates', days: 2 },
+  { leadKey: 'builtBellState', days: 3 },
+  { leadKey: 'scoredSuperposition', days: 5 },
+  { leadKey: 'startedQuantumEntanglement', days: 6 },
+] as const
 
-function ProgressDial({ completion }: { completion: number }) {
+function ProgressDial({
+  completion,
+  completeLabel,
+  ariaLabel,
+}: {
+  completion: number
+  completeLabel: string
+  ariaLabel: string
+}) {
   const [ready, setReady] = useState(false)
 
   useEffect(() => {
@@ -105,7 +114,7 @@ function ProgressDial({ completion }: { completion: number }) {
   const progressOffset = DIAL_CIRCUMFERENCE * (1 - completion / 100)
 
   return (
-    <div className="progress-dial" role="img" aria-label={`${completion}% complete`}>
+    <div className="progress-dial" role="img" aria-label={ariaLabel}>
       <svg viewBox="0 0 120 120" aria-hidden="true">
         <circle
           className="progress-dial-track"
@@ -129,7 +138,7 @@ function ProgressDial({ completion }: { completion: number }) {
       </svg>
       <span className="progress-dial-label">
         <strong>{completion}%</strong>
-        <small>Complete</small>
+        <small>{completeLabel}</small>
       </span>
     </div>
   )
@@ -137,6 +146,8 @@ function ProgressDial({ completion }: { completion: number }) {
 
 export default function DashboardPage() {
   const { progress } = useCourseProgress()
+  const { translations } = useLanguage()
+  const { dashboard } = translations
   const completion = getOverallCompletion(progress)
   const courseComplete = completion === 100
   const resume = getResumeLesson(progress)
@@ -149,55 +160,59 @@ export default function DashboardPage() {
     <AppShell>
       <div className={`dashboard-page ${displayFont.variable}`}>
         <header className="dashboard-header">
-          <h1>Welcome back, Ananya</h1>
-          <p>Here&apos;s where you left off.</p>
+          <h1>{dashboard.welcomeBack('Ananya')}</h1>
+          <p>{dashboard.leftOff}</p>
         </header>
 
-        <section className="progress-hero-panel" aria-label="Current learning progress">
+        <section className="progress-hero-panel" aria-label={dashboard.currentLearningProgress}>
           <div className="progress-hero-main">
-            <ProgressDial completion={completion} />
+            <ProgressDial
+              completion={completion}
+              completeLabel={dashboard.complete}
+              ariaLabel={dashboard.progressDialAriaLabel(completion)}
+            />
             <div className="progress-hero-copy">
               <span className="dashboard-eyebrow dashboard-eyebrow-mono">
-                {courseComplete ? 'Learning path complete' : 'Resuming'}
+                {courseComplete ? dashboard.learningPathComplete : dashboard.resuming}
               </span>
               <h2>
-                {courseComplete ? 'All course levels completed' : resume.lesson.title}
+                {courseComplete ? dashboard.allCourseLevelsCompleted : resume.lesson.title}
               </h2>
               <p>
                 {courseComplete
-                  ? `${progress.completedLessonIds.length} of ${ALL_LESSONS.length} lessons complete`
-                  : `Lesson ${resumeLessonNumber} of ${resume.course.lessons.length}`}
+                  ? dashboard.lessonsComplete(progress.completedLessonIds.length, ALL_LESSONS.length)
+                  : dashboard.lessonProgress(resumeLessonNumber, resume.course.lessons.length)}
               </p>
               <Link
                 href={courseComplete ? '/courses' : resumeHref}
                 className="btn-primary progress-resume-button"
               >
-                {courseComplete ? 'Review courses' : 'Resume'}
+                {courseComplete ? dashboard.reviewCourses : dashboard.resume}
                 <ArrowRight size={16} strokeWidth={1.5} />
               </Link>
             </div>
           </div>
 
-          <div className="progress-stat-list" aria-label="Learning statistics">
-            <span className="dashboard-eyebrow dashboard-eyebrow-mono">Modules</span>
+          <div className="progress-stat-list" aria-label={dashboard.learningStatistics}>
+            <span className="dashboard-eyebrow dashboard-eyebrow-mono">{dashboard.modules}</span>
             <div className="progress-stat-row">
-              <span>Streak</span>
-              <strong>12 days</strong>
+              <span>{dashboard.streak}</span>
+              <strong>{dashboard.streakDays(12)}</strong>
             </div>
             <div className="progress-stat-row">
-              <span>Circuits built</span>
+              <span>{dashboard.circuitsBuilt}</span>
               <strong>24</strong>
             </div>
             <div className="progress-stat-row">
-              <span>Badges</span>
+              <span>{dashboard.badges}</span>
               <strong>7</strong>
             </div>
           </div>
         </section>
 
-        <section className="dashboard-command-grid" aria-label="Dashboard activity and modules">
+        <section className="dashboard-command-grid" aria-label={dashboard.dashboardActivityAndModules}>
           <div className="module-launcher">
-            <span className="dashboard-eyebrow dashboard-eyebrow-mono">Modules</span>
+            <span className="dashboard-eyebrow dashboard-eyebrow-mono">{dashboard.modules}</span>
             <div className="module-grid">
               {MODULES.map(module => {
                 const Icon = module.icon
@@ -210,8 +225,8 @@ export default function DashboardPage() {
                     <div className="module-badge" aria-hidden="true">
                       <Icon size={20} strokeWidth={1.5} />
                     </div>
-                    <h3>{module.title}</h3>
-                    <p>{module.description}</p>
+                    <h3>{dashboard[module.titleKey]}</h3>
+                    <p>{dashboard[module.descriptionKey]}</p>
                   </Link>
                 )
               })}
@@ -220,7 +235,7 @@ export default function DashboardPage() {
 
           <div className="dashboard-side-feeds">
             <div className="dashboard-feed">
-              <span className="dashboard-eyebrow dashboard-eyebrow-mono">Recommended next</span>
+              <span className="dashboard-eyebrow dashboard-eyebrow-mono">{dashboard.recommendedNext}</span>
               <div className="recommendation-list">
                 {RECOMMENDATIONS.map(recommendation => (
                   <Link
@@ -228,7 +243,7 @@ export default function DashboardPage() {
                     className="recommendation-row"
                     key={recommendation.href}
                   >
-                    <span>{recommendation.label}</span>
+                    <span>{dashboard.recommendations[recommendation.labelKey]}</span>
                     <ArrowRight size={16} strokeWidth={1.5} aria-hidden="true" />
                   </Link>
                 ))}
@@ -236,12 +251,12 @@ export default function DashboardPage() {
             </div>
 
             <div className="dashboard-feed">
-              <span className="dashboard-eyebrow dashboard-eyebrow-mono">Recent activity</span>
+              <span className="dashboard-eyebrow dashboard-eyebrow-mono">{dashboard.recentActivity}</span>
               <div className="activity-feed">
                 {ACTIVITY.map(item => (
-                  <div className="activity-feed-row" key={item.lead}>
-                    <strong>{item.lead}</strong>
-                    <span>{item.time}</span>
+                  <div className="activity-feed-row" key={item.leadKey}>
+                    <strong>{dashboard.activity[item.leadKey]}</strong>
+                    <span>{dashboard.activity.relativeDays(item.days)}</span>
                   </div>
                 ))}
               </div>
