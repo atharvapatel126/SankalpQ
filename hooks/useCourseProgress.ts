@@ -2,11 +2,14 @@
 
 import { useCallback, useEffect, useState } from 'react'
 import {
-  COURSE_PROGRESS_STORAGE_KEY,
   EMPTY_COURSE_PROGRESS,
-  parseCourseProgress,
 } from '@/lib/courses/progress'
 import type { CourseProgressState } from '@/lib/courses/types'
+import {
+  loadLessonProgress,
+  upsertLessonProgress,
+  markLessonCompleted,
+} from '@/lib/courses/progress-supabase'
 
 interface UseCourseProgressReturn {
   progress: CourseProgressState
@@ -20,74 +23,89 @@ interface UseCourseProgressReturn {
   completeLesson: (lessonId: string, nextLessonId?: string) => void
 }
 
-function persistProgress(progress: CourseProgressState) {
-  try {
-    window.localStorage.setItem(
-      COURSE_PROGRESS_STORAGE_KEY,
-      JSON.stringify(progress)
-    )
-  } catch {
-    // Progress remains usable in memory when storage is unavailable or full.
-  }
-}
-
 export function useCourseProgress(): UseCourseProgressReturn {
   const [progress, setProgress] = useState<CourseProgressState>(
     EMPTY_COURSE_PROGRESS
   )
   const [hydrated, setHydrated] = useState(false)
 
+  /*
+   * Load lesson progress from Supabase.
+   *
+   * Quiz data is intentionally not migrated yet.
+   * That will be handled by quiz_attempts separately.
+   */
   useEffect(() => {
-    let raw: string | null = null
+    let cancelled = false
 
-    try {
-      raw = window.localStorage.getItem(COURSE_PROGRESS_STORAGE_KEY)
-    } catch {
-      // Privacy settings can make localStorage inaccessible.
-    }
+    async function loadProgress() {
+      try {
+        const rows = await loadLessonProgress()
 
-    setProgress(parseCourseProgress(raw))
-    setHydrated(true)
+        if (cancelled) return
 
-    const handleStorage = (event: StorageEvent) => {
-      if (event.key === COURSE_PROGRESS_STORAGE_KEY) {
-        setProgress(parseCourseProgress(event.newValue))
+        const completedLessonIds = rows
+          .filter(row => row.status === 'completed')
+          .map(row => row.lessonId)
+
+        const currentLesson = rows.find(
+          row => row.status === 'in-progress'
+        )
+
+        setProgress(current => ({
+          ...current,
+          completedLessonIds,
+          currentLessonId: currentLesson?.lessonId ?? null,
+          updatedAt: rows.length
+            ? rows.reduce(
+                (latest, row) =>
+                  row.updatedAt > latest ? row.updatedAt : latest,
+                rows[0].updatedAt
+              )
+            : null,
+        }))
+
+        setHydrated(true)
+      } catch (error) {
+        console.error('Failed to load course progress:', error)
+
+        if (!cancelled) {
+          setProgress(EMPTY_COURSE_PROGRESS)
+          setHydrated(true)
+        }
       }
     }
 
-    window.addEventListener('storage', handleStorage)
-    return () => window.removeEventListener('storage', handleStorage)
+    void loadProgress()
+
+    return () => {
+      cancelled = true
+    }
   }, [])
 
-  const updateProgress = useCallback(
-    (update: (current: CourseProgressState) => CourseProgressState) => {
-      setProgress(current => {
-        const next = update(current)
-        if (next === current) return current
-        persistProgress(next)
-        return next
-      })
-    },
-    []
-  )
+  const setCurrentLesson = useCallback((lessonId: string) => {
+    const now = new Date().toISOString()
 
-  const setCurrentLesson = useCallback(
-    (lessonId: string) => {
-      updateProgress(current => {
-        if (current.currentLessonId === lessonId) return current
-        return {
-          ...current,
-          currentLessonId: lessonId,
-          updatedAt: new Date().toISOString(),
-        }
-      })
-    },
-    [updateProgress]
-  )
+    setProgress(current => ({
+      ...current,
+      currentLessonId: lessonId,
+      updatedAt: now,
+    }))
+
+    void upsertLessonProgress(lessonId, 'in-progress').catch(error => {
+      console.error('Failed to save current lesson:', error)
+    })
+  }, [])
 
   const recordQuizAnswer = useCallback(
     (lessonId: string, answerId: string, isCorrect: boolean) => {
-      updateProgress(current => ({
+      /*
+       * Quiz persistence stays in the existing local React state
+       * for this step.
+       *
+       * The dedicated quiz_attempts migration comes next.
+       */
+      setProgress(current => ({
         ...current,
         quizAnswers: {
           ...current.quizAnswers,
@@ -100,25 +118,35 @@ export function useCourseProgress(): UseCourseProgressReturn {
         updatedAt: new Date().toISOString(),
       }))
     },
-    [updateProgress]
+    []
   )
 
   const completeLesson = useCallback(
     (lessonId: string, nextLessonId?: string) => {
-      updateProgress(current => {
-        const completedLessonIds = current.completedLessonIds.includes(lessonId)
-          ? current.completedLessonIds
-          : [...current.completedLessonIds, lessonId]
+      const now = new Date().toISOString()
+
+      setProgress(current => {
+        const completedLessonIds =
+          current.completedLessonIds.includes(lessonId)
+            ? current.completedLessonIds
+            : [...current.completedLessonIds, lessonId]
 
         return {
           ...current,
           completedLessonIds,
           currentLessonId: nextLessonId ?? lessonId,
-          updatedAt: new Date().toISOString(),
+          updatedAt: now,
         }
       })
+
+      void markLessonCompleted(
+        lessonId,
+        nextLessonId
+      ).catch(error => {
+        console.error('Failed to save completed lesson:', error)
+      })
     },
-    [updateProgress]
+    []
   )
 
   return {

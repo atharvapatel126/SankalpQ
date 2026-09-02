@@ -52,6 +52,67 @@ export type TranslationSet = {
     dashboardHome: string
     logOut: string
   }
+  aiTutor: AiTutorTranslations
+}
+
+export type AiTutorTranslations = {
+  title: string
+  subtitle: string
+  contextLabel: string
+  currentLesson: string
+  noActiveLesson: string
+  student: string
+  tutor: string
+  placeholder: string
+  send: string
+  welcomeTitle: string
+  welcomeDescription: string
+  thinking: string
+  clearConversation: string
+  messageListLabel: string
+  requestError: string
+  authError: string
+  tryAgain: string
+}
+
+const ENGLISH_AI_TUTOR: AiTutorTranslations = {
+  title: 'AI Tutor',
+  subtitle: 'Your personal quantum-computing learning assistant',
+  contextLabel: 'Learning context',
+  currentLesson: 'Current lesson',
+  noActiveLesson: 'No active lesson yet',
+  student: 'Student',
+  tutor: 'AI Tutor',
+  placeholder: 'Ask a question about quantum computing…',
+  send: 'Send',
+  welcomeTitle: 'What would you like to explore?',
+  welcomeDescription: 'Ask about qubits, gates, algorithms, or anything in your current lesson.',
+  thinking: 'AI Tutor is thinking…',
+  clearConversation: 'Clear conversation',
+  messageListLabel: 'Conversation with AI Tutor',
+  requestError: "I couldn't connect to the AI Tutor right now. Please try again in a moment.",
+  authError: 'Please sign in to continue.',
+  tryAgain: 'Try again',
+}
+
+const HINDI_AI_TUTOR: AiTutorTranslations = {
+  title: 'AI ट्यूटर',
+  subtitle: 'आपका व्यक्तिगत क्वांटम-कंप्यूटिंग सीखने का सहायक',
+  contextLabel: 'सीखने का संदर्भ',
+  currentLesson: 'वर्तमान पाठ',
+  noActiveLesson: 'अभी कोई सक्रिय पाठ नहीं है',
+  student: 'शिक्षार्थी',
+  tutor: 'AI ट्यूटर',
+  placeholder: 'क्वांटम कंप्यूटिंग के बारे में प्रश्न पूछें…',
+  send: 'भेजें',
+  welcomeTitle: 'आप क्या जानना चाहेंगे?',
+  welcomeDescription: 'क्यूबिट, गेट, एल्गोरिदम या अपने वर्तमान पाठ के बारे में पूछें।',
+  thinking: 'AI ट्यूटर सोच रहा है…',
+  clearConversation: 'बातचीत साफ़ करें',
+  messageListLabel: 'AI ट्यूटर के साथ बातचीत',
+  requestError: 'अभी AI ट्यूटर से कनेक्ट नहीं हो सका। कृपया कुछ देर बाद फिर कोशिश करें।',
+  authError: 'जारी रखने के लिए साइन इन करें।',
+  tryAgain: 'फिर कोशिश करें',
 }
 
 const ENGLISH: TranslationSet = {
@@ -125,6 +186,7 @@ const ENGLISH: TranslationSet = {
     dashboardHome: 'SankalpQ dashboard',
     logOut: 'Log out',
   },
+  aiTutor: ENGLISH_AI_TUTOR,
 }
 
 export const TRANSLATIONS: Record<string, TranslationSet> = {
@@ -148,6 +210,7 @@ export const TRANSLATIONS: Record<string, TranslationSet> = {
     },
     stats: { activeLearners: 'सक्रिय शिक्षार्थी', circuitsBuilt: 'बने हुए सर्किट', experimentsRun: 'चलाए गए प्रयोग', quantumConcepts: 'क्वांटम अवधारणाएँ', learnerRating: 'शिक्षार्थी रेटिंग' },
     app: { dashboard: 'डैशबोर्ड', courses: 'पाठ्यक्रम', circuitBuilder: 'सर्किट बिल्डर', simulator: 'सिमुलेटर', aiTutor: 'AI ट्यूटर', challenges: 'चुनौतियाँ', dashboardNavigation: 'डैशबोर्ड नेविगेशन', closeNavigation: 'नेविगेशन बंद करें', openNavigation: 'नेविगेशन खोलें', dashboardHome: 'संकल्पQ डैशबोर्ड', logOut: 'लॉग आउट' },
+    aiTutor: HINDI_AI_TUTOR,
   },
   BN: {
     header: {
@@ -166,6 +229,7 @@ export const TRANSLATIONS: Record<string, TranslationSet> = {
     },
     stats: { activeLearners: 'সক্রিয় শিক্ষার্থী', circuitsBuilt: 'তৈরি সার্কিট', experimentsRun: 'চালানো পরীক্ষা', quantumConcepts: 'কোয়ান্টাম ধারণা', learnerRating: 'শিক্ষার্থী রেটিং' },
     app: { dashboard: 'ড্যাশবোর্ড', courses: 'কোর্স', circuitBuilder: 'সার্কিট বিল্ডার', simulator: 'সিমুলেটর', aiTutor: 'AI টিউটর', challenges: 'চ্যালেঞ্জ', dashboardNavigation: 'ড্যাশবোর্ড নেভিগেশন', closeNavigation: 'নেভিগেশন বন্ধ করুন', openNavigation: 'নেভিগেশন খুলুন', dashboardHome: 'সঙ্কল্পQ ড্যাশবোর্ড', logOut: 'লগ আউট' },
+    aiTutor: ENGLISH_AI_TUTOR,
   },
   TA: {
     header: {
@@ -184,6 +248,7 @@ export const TRANSLATIONS: Record<string, TranslationSet> = {
     },
     stats: { activeLearners: 'செயலில் உள்ள கற்றவர்கள்', circuitsBuilt: 'உருவாக்கிய சர்க்யூட்கள்', experimentsRun: 'இயக்கிய பரிசோதனைகள்', quantumConcepts: 'குவாண்டம் கருத்துகள்', learnerRating: 'கற்றவர் மதிப்பீடு' },
     app: { dashboard: 'டாஷ்போர்டு', courses: 'பாடங்கள்', circuitBuilder: 'சர்க்யூட் பில்டர்', simulator: 'சிமுலேட்டர்', aiTutor: 'AI டியூட்டர்', challenges: 'சவால்கள்', dashboardNavigation: 'டாஷ்போர்டு வழிசெலுத்தல்', closeNavigation: 'வழிசெலுத்தலை மூடவும்', openNavigation: 'வழிசெலுத்தலைத் திறக்கவும்', dashboardHome: 'சங்கல்பQ டாஷ்போர்டு', logOut: 'வெளியேறு' },
+    aiTutor: ENGLISH_AI_TUTOR,
   },
   MR: {
     header: {
@@ -201,6 +266,7 @@ export const TRANSLATIONS: Record<string, TranslationSet> = {
     },
     stats: { activeLearners: 'सक्रिय विद्यार्थी', circuitsBuilt: 'तयार केलेली सर्किट्स', experimentsRun: 'चालवलेले प्रयोग', quantumConcepts: 'क्वांटम संकल्पना', learnerRating: 'विद्यार्थी रेटिंग' },
     app: { dashboard: 'डॅशबोर्ड', courses: 'अभ्यासक्रम', circuitBuilder: 'सर्किट बिल्डर', simulator: 'सिम्युलेटर', aiTutor: 'AI ट्यूटर', challenges: 'आव्हाने', dashboardNavigation: 'डॅशबोर्ड नेव्हिगेशन', closeNavigation: 'नेव्हिगेशन बंद करा', openNavigation: 'नेव्हिगेशन उघडा', dashboardHome: 'संकल्पQ डॅशबोर्ड', logOut: 'लॉग आउट' },
+    aiTutor: ENGLISH_AI_TUTOR,
   },
   ZH: {
     header: {
@@ -218,6 +284,7 @@ export const TRANSLATIONS: Record<string, TranslationSet> = {
     },
     stats: { activeLearners: '活跃学习者', circuitsBuilt: '已构建电路', experimentsRun: '已运行实验', quantumConcepts: '量子概念', learnerRating: '学习者评分' },
     app: { dashboard: '仪表盘', courses: '课程', circuitBuilder: '电路构建器', simulator: '模拟器', aiTutor: 'AI 导师', challenges: '挑战', dashboardNavigation: '仪表盘导航', closeNavigation: '关闭导航', openNavigation: '打开导航', dashboardHome: 'SankalpQ 仪表盘', logOut: '退出登录' },
+    aiTutor: ENGLISH_AI_TUTOR,
   },
   ES: {
     header: {
@@ -235,6 +302,7 @@ export const TRANSLATIONS: Record<string, TranslationSet> = {
     },
     stats: { activeLearners: 'Estudiantes activos', circuitsBuilt: 'Circuitos creados', experimentsRun: 'Experimentos ejecutados', quantumConcepts: 'Conceptos cuánticos', learnerRating: 'Valoración de estudiantes' },
     app: { dashboard: 'Panel', courses: 'Cursos', circuitBuilder: 'Constructor de circuitos', simulator: 'Simulador', aiTutor: 'Tutor de IA', challenges: 'Desafíos', dashboardNavigation: 'Navegación del panel', closeNavigation: 'Cerrar navegación', openNavigation: 'Abrir navegación', dashboardHome: 'Panel de SankalpQ', logOut: 'Cerrar sesión' },
+    aiTutor: ENGLISH_AI_TUTOR,
   },
   FR: {
     header: {
@@ -252,6 +320,7 @@ export const TRANSLATIONS: Record<string, TranslationSet> = {
     },
     stats: { activeLearners: 'Apprenants actifs', circuitsBuilt: 'Circuits construits', experimentsRun: 'Expériences lancées', quantumConcepts: 'Concepts quantiques', learnerRating: 'Évaluation des apprenants' },
     app: { dashboard: 'Tableau de bord', courses: 'Cours', circuitBuilder: 'Constructeur de circuits', simulator: 'Simulateur', aiTutor: 'Tuteur IA', challenges: 'Défis', dashboardNavigation: 'Navigation du tableau de bord', closeNavigation: 'Fermer la navigation', openNavigation: 'Ouvrir la navigation', dashboardHome: 'Tableau de bord SankalpQ', logOut: 'Se déconnecter' },
+    aiTutor: ENGLISH_AI_TUTOR,
   },
   AR: {
     header: {
@@ -269,6 +338,7 @@ export const TRANSLATIONS: Record<string, TranslationSet> = {
     },
     stats: { activeLearners: 'متعلمون نشطون', circuitsBuilt: 'دوائر مبنية', experimentsRun: 'تجارب منفذة', quantumConcepts: 'مفاهيم كمّية', learnerRating: 'تقييم المتعلمين' },
     app: { dashboard: 'لوحة التحكم', courses: 'الدورات', circuitBuilder: 'منشئ الدوائر', simulator: 'المحاكي', aiTutor: 'المعلّم الذكي', challenges: 'التحديات', dashboardNavigation: 'التنقل في لوحة التحكم', closeNavigation: 'إغلاق التنقل', openNavigation: 'فتح التنقل', dashboardHome: 'لوحة تحكم SankalpQ', logOut: 'تسجيل الخروج' },
+    aiTutor: ENGLISH_AI_TUTOR,
   },
   PT: {
     header: {
@@ -286,6 +356,7 @@ export const TRANSLATIONS: Record<string, TranslationSet> = {
     },
     stats: { activeLearners: 'Alunos ativos', circuitsBuilt: 'Circuitos criados', experimentsRun: 'Experimentos executados', quantumConcepts: 'Conceitos quânticos', learnerRating: 'Avaliação dos alunos' },
     app: { dashboard: 'Painel', courses: 'Cursos', circuitBuilder: 'Construtor de circuitos', simulator: 'Simulador', aiTutor: 'Tutor de IA', challenges: 'Desafios', dashboardNavigation: 'Navegação do painel', closeNavigation: 'Fechar navegação', openNavigation: 'Abrir navegação', dashboardHome: 'Painel SankalpQ', logOut: 'Sair' },
+    aiTutor: ENGLISH_AI_TUTOR,
   },
 }
 
