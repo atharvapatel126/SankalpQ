@@ -13,12 +13,16 @@ import {
 } from 'lucide-react'
 import AppShell from '@/components/AppShell'
 import { useLanguage } from '@/components/LanguageProvider'
+import { useChallengeProgress } from '@/hooks/useChallengeProgress'
 import { useCourseProgress } from '@/hooks/useCourseProgress'
+import { getSupabaseBrowserClient } from '@/lib/supabase/client'
 import {
   getOverallCompletion,
   getResumeLesson,
 } from '@/lib/courses/progress'
 import { ALL_LESSONS } from '@/lib/courses/course-data'
+import { getChallenge } from '@/lib/challenges/challenge-data'
+import { getSavedCircuits } from '@/lib/quantum/circuit-storage'
 
 const displayFont = Fredoka({
   variable: '--font-display',
@@ -82,12 +86,13 @@ const RECOMMENDATIONS = [
   },
 ] as const
 
-const ACTIVITY = [
-  { leadKey: 'completedQuantumGates', days: 2 },
-  { leadKey: 'builtBellState', days: 3 },
-  { leadKey: 'scoredSuperposition', days: 5 },
-  { leadKey: 'startedQuantumEntanglement', days: 6 },
-] as const
+const DAY_IN_MS = 24 * 60 * 60 * 1000
+
+function daysSince(timestamp: string): number {
+  const time = new Date(timestamp).getTime()
+  if (!Number.isFinite(time)) return 0
+  return Math.max(0, Math.floor((Date.now() - time) / DAY_IN_MS))
+}
 
 function ProgressDial({
   completion,
@@ -146,8 +151,33 @@ function ProgressDial({
 
 export default function DashboardPage() {
   const { progress } = useCourseProgress()
+  const { progress: challengeProgress } = useChallengeProgress()
   const { translations } = useLanguage()
   const { dashboard } = translations
+  const [userName, setUserName] = useState('Student')
+  const [savedCircuitCount, setSavedCircuitCount] = useState(0)
+
+  useEffect(() => {
+    let active = true
+    void getSupabaseBrowserClient().auth.getUser().then(({ data }) => {
+      if (!active || !data.user) return
+      const metadataName = data.user.user_metadata?.full_name
+      setUserName(
+        typeof metadataName === 'string' && metadataName.trim()
+          ? metadataName
+          : data.user.email ?? 'Student'
+      )
+    }).catch(() => {})
+
+    return () => {
+      active = false
+    }
+  }, [])
+
+  useEffect(() => {
+    setSavedCircuitCount(getSavedCircuits().length)
+  }, [])
+
   const completion = getOverallCompletion(progress)
   const courseComplete = completion === 100
   const resume = getResumeLesson(progress)
@@ -155,12 +185,30 @@ export default function DashboardPage() {
     lesson => lesson.id === resume.lesson.id
   ) + 1
   const resumeHref = `/courses/${resume.course.slug}/${resume.lesson.slug}`
+  const recentActivity = [
+    ...(progress.updatedAt
+      ? [{
+          key: 'course-progress',
+          label: `${dashboard.resuming}: ${resume.lesson.title}`,
+          timestamp: progress.updatedAt,
+        }]
+      : []),
+    ...challengeProgress.recentAttempts.map(attempt => ({
+      key: attempt.id,
+      label: getChallenge(attempt.challengeId)?.title ?? 'Challenge attempt',
+      timestamp: attempt.submittedAt,
+    })),
+  ]
+    .sort((left, right) => (
+      new Date(right.timestamp).getTime() - new Date(left.timestamp).getTime()
+    ))
+    .slice(0, 4)
 
   return (
     <AppShell>
       <div className={`dashboard-page ${displayFont.variable}`}>
         <header className="dashboard-header">
-          <h1>{dashboard.welcomeBack('Ananya')}</h1>
+          <h1>{dashboard.welcomeBack(userName)}</h1>
           <p>{dashboard.leftOff}</p>
         </header>
 
@@ -197,15 +245,15 @@ export default function DashboardPage() {
             <span className="dashboard-eyebrow dashboard-eyebrow-mono">{dashboard.modules}</span>
             <div className="progress-stat-row">
               <span>{dashboard.streak}</span>
-              <strong>{dashboard.streakDays(12)}</strong>
+              <strong>{dashboard.streakDays(0)}</strong>
             </div>
             <div className="progress-stat-row">
               <span>{dashboard.circuitsBuilt}</span>
-              <strong>24</strong>
+              <strong>{savedCircuitCount}</strong>
             </div>
             <div className="progress-stat-row">
               <span>{dashboard.badges}</span>
-              <strong>7</strong>
+              <strong>0</strong>
             </div>
           </div>
         </section>
@@ -253,10 +301,10 @@ export default function DashboardPage() {
             <div className="dashboard-feed">
               <span className="dashboard-eyebrow dashboard-eyebrow-mono">{dashboard.recentActivity}</span>
               <div className="activity-feed">
-                {ACTIVITY.map(item => (
-                  <div className="activity-feed-row" key={item.leadKey}>
-                    <strong>{dashboard.activity[item.leadKey]}</strong>
-                    <span>{dashboard.activity.relativeDays(item.days)}</span>
+                {recentActivity.map(item => (
+                  <div className="activity-feed-row" key={item.key}>
+                    <strong>{item.label}</strong>
+                    <span>{dashboard.activity.relativeDays(daysSince(item.timestamp))}</span>
                   </div>
                 ))}
               </div>
