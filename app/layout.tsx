@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { ThemeProvider } from 'next-themes'
 import LanguageProvider from '@/components/LanguageProvider'
 import '@/styles/globals.css'
+import 'katex/dist/katex.min.css'
 
 export const metadata: Metadata = {
   title: 'SankalpQ — Interactive Quantum Computing Learning Platform',

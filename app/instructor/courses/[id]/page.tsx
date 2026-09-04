@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState, useCallback } from 'react'
-import { useParams, useRouter } from 'next/navigation'
+import { useParams } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, BookOpen, CheckCircle, Users } from 'lucide-react'
 import type { InstructorCourse, CourseLevel, ContentStatus } from '@/lib/instructor/types'
@@ -20,7 +20,6 @@ function useToast() {
 
 export default function CourseEditorPage() {
   const { id } = useParams<{ id: string }>()
-  const router = useRouter()
   const { msg: toast, show: showToast } = useToast()
 
   const [course, setCourse] = useState<InstructorCourse | null>(null)
