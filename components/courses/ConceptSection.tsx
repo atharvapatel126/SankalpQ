@@ -1,4 +1,5 @@
 import { Check } from 'lucide-react'
+import { useLanguage } from '@/components/LanguageProvider'
 
 interface ConceptSectionProps {
   introduction: string
@@ -11,21 +12,23 @@ export default function ConceptSection({
   paragraphs,
   keyPoints,
 }: ConceptSectionProps) {
+  const { translations } = useLanguage()
+  const t = translations.student.courses
   return (
     <>
       <section className="courses-lesson-section" aria-labelledby="concept-introduction">
         <span className="dashboard-eyebrow dashboard-eyebrow-mono">
-          Concept introduction
+          {t.conceptIntroduction}
         </span>
-        <h2 id="concept-introduction">Start with the idea</h2>
+        <h2 id="concept-introduction">{t.startWithIdea}</h2>
         <p className="courses-concept-lead">{introduction}</p>
       </section>
 
       <section className="courses-lesson-section" aria-labelledby="core-explanation">
         <span className="dashboard-eyebrow dashboard-eyebrow-mono">
-          Core explanation
+          {t.coreExplanation}
         </span>
-        <h2 id="core-explanation">How it works</h2>
+        <h2 id="core-explanation">{t.howItWorks}</h2>
         <div className="courses-concept-copy">
           {paragraphs.map(paragraph => (
             <p key={paragraph}>{paragraph}</p>

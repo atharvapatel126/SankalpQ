@@ -1,60 +1,55 @@
 'use client'
 
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react'
-import { LANGUAGES, Language } from '@/lib/languages'
+import { LANGUAGES, LANGUAGE_STORAGE_KEY, Language } from '@/lib/languages'
 import { AuthTranslations, getAuthTranslations } from '@/lib/auth-translations'
-import { getTranslations, TranslationSet } from '@/lib/translations'
+import { getTranslations, ResolvedTranslationSet } from '@/lib/translations'
 
-const LANGUAGE_STORAGE_KEY = 'sankalpq-language'
 const DEFAULT_LANGUAGE = LANGUAGES[0]
 
 interface LanguageContextValue {
   language: Language
   setLanguage: (code: string) => void
-  translations: TranslationSet
+  translations: ResolvedTranslationSet
   auth: AuthTranslations
 }
 
 const LanguageContext = createContext<LanguageContextValue | undefined>(undefined)
 
-export default function LanguageProvider({ children }: { children: React.ReactNode }) {
-  const [languageCode, setLanguageCode] = useState(DEFAULT_LANGUAGE.code)
-  const [storageReady, setStorageReady] = useState(false)
+interface LanguageProviderProps {
+  children: React.ReactNode
+  initialLanguage?: string
+}
+
+export default function LanguageProvider({ children, initialLanguage }: LanguageProviderProps) {
+  const initialCode = LANGUAGES.some(item => item.code === initialLanguage)
+    ? initialLanguage!
+    : DEFAULT_LANGUAGE.code
+  const [languageCode, setLanguageCode] = useState(initialCode)
 
   const setLanguage = useCallback((code: string) => {
     if (!LANGUAGES.some(item => item.code === code)) return
 
     setLanguageCode(code)
     try {
-      // Write at selection time so navigation or auth redirects cannot race
-      // the persistence effect below.
       window.localStorage.setItem(LANGUAGE_STORAGE_KEY, code)
     } catch {
-      // Language selection still works for the current session.
+      // localStorage may be unavailable; the cookie still persists the choice.
     }
+    document.cookie = `${LANGUAGE_STORAGE_KEY}=${encodeURIComponent(code)}; Path=/; Max-Age=31536000; SameSite=Lax`
   }, [])
 
   useEffect(() => {
     try {
       const storedCode = window.localStorage.getItem(LANGUAGE_STORAGE_KEY)
-      if (storedCode && LANGUAGES.some(language => language.code === storedCode)) {
+      if (!initialLanguage && storedCode && LANGUAGES.some(language => language.code === storedCode)) {
         setLanguageCode(storedCode)
+        document.cookie = `${LANGUAGE_STORAGE_KEY}=${encodeURIComponent(storedCode)}; Path=/; Max-Age=31536000; SameSite=Lax`
       }
     } catch {
-      // Keep English when localStorage is unavailable.
-    } finally {
-      setStorageReady(true)
+      // Storage may be unavailable; the server-provided language remains valid.
     }
-  }, [])
-
-  useEffect(() => {
-    if (!storageReady) return
-    try {
-      window.localStorage.setItem(LANGUAGE_STORAGE_KEY, languageCode)
-    } catch {
-      // Language selection still works for the current session.
-    }
-  }, [languageCode, storageReady])
+  }, [initialCode, initialLanguage])
 
   const language = LANGUAGES.find(item => item.code === languageCode) ?? DEFAULT_LANGUAGE
   const translations = useMemo(() => getTranslations(language.code), [language.code])

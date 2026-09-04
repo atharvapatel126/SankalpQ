@@ -1,6 +1,7 @@
 'use client'
 
 import { Lightbulb } from 'lucide-react'
+import { useLanguage } from '@/components/LanguageProvider'
 
 interface HintPanelProps {
   totalHints: number
@@ -15,6 +16,8 @@ export default function HintPanel({
   disabled,
   onReveal,
 }: HintPanelProps) {
+  const { translations } = useLanguage()
+  const t = translations.student.challenges
   const allRevealed = visibleHints.length >= totalHints
 
   return (
@@ -22,8 +25,8 @@ export default function HintPanel({
       <div className="challenge-panel-heading">
         <Lightbulb size={16} aria-hidden="true" />
         <div>
-          <h2 id="challenge-hints-title">Progressive hints</h2>
-          <p>{visibleHints.length} of {totalHints} revealed</p>
+          <h2 id="challenge-hints-title">{t.progressiveHints}</h2>
+          <p>{t.hintsRevealed(visibleHints.length, totalHints)}</p>
         </div>
       </div>
 
@@ -35,7 +38,7 @@ export default function HintPanel({
         </ol>
       ) : (
         <p className="challenge-hint-empty">
-          Reveal one clue at a time when you need it.
+          {t.emptyHint}
         </p>
       )}
 
@@ -47,8 +50,8 @@ export default function HintPanel({
       >
         <Lightbulb size={14} aria-hidden="true" />
         {allRevealed
-          ? 'All hints revealed'
-          : `Reveal hint ${visibleHints.length + 1}`}
+          ? t.allHintsRevealed
+          : t.revealClue(visibleHints.length + 1)}
       </button>
     </aside>
   )

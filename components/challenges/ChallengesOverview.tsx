@@ -3,6 +3,7 @@
 import { CheckCircle2, Target, XCircle } from 'lucide-react'
 import { useChallengeProgress } from '@/hooks/useChallengeProgress'
 import { getChallenge } from '@/lib/challenges/challenge-data'
+import { useLanguage } from '@/components/LanguageProvider'
 import ChallengeGrid from './ChallengeGrid'
 import ChallengeProgress from './ChallengeProgress'
 
@@ -14,6 +15,9 @@ function formatRecentTime(timestamp: string): string {
 
 export default function ChallengesOverview() {
   const { progress, summary, isReady } = useChallengeProgress()
+  const { translations } = useLanguage()
+  const t = translations.student.challenges
+  const common = translations.student.common
 
   return (
     <div className="challenges-page">
@@ -22,8 +26,8 @@ export default function ChallengesOverview() {
           <Target size={22} />
         </div>
         <div>
-          <h1>Quantum Challenges</h1>
-          <p>Apply each concept by building, repairing, and reasoning about circuits.</p>
+          <h1>{t.title}</h1>
+          <p>{t.description}</p>
         </div>
       </header>
 
@@ -33,12 +37,13 @@ export default function ChallengesOverview() {
       {isReady && progress.recentAttempts.length > 0 && (
         <section className="challenge-recent" aria-labelledby="challenge-recent-title">
           <div className="challenge-recent-heading">
-            <span className="dashboard-eyebrow dashboard-eyebrow-mono">History</span>
-            <h2 id="challenge-recent-title">Recent challenges</h2>
+            <span className="dashboard-eyebrow dashboard-eyebrow-mono">{t.history}</span>
+            <h2 id="challenge-recent-title">{t.recent}</h2>
           </div>
           <div className="challenge-recent-list">
             {progress.recentAttempts.slice(0, 5).map(attempt => {
               const challenge = getChallenge(attempt.challengeId)
+              const localizedTitle = challenge ? (t.content[challenge.id]?.title ?? challenge.title) : t.attempt
               const StatusIcon = attempt.correct ? CheckCircle2 : XCircle
               return (
                 <div className="challenge-recent-row" key={attempt.id}>
@@ -47,8 +52,8 @@ export default function ChallengesOverview() {
                     className={attempt.correct ? 'is-correct' : 'is-incorrect'}
                     aria-hidden="true"
                   />
-                  <strong>{challenge?.title ?? 'Challenge attempt'}</strong>
-                  <span>{attempt.correct ? `${attempt.score} XP` : 'Retry needed'}</span>
+                  <strong>{localizedTitle}</strong>
+                  <span>{attempt.correct ? `${attempt.score} ${common.xp}` : t.retryNeeded}</span>
                   <time dateTime={attempt.submittedAt}>
                     {formatRecentTime(attempt.submittedAt)}
                   </time>

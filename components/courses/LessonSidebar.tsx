@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { CheckCircle2, Circle } from 'lucide-react'
 import CourseProgress from './CourseProgress'
 import type { Course } from '@/lib/courses/types'
+import { useLanguage } from '@/components/LanguageProvider'
 
 interface LessonSidebarProps {
   course: Course
@@ -16,16 +17,20 @@ export default function LessonSidebar({
   completedLessonIds,
   percentage,
 }: LessonSidebarProps) {
+  const { translations } = useLanguage()
+  const t = translations.student.courses
+  const common = translations.student.common
+  const localizedCourse = t.content[course.id]?.title ?? course.title
   const completed = new Set(completedLessonIds)
 
   return (
-    <aside className="courses-lesson-sidebar" aria-label={course.title + ' lessons'}>
+    <aside className="courses-lesson-sidebar" aria-label={`${localizedCourse} ${common.lessons.toLowerCase()}`}>
       <div className="courses-sidebar-header">
-        <span className="courses-level-badge">Level {course.level}</span>
-        <h2>{course.title}</h2>
+        <span className="courses-level-badge">{common.level} {course.level}</span>
+        <h2>{localizedCourse}</h2>
         <CourseProgress
           value={percentage}
-          label={course.title + ' completion'}
+          label={t.completionLabel(localizedCourse)}
           compact
         />
       </div>
@@ -54,8 +59,8 @@ export default function LessonSidebar({
                 <Circle size={16} aria-hidden="true" />
               )}
               <span>
-                <small>Lesson {lesson.order}</small>
-                {lesson.title}
+                <small>{common.lesson} {lesson.order}</small>
+                {t.lessons[lesson.id]?.title ?? lesson.title}
               </span>
             </Link>
           )

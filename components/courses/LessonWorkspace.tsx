@@ -17,6 +17,7 @@ import { useCourseProgress } from '@/hooks/useCourseProgress'
 import { getAdjacentLessons } from '@/lib/courses/course-data'
 import { getCourseProgressSummary } from '@/lib/courses/progress'
 import type { Course, Lesson } from '@/lib/courses/types'
+import { useLanguage } from '@/components/LanguageProvider'
 
 interface LessonWorkspaceProps {
   course: Course
@@ -28,6 +29,9 @@ export default function LessonWorkspace({
   lesson,
 }: LessonWorkspaceProps) {
   const router = useRouter()
+  const { translations } = useLanguage()
+  const t = translations.student.courses
+  const common = translations.student.common
   const {
     progress,
     hydrated,
@@ -40,6 +44,8 @@ export default function LessonWorkspace({
   const completed = progress.completedLessonIds.includes(lesson.id)
   const hasQuizAttempt =
     typeof progress.quizAnswers[lesson.id] === 'string'
+  const localizedLessonTitle = (lessonItem: Lesson) => t.lessons[lessonItem.id]?.title ?? lessonItem.title
+  const localizedCourseTitle = t.content[course.id]?.title ?? course.title
 
   useEffect(() => {
     if (hydrated) setCurrentLesson(lesson.id)
@@ -69,11 +75,11 @@ export default function LessonWorkspace({
         data-hydrated={hydrated}
       >
         <div className="courses-breadcrumbs" aria-label="Breadcrumb">
-          <Link href="/courses">Courses</Link>
+          <Link href="/courses">{t.title}</Link>
           <span aria-hidden="true">/</span>
-          <span>{course.title}</span>
+          <span>{localizedCourseTitle}</span>
           <span aria-hidden="true">/</span>
-          <span aria-current="page">{lesson.title}</span>
+          <span aria-current="page">{localizedLessonTitle(lesson)}</span>
         </div>
 
         <div className="courses-lesson-layout">
@@ -115,17 +121,17 @@ export default function LessonWorkspace({
             <section className="courses-lesson-finish" aria-labelledby="lesson-finish">
               <div>
                 <span className="dashboard-eyebrow dashboard-eyebrow-mono">
-                  {completed ? 'Lesson completed' : 'Ready to continue'}
+                  {completed ? common.completed : t.continueLearning}
                 </span>
                 <h2 id="lesson-finish">
                   {adjacent.next
-                    ? adjacent.next.lesson.title
-                    : 'Course path complete'}
+                    ? localizedLessonTitle(adjacent.next.lesson)
+                    : t.courseLevels}
                 </h2>
                 <p>
                   {hasQuizAttempt
-                    ? 'Your quiz result is saved locally with your lesson progress.'
-                    : 'Answer the knowledge check to unlock lesson completion.'}
+                    ? t.quizSaved
+                    : t.quizUnlock}
                 </p>
               </div>
               <button
@@ -139,14 +145,14 @@ export default function LessonWorkspace({
                 ) : null}
                 {adjacent.next
                   ? completed
-                    ? 'Next lesson'
-                    : 'Complete and continue'
-                  : 'Finish learning path'}
+                    ? common.next
+                    : `${common.complete} ${common.and} ${t.continue.toLowerCase()}`
+                  : t.continueLearning}
                 <ArrowRight size={16} strokeWidth={1.5} aria-hidden="true" />
               </button>
             </section>
 
-            <nav className="courses-lesson-footer-nav" aria-label="Lesson navigation">
+            <nav className="courses-lesson-footer-nav" aria-label={t.title}>
               {adjacent.previous ? (
                 <Link
                   href={
@@ -158,8 +164,8 @@ export default function LessonWorkspace({
                 >
                   <ArrowLeft size={15} aria-hidden="true" />
                   <span>
-                    <small>Previous</small>
-                    {adjacent.previous.lesson.title}
+                    <small>{common.previous}</small>
+                    {localizedLessonTitle(adjacent.previous.lesson)}
                   </span>
                 </Link>
               ) : (
@@ -176,8 +182,8 @@ export default function LessonWorkspace({
                   className="is-next"
                 >
                   <span>
-                    <small>Next</small>
-                    {adjacent.next.lesson.title}
+                    <small>{common.next}</small>
+                    {localizedLessonTitle(adjacent.next.lesson)}
                   </span>
                   <ArrowRight size={15} aria-hidden="true" />
                 </Link>

@@ -3,6 +3,7 @@
 import { CheckCircle2, RotateCcw, XCircle } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import type { QuizQuestion } from '@/lib/courses/types'
+import { useLanguage } from '@/components/LanguageProvider'
 
 interface MiniQuizProps {
   question: QuizQuestion
@@ -21,6 +22,8 @@ export default function MiniQuiz({
   savedAnswerId,
   onSubmit,
 }: MiniQuizProps) {
+  const { translations } = useLanguage()
+  const t = translations.student.courses
   const [selectedAnswerId, setSelectedAnswerId] = useState(
     savedAnswerId ?? ''
   )
@@ -51,9 +54,9 @@ export default function MiniQuiz({
   return (
     <section className="courses-lesson-section" aria-labelledby="knowledge-check">
       <span className="dashboard-eyebrow dashboard-eyebrow-mono">
-        Knowledge check
+        {t.knowledgeCheck}
       </span>
-      <h2 id="knowledge-check">Check your understanding</h2>
+      <h2 id="knowledge-check">{t.checkUnderstanding}</h2>
 
       <div className="courses-quiz">
         <span className="courses-quiz-type">
@@ -63,7 +66,7 @@ export default function MiniQuiz({
 
         <fieldset className="courses-quiz-options" disabled={submitted}>
           <legend className="courses-visually-hidden">
-            Choose one answer
+            {t.chooseAnswer}
           </legend>
           {question.options.map(option => {
             const isSelected = selectedAnswerId === option.id
@@ -113,7 +116,7 @@ export default function MiniQuiz({
               <XCircle size={18} aria-hidden="true" />
             )}
             <div>
-              <strong>{isCorrect ? 'Correct' : 'Not quite'}</strong>
+              <strong>{isCorrect ? t.correct : t.notQuite}</strong>
               <p>{question.explanation}</p>
             </div>
           </div>
@@ -124,7 +127,7 @@ export default function MiniQuiz({
             onClick={submitAnswer}
             disabled={!selectedAnswerId}
           >
-            Check answer
+            {t.checkAnswer}
           </button>
         )}
 
@@ -135,7 +138,7 @@ export default function MiniQuiz({
             onClick={retry}
           >
             <RotateCcw size={14} aria-hidden="true" />
-            Try again
+            {t.tryAgain}
           </button>
         )}
       </div>
