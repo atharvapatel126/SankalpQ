@@ -5,6 +5,7 @@ import CircuitGrid from '@/components/circuit/CircuitGrid'
 import type { UseChallengeSessionReturn } from '@/hooks/useChallengeSession'
 import type { ChoiceChallenge } from '@/lib/challenges/types'
 import { getCircuitWidth } from '@/lib/quantum/circuit-utils'
+import { useLanguage } from '@/components/LanguageProvider'
 
 interface ChoiceChallengeWorkspaceProps {
   challenge: ChoiceChallenge
@@ -15,23 +16,25 @@ export default function ChoiceChallengeWorkspace({
   challenge,
   session,
 }: ChoiceChallengeWorkspaceProps) {
+  const { translations } = useLanguage()
+  const t = translations.student.challenges
   const locked = session.result !== null
 
   return (
     <section className="challenge-task" aria-labelledby="challenge-workspace-title">
       <div className="challenge-task-toolbar">
         <div>
-          <span className="dashboard-eyebrow dashboard-eyebrow-mono">Workspace</span>
+          <span className="dashboard-eyebrow dashboard-eyebrow-mono">{t.workspace}</span>
           <h2 id="challenge-workspace-title">
             {challenge.type === 'predict-output'
-              ? 'Choose the expected output'
-              : 'Choose the gate'}
+              ? t.chooseExpectedOutput
+              : t.chooseGate}
           </h2>
         </div>
       </div>
 
       {challenge.previewCircuit && (
-        <div className="challenge-circuit-preview" aria-label="Circuit to analyze">
+        <div className="challenge-circuit-preview" aria-label={t.circuitToAnalyze}>
           <div className="circuit-grid-scroll">
             <CircuitGrid
               circuit={challenge.previewCircuit}
@@ -45,7 +48,7 @@ export default function ChoiceChallengeWorkspace({
       )}
 
       {challenge.stateTransition && (
-        <div className="challenge-state-transition" aria-label="Quantum state transformation">
+        <div className="challenge-state-transition" aria-label={t.stateTransformation}>
           <code>{challenge.stateTransition.input}</code>
           <ArrowRight size={22} aria-hidden="true" />
           <code>{challenge.stateTransition.output}</code>
@@ -53,13 +56,14 @@ export default function ChoiceChallengeWorkspace({
       )}
 
       <fieldset className="challenge-options" disabled={locked}>
-        <legend>Select one answer</legend>
+        <legend>{t.selectAnswer}</legend>
         {challenge.options.map(option => {
           const selected = session.selectedOptionId === option.id
           const correctAfterSubmit =
             locked && option.id === challenge.correctOptionId
           const incorrectAfterSubmit =
             locked && selected && option.id !== challenge.correctOptionId
+          const localizedLabel = t.content[challenge.id]?.options?.[option.id] ?? option.label
           return (
             <label
               className={`challenge-option${selected ? ' is-selected' : ''}${correctAfterSubmit ? ' is-correct' : ''}${incorrectAfterSubmit ? ' is-incorrect' : ''}`}
@@ -72,7 +76,7 @@ export default function ChoiceChallengeWorkspace({
                 checked={selected}
                 onChange={() => session.selectOption(option.id)}
               />
-              <span>{option.label}</span>
+              <span>{localizedLabel}</span>
             </label>
           )
         })}
@@ -86,7 +90,7 @@ export default function ChoiceChallengeWorkspace({
           disabled={!session.selectedOptionId || locked}
         >
           <Check size={15} aria-hidden="true" />
-          Submit answer
+          {t.submitAnswer}
         </button>
       </div>
     </section>

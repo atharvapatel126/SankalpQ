@@ -3,6 +3,7 @@
 import { useMemo } from 'react'
 import { useRouter } from 'next/navigation'
 import { Check, CircuitBoard, RotateCcw, RotateCw, Undo2 } from 'lucide-react'
+import { useLanguage } from '@/components/LanguageProvider'
 import CircuitGrid from '@/components/circuit/CircuitGrid'
 import GatePalette from '@/components/circuit/GatePalette'
 import GatePropertiesPanel from '@/components/circuit/GatePropertiesPanel'
@@ -22,6 +23,9 @@ export default function CircuitChallengeWorkspace({
   session,
 }: CircuitChallengeWorkspaceProps) {
   const router = useRouter()
+  const { translations } = useLanguage()
+  const t = translations.student.challenges
+  const common = translations.student.common
   const initialCircuit = useMemo(
     () => cloneChallengeCircuit(challenge.initialCircuit),
     [challenge.initialCircuit]
@@ -43,22 +47,22 @@ export default function CircuitChallengeWorkspace({
     <section className="challenge-task" aria-labelledby="challenge-workspace-title">
       <div className="challenge-task-toolbar">
         <div>
-          <span className="dashboard-eyebrow dashboard-eyebrow-mono">Workspace</span>
+          <span className="dashboard-eyebrow dashboard-eyebrow-mono">{t.workspace}</span>
           <h2 id="challenge-workspace-title">
-            {challenge.type === 'fix-circuit' ? 'Repair the circuit' : 'Build your circuit'}
+            {challenge.type === 'fix-circuit' ? t.repairCircuit : t.buildCircuit}
           </h2>
         </div>
         <div className="challenge-circuit-summary">
           {editor.circuit.qubits}q / {editor.circuit.operations.length} ops
         </div>
-        <div className="challenge-editor-actions" role="toolbar" aria-label="Challenge circuit controls">
+        <div className="challenge-editor-actions" role="toolbar" aria-label={t.circuitControls}>
           <button
             type="button"
             className="challenge-icon-button"
             onClick={editor.onUndo}
             disabled={!editor.canUndo || submissionLocked}
-            aria-label="Undo"
-            title="Undo"
+            aria-label={common.undo}
+            title={common.undo}
           >
             <Undo2 size={15} />
           </button>
@@ -67,8 +71,8 @@ export default function CircuitChallengeWorkspace({
             className="challenge-icon-button"
             onClick={editor.onRedo}
             disabled={!editor.canRedo || submissionLocked}
-            aria-label="Redo"
-            title="Redo"
+            aria-label={common.redo}
+            title={common.redo}
           >
             <RotateCw size={15} />
           </button>
@@ -78,7 +82,7 @@ export default function CircuitChallengeWorkspace({
             onClick={resetCircuit}
           >
             <RotateCcw size={14} aria-hidden="true" />
-            Reset
+            {common.reset}
           </button>
           <button
             type="button"
@@ -86,7 +90,7 @@ export default function CircuitChallengeWorkspace({
             onClick={openInCircuitBuilder}
           >
             <CircuitBoard size={14} aria-hidden="true" />
-            Open in Circuit Builder
+            {t.openInCircuitBuilder}
           </button>
           <button
             type="button"
@@ -95,7 +99,7 @@ export default function CircuitChallengeWorkspace({
             disabled={submissionLocked}
           >
             <Check size={15} aria-hidden="true" />
-            Submit circuit
+            {t.submitCircuit}
           </button>
         </div>
       </div>

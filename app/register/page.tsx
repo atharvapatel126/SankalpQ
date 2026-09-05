@@ -10,7 +10,7 @@ import FormField from '@/components/FormField'
 import SocialButtons from '@/components/SocialButtons'
 import LogoMark from '@/components/LogoMark'
 import { useLanguage } from '@/components/LanguageProvider'
-import { getSafeNextPath } from '@/lib/auth'
+import { getAuthRedirectForUser } from '@/lib/auth'
 import { getSupabaseBrowserClient } from '@/lib/supabase/client'
 
 interface RegisterErrors {
@@ -57,22 +57,63 @@ export default function RegisterPage() {
     setSuccess('')
     setErrors({})
     try {
+      const origin = typeof window !== 'undefined' ? window.location.origin : ''
+      const emailRedirectTo = origin ? `${origin}/auth/callback` : undefined
+
       const { data, error } = await getSupabaseBrowserClient().auth.signUp({
         email: email.trim(),
         password,
-        options: { data: { full_name: fullName.trim(), role } },
+        options: {
+          data: { full_name: fullName.trim(), role },
+          emailRedirectTo,
+        },
       })
       if (error) {
-        const message = error.message.toLowerCase()
-        setErrors({ form: message.includes('already registered') || message.includes('already exists') ? auth.emailAlreadyRegistered : auth.signUpFailed })
+        const msg = (error.message || '').toLowerCase()
+        const status = error.status
+        const code = (error as { code?: string }).code
+
+        if (
+          code === 'email_address_invalid' ||
+          (msg.includes('email') && msg.includes('invalid')) ||
+          msg.includes('unable to validate email address')
+        ) {
+          setErrors({ email: auth.emailInvalid, form: auth.emailInvalid })
+        } else if (
+          status === 429 ||
+          code === 'over_email_send_rate_limit' ||
+          msg.includes('rate limit') ||
+          msg.includes('too many requests')
+        ) {
+          setErrors({ form: auth.rateLimited })
+        } else if (
+          code === 'user_already_exists' ||
+          msg.includes('already registered') ||
+          msg.includes('already exists')
+        ) {
+          setErrors({ form: auth.emailAlreadyRegistered })
+        } else if (
+          code === 'weak_password' ||
+          (msg.includes('password') && (msg.includes('weak') || msg.includes('characters') || msg.includes('least')))
+        ) {
+          setErrors({ password: auth.passwordLength, form: auth.passwordLength })
+        } else {
+          setErrors({ form: error.message || auth.signUpFailed })
+        }
         return
       }
-      if (data.session) {
-        const next = getSafeNextPath(new URLSearchParams(window.location.search).get('next'))
+
+      if (data?.session && data?.user) {
+        const next = getAuthRedirectForUser(
+          data.user,
+          new URLSearchParams(window.location.search).get('next'),
+        )
         router.replace(next)
         router.refresh()
-      } else {
+      } else if (data?.user) {
         setSuccess(auth.checkEmail)
+      } else {
+        setErrors({ form: auth.signUpFailed })
       }
     } catch (error) {
       setErrors({ form: error instanceof Error && error.message.includes('environment') ? auth.authUnavailable : auth.signUpFailed })
@@ -109,8 +150,17 @@ export default function RegisterPage() {
             {errors.terms && <span className="form-error" style={{ display: 'block' }} role="alert">{errors.terms}</span>}
           </div>
           {errors.form && <div className="form-error auth-form-error" role="alert">{errors.form}</div>}
-          {success && <div className="auth-success" role="status">{success}</div>}
-          <button type="submit" disabled={loading || Boolean(success)} className="btn-primary" style={{ width: '100%', justifyContent: 'center', height: '42px', opacity: loading ? 0.8 : 1, cursor: loading ? 'not-allowed' : 'pointer' }}>
+          {success && (
+            <div className="auth-success" role="status" style={{ marginBottom: '16px', padding: '12px 14px', borderRadius: '8px', background: 'rgba(52, 211, 153, 0.1)', border: '1px solid rgba(52, 211, 153, 0.3)', color: '#34d399', fontSize: '14px', lineHeight: 1.5 }}>
+              <div>{success}</div>
+              <div style={{ marginTop: '8px' }}>
+                <Link href="/login" style={{ color: 'var(--accent)', fontWeight: 600, textDecoration: 'underline' }}>
+                  {auth.signIn} &rarr;
+                </Link>
+              </div>
+            </div>
+          )}
+          <button type="submit" disabled={loading || Boolean(success)} className="btn-primary" style={{ width: '100%', justifyContent: 'center', height: '42px', opacity: loading || Boolean(success) ? 0.8 : 1, cursor: loading || Boolean(success) ? 'not-allowed' : 'pointer' }}>
             <span>{auth.createAccount}</span>{loading ? <span className="spinner" aria-hidden="true" /> : <ArrowRight size={16} strokeWidth={2} />}
           </button>
         </form>

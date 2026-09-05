@@ -1,3 +1,5 @@
+'use client'
+
 import Link from 'next/link'
 import type { LucideIcon } from 'lucide-react'
 import {
@@ -14,6 +16,7 @@ import type {
   ChallengeProgressEntry,
   ChallengeType,
 } from '@/lib/challenges/types'
+import { useLanguage } from '@/components/LanguageProvider'
 import DifficultyBadge from './DifficultyBadge'
 
 interface ChallengeCardProps {
@@ -29,25 +32,25 @@ const TYPE_ICONS: Record<ChallengeType, LucideIcon> = {
   algorithm: LockKeyhole,
 }
 
-const TYPE_LABELS: Record<ChallengeType, string> = {
-  'build-circuit': 'Build',
-  'predict-output': 'Predict',
-  'fix-circuit': 'Repair',
-  'identify-gate': 'Identify',
-  algorithm: 'Algorithm',
-}
-
 function CardContent({ challenge, progress }: ChallengeCardProps) {
+  const { translations } = useLanguage()
+  const t = translations.student.challenges
+  const common = translations.student.common
   const Icon = TYPE_ICONS[challenge.type]
   const isUpcoming = challenge.kind === 'upcoming'
   const completed = progress?.completed === true
   const status = isUpcoming
-    ? 'Upcoming'
+    ? t.status.upcoming
     : completed
-      ? 'Completed'
+      ? t.status.completed
       : progress?.attempts
-        ? 'In progress'
-        : 'Not started'
+        ? t.status.inProgress
+        : t.status.notStarted
+
+  const localized = t.content[challenge.id]
+  const title = localized?.title ?? challenge.title
+  const shortDescription = localized?.shortDescription ?? challenge.shortDescription
+  const typeLabel = t.typeShort[challenge.type] ?? challenge.type
 
   return (
     <article className={`challenge-card${isUpcoming ? ' is-upcoming' : ''}`}>
@@ -57,14 +60,14 @@ function CardContent({ challenge, progress }: ChallengeCardProps) {
         </span>
         <DifficultyBadge difficulty={challenge.difficulty} />
       </div>
-      <span className="challenge-card-type">{TYPE_LABELS[challenge.type]}</span>
-      <h3>{challenge.title}</h3>
-      <p>{challenge.shortDescription}</p>
+      <span className="challenge-card-type">{typeLabel}</span>
+      <h3>{title}</h3>
+      <p>{shortDescription}</p>
       <div className="challenge-card-meta">
-        <span>{challenge.estimatedMinutes} min</span>
-        {!isUpcoming && <span>{challenge.baseXp} XP</span>}
+        <span>{challenge.estimatedMinutes} {common.min}</span>
+        {!isUpcoming && <span>{challenge.baseXp} {common.xp}</span>}
         {progress && progress.bestScore > 0 && (
-          <span>Best {progress.bestScore}</span>
+          <span>{t.best(progress.bestScore)}</span>
         )}
       </div>
       <div className="challenge-card-footer">

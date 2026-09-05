@@ -3,6 +3,8 @@ import { ThemeProvider } from 'next-themes'
 import LanguageProvider from '@/components/LanguageProvider'
 import '@/styles/globals.css'
 import 'katex/dist/katex.min.css'
+import { cookies } from 'next/headers'
+import { LANGUAGES, LANGUAGE_STORAGE_KEY } from '@/lib/languages'
 
 export const metadata: Metadata = {
   title: 'SankalpQ — Interactive Quantum Computing Learning Platform',
@@ -32,8 +34,10 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
+  const storedLanguage = cookies().get(LANGUAGE_STORAGE_KEY)?.value
+  const language = LANGUAGES.find(item => item.code === storedLanguage) ?? LANGUAGES[0]
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang={language.code.toLowerCase()} dir={language.dir ?? 'ltr'} suppressHydrationWarning>
       <head>
         {/* Geist fonts via CDN — avoids next/font module resolution issues */}
         <link
@@ -49,7 +53,7 @@ export default function RootLayout({
           disableTransitionOnChange={false}
           storageKey="sankalpq-theme"
         >
-          <LanguageProvider>{children}</LanguageProvider>
+          <LanguageProvider initialLanguage={LANGUAGES.some(item => item.code === storedLanguage) ? language.code : undefined}>{children}</LanguageProvider>
         </ThemeProvider>
       </body>
     </html>

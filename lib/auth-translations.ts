@@ -42,6 +42,10 @@ export interface AuthTranslations {
   signUpFailed: string
   emailAlreadyRegistered: string
   checkEmail: string
+  emailNotConfirmed: string
+  rateLimited: string
+  callbackFailed: string
+  oauthComingSoon: string
   authUnavailable: string
   tryAgain: string
   loading: string
@@ -91,6 +95,10 @@ const ENGLISH_AUTH: AuthTranslations = {
   signUpFailed: 'Unable to create your account right now. Please try again.',
   emailAlreadyRegistered: 'An account with this email already exists. Try signing in instead.',
   checkEmail: 'Account created. Check your email to confirm your account before signing in.',
+  emailNotConfirmed: 'Please verify your email before signing in.',
+  rateLimited: 'Too many attempts. Please wait a moment and try again.',
+  callbackFailed: 'Authentication link is invalid or has expired. Please sign in.',
+  oauthComingSoon: 'Social login is coming soon.',
   authUnavailable: 'Authentication is not configured yet. Add the Supabase environment variables to enable sign-in.',
   tryAgain: 'Please try again.',
   loading: 'Loading',
@@ -107,6 +115,8 @@ const AUTH_OVERRIDES: Record<string, Partial<AuthTranslations>> = {
     emailRequired: 'ईमेल पता आवश्यक है', emailInvalid: 'मान्य ईमेल पता दर्ज करें', passwordRequired: 'पासवर्ड आवश्यक है', fullNameRequired: 'पूरा नाम आवश्यक है',
     passwordLength: 'पासवर्ड कम से कम 8 अक्षरों का होना चाहिए', confirmPasswordRequired: 'पासवर्ड की पुष्टि आवश्यक है', passwordsDoNotMatch: 'पासवर्ड मेल नहीं खाते',
     termsRequired: 'जारी रखने के लिए सेवा की शर्तें स्वीकार करें', invalidCredentials: 'ईमेल या पासवर्ड गलत है।', checkEmail: 'खाता बन गया। पुष्टि के लिए अपना ईमेल देखें।',
+    emailNotConfirmed: 'साइन इन करने से पहले कृपया अपना ईमेल सत्यापित करें।', rateLimited: 'बहुत सारे प्रयास। कृपया थोड़ी देर प्रतीक्षा करें और पुन: प्रयास करें।',
+    callbackFailed: 'प्रमाणीकरण लिंक अमान्य है या समाप्त हो गया है। कृपया साइन इन करें।', oauthComingSoon: 'सोशल लॉगिन जल्द ही उपलब्ध होगा।',
   },
   MR: {
     loginTitle: 'पुन्हा स्वागत आहे', loginDescription: 'तुमचा क्वांटम शिक्षण प्रवास सुरू ठेवण्यासाठी साइन इन करा.',
@@ -118,6 +128,8 @@ const AUTH_OVERRIDES: Record<string, Partial<AuthTranslations>> = {
     emailRequired: 'ईमेल पत्ता आवश्यक आहे', emailInvalid: 'वैध ईमेल पत्ता टाका', passwordRequired: 'पासवर्ड आवश्यक आहे', fullNameRequired: 'पूर्ण नाव आवश्यक आहे',
     passwordLength: 'पासवर्ड किमान ८ अक्षरांचा असावा', confirmPasswordRequired: 'पासवर्डची पुष्टी आवश्यक आहे', passwordsDoNotMatch: 'पासवर्ड जुळत नाहीत',
     termsRequired: 'पुढे जाण्यासाठी सेवा अटी स्वीकारा', invalidCredentials: 'ईमेल किंवा पासवर्ड चुकीचा आहे.', checkEmail: 'खाते तयार झाले. पुष्टी करण्यासाठी ईमेल तपासा.',
+    emailNotConfirmed: 'साइन इन करण्यापूर्वी कृपया आपला ईमेल सत्यापित करा.', rateLimited: 'खूप प्रयत्न केले. कृपया थोडा वेळ थांबा आणि पुन्हा प्रयत्न करा.',
+    callbackFailed: 'प्रमाणीकरण लिंक अवैध आहे किंवा कालबाह्य झाली आहे. कृपया साइन इन करा.', oauthComingSoon: 'सोशल लॉगिन लवकरच उपलब्ध होईल.',
   },
   AR: {
     loginTitle: 'مرحباً بعودتك', loginDescription: 'سجّل الدخول لمتابعة رحلة تعلم الحوسبة الكمومية.',
@@ -129,6 +141,8 @@ const AUTH_OVERRIDES: Record<string, Partial<AuthTranslations>> = {
     emailRequired: 'البريد الإلكتروني مطلوب', emailInvalid: 'أدخل بريداً إلكترونياً صالحاً', passwordRequired: 'كلمة المرور مطلوبة', fullNameRequired: 'الاسم الكامل مطلوب',
     passwordLength: 'يجب أن تتكون كلمة المرور من 8 أحرف على الأقل', confirmPasswordRequired: 'تأكيد كلمة المرور مطلوب', passwordsDoNotMatch: 'كلمتا المرور غير متطابقتين',
     termsRequired: 'يجب قبول شروط الخدمة للمتابعة', invalidCredentials: 'البريد الإلكتروني أو كلمة المرور غير صحيحة.', checkEmail: 'تم إنشاء الحساب. تحقق من بريدك الإلكتروني لتأكيد الحساب.',
+    emailNotConfirmed: 'يرجى تأكيد بريدك الإلكتروني قبل تسجيل الدخول.', rateLimited: 'محاولات كثيرة جداً. يرجى الانتظار لحظة والمحاولة مرة أخرى.',
+    callbackFailed: 'رابط المصادقة غير صالح أو انتهت صلاحيته. يرجى تسجيل الدخول.', oauthComingSoon: 'تسجيل الدخول عبر المنصات الاجتماعية سيتوفر قريباً.',
   },
 }
 

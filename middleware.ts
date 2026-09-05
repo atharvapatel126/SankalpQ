@@ -1,6 +1,6 @@
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
-import { getSafeNextPath } from '@/lib/auth'
+import { getAuthRedirectForUser } from '@/lib/auth'
 
 const PROTECTED_PATHS = [
   '/dashboard',
@@ -9,9 +9,10 @@ const PROTECTED_PATHS = [
   '/simulator',
   '/circuit-builder',
   '/ai-tutor',
+  '/instructor',
 ]
 
-const AUTH_PATHS = ['/login', '/register']
+const AUTH_PATHS = ['/login', '/register', '/signin']
 
 function matchesPath(pathname: string, paths: string[]) {
   return paths.some(path => pathname === path || pathname.startsWith(`${path}/`))
@@ -63,7 +64,7 @@ export async function middleware(request: NextRequest) {
 
   if (isAuthPage && user) {
     const redirectUrl = request.nextUrl.clone()
-    redirectUrl.pathname = getSafeNextPath(request.nextUrl.searchParams.get('next'))
+    redirectUrl.pathname = getAuthRedirectForUser(user, request.nextUrl.searchParams.get('next'))
     redirectUrl.search = ''
     return NextResponse.redirect(redirectUrl)
   }
@@ -72,5 +73,16 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/dashboard/:path*', '/courses/:path*', '/challenges/:path*', '/simulator/:path*', '/circuit-builder/:path*', '/ai-tutor/:path*', '/login', '/register'],
+  matcher: [
+    '/dashboard/:path*',
+    '/courses/:path*',
+    '/challenges/:path*',
+    '/simulator/:path*',
+    '/circuit-builder/:path*',
+    '/ai-tutor/:path*',
+    '/instructor/:path*',
+    '/login',
+    '/register',
+    '/signin',
+  ],
 }

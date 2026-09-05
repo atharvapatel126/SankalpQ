@@ -1,6 +1,7 @@
 import { CheckCircle2 } from 'lucide-react'
 import CourseProgress from './CourseProgress'
 import type { Course, Lesson } from '@/lib/courses/types'
+import { useLanguage } from '@/components/LanguageProvider'
 
 interface LessonHeaderProps {
   course: Course
@@ -15,25 +16,30 @@ export default function LessonHeader({
   coursePercentage,
   completed,
 }: LessonHeaderProps) {
+  const { translations } = useLanguage()
+  const t = translations.student.courses
+  const common = translations.student.common
+  const localizedCourse = t.content[course.id]?.title ?? course.title
+  const localizedLesson = t.lessons[lesson.id]?.title ?? lesson.title
   return (
     <header className="courses-lesson-header">
       <div className="courses-lesson-kicker">
-        <span className="courses-level-badge">Level {course.level}</span>
+        <span className="courses-level-badge">{common.level} {course.level}</span>
         <span>
-          Lesson {lesson.order} of {course.lessons.length}
+          {common.lesson} {lesson.order} of {course.lessons.length}
         </span>
         {completed && (
           <span className="courses-lesson-complete">
             <CheckCircle2 size={14} aria-hidden="true" />
-            Completed
+            {common.completed}
           </span>
         )}
       </div>
-      <h1>{lesson.title}</h1>
+      <h1>{localizedLesson}</h1>
       <p>{lesson.summary}</p>
       <CourseProgress
         value={coursePercentage}
-        label={course.title + ' completion'}
+        label={t.completionLabel(localizedCourse)}
       />
     </header>
   )

@@ -6,6 +6,7 @@ import AppShell from '@/components/AppShell'
 import CourseGrid from './CourseGrid'
 import CourseProgress from './CourseProgress'
 import { useCourseProgress } from '@/hooks/useCourseProgress'
+import { useLanguage } from '@/components/LanguageProvider'
 import { ALL_LESSONS, COURSES } from '@/lib/courses/course-data'
 import {
   getOverallCompletion,
@@ -14,6 +15,9 @@ import {
 
 export default function CoursesOverview() {
   const { progress, hydrated } = useCourseProgress()
+  const { translations } = useLanguage()
+  const t = translations.student.courses
+  const common = translations.student.common
   const resume = getResumeLesson(progress)
   const overallCompletion = getOverallCompletion(progress)
   const completedCount = progress.completedLessonIds.length
@@ -30,17 +34,16 @@ export default function CoursesOverview() {
         <header className="courses-page-header">
           <div>
             <span className="dashboard-eyebrow dashboard-eyebrow-mono">
-              Learning paths
+              {t.eyebrow}
             </span>
-            <h1>Courses</h1>
+            <h1>{t.title}</h1>
             <p>
-              Learn quantum computing in four guided levels, from qubits to
-              practical algorithms.
+              {t.description}
             </p>
           </div>
-          <div className="courses-header-stat" aria-label="Overall course progress">
+          <div className="courses-header-stat" aria-label={t.overallCompletion}>
             <strong>{overallCompletion}%</strong>
-            <span>overall</span>
+            <span>{t.overall}</span>
           </div>
         </header>
 
@@ -50,16 +53,16 @@ export default function CoursesOverview() {
           </div>
           <div className="courses-resume-copy">
             <span className="dashboard-eyebrow dashboard-eyebrow-mono">
-              Continue learning
+              {t.continueLearning}
             </span>
-            <h2 id="continue-learning">{resume.lesson.title}</h2>
+            <h2 id="continue-learning">{t.lessons[resume.lesson.id]?.title ?? resume.lesson.title}</h2>
             <p>
-              Level {resume.course.level} · {resume.course.title} · Lesson{' '}
+              {common.level} {resume.course.level} · {t.content[resume.course.id]?.title ?? resume.course.title} · {common.lesson}{' '}
               {resume.lesson.order} of {resume.course.lessons.length}
             </p>
           </div>
           <Link href={resumeHref} className="btn-primary courses-resume-action">
-            Continue
+            {t.continue}
             <ArrowRight size={16} strokeWidth={1.5} aria-hidden="true" />
           </Link>
         </section>
@@ -69,35 +72,35 @@ export default function CoursesOverview() {
             <Layers size={17} aria-hidden="true" />
             <span>
               <strong>{COURSES.length}</strong>
-              Levels
+              {t.levels}
             </span>
           </div>
           <div className="courses-summary-stat">
             <BookOpen size={17} aria-hidden="true" />
             <span>
               <strong>{ALL_LESSONS.length}</strong>
-              Lessons
+              {common.lessons}
             </span>
           </div>
           <div className="courses-summary-stat">
             <CheckCircle2 size={17} aria-hidden="true" />
             <span>
               <strong>{completedCount}</strong>
-              Completed
+              {common.completed}
             </span>
           </div>
-          <CourseProgress value={overallCompletion} label="Overall completion" />
+          <CourseProgress value={overallCompletion} label={t.overallCompletion} />
         </section>
 
         <section className="courses-catalogue" aria-labelledby="course-levels">
           <div className="courses-section-heading">
             <div>
               <span className="dashboard-eyebrow dashboard-eyebrow-mono">
-                Curriculum
+                {t.curriculum}
               </span>
-              <h2 id="course-levels">Course levels</h2>
+              <h2 id="course-levels">{t.courseLevels}</h2>
             </div>
-            <span>{ALL_LESSONS.length} lessons</span>
+            <span>{ALL_LESSONS.length} {common.lessons.toLowerCase()}</span>
           </div>
           <CourseGrid courses={COURSES} progress={progress} />
         </section>

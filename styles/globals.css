@@ -626,6 +626,8 @@ html.light .card-shadow {
   padding: 6px;
   z-index: 100;
   box-shadow: 0 8px 24px rgba(0,0,0,.16);
+  max-height: min(420px, calc(100vh - 24px));
+  overflow-y: auto;
 }
 html.light .lang-dropdown {
   box-shadow: 0 8px 24px rgba(0,0,0,.10);
@@ -700,6 +702,7 @@ html.light .lang-dropdown {
   display: flex;
   flex-direction: column;
   padding: 24px 16px;
+  overflow: visible;
 }
 
 .app-brand {

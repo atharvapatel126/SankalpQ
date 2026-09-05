@@ -9,11 +9,13 @@ import {
 } from 'lucide-react'
 import { formatProbabilityDistribution } from '@/lib/challenges/challenge-validator'
 import type { ChallengeSessionResult } from '@/lib/challenges/types'
+import { useLanguage } from '@/components/LanguageProvider'
 
 interface ChallengeResultsProps {
   result: ChallengeSessionResult
   nextChallengeId: string | null
   onRetry: () => void
+  challengeId?: string
 }
 
 function formatElapsedTime(milliseconds: number): string {
@@ -27,8 +29,13 @@ export default function ChallengeResults({
   result,
   nextChallengeId,
   onRetry,
+  challengeId,
 }: ChallengeResultsProps) {
+  const { translations } = useLanguage()
+  const t = translations.student.challenges
+  const common = translations.student.common
   const StatusIcon = result.correct ? CheckCircle2 : XCircle
+  const localizedExplanation = challengeId ? t.content[challengeId]?.explanation : undefined
 
   return (
     <section
@@ -40,7 +47,7 @@ export default function ChallengeResults({
         <StatusIcon size={22} aria-hidden="true" />
         <div>
           <h2 id="challenge-result-title">
-            {result.correct ? 'Challenge complete' : 'Not there yet'}
+            {result.correct ? t.challengeComplete : t.notThereYet}
           </h2>
           <p>{result.feedback}</p>
         </div>
@@ -48,29 +55,29 @@ export default function ChallengeResults({
 
       {result.actualProbabilities && (
         <div className="challenge-result-distribution">
-          <span>Computed distribution</span>
+          <span>{t.computedDistribution}</span>
           <code>{formatProbabilityDistribution(result.actualProbabilities)}</code>
         </div>
       )}
 
-      <p className="challenge-result-explanation">{result.explanation}</p>
+      <p className="challenge-result-explanation">{localizedExplanation ?? result.explanation}</p>
 
       <dl className="challenge-result-metrics">
         <div>
-          <dt>Attempt</dt>
+          <dt>{t.attempt}</dt>
           <dd>{result.attemptNumber}</dd>
         </div>
         <div>
-          <dt>Hints used</dt>
+          <dt>{t.hintsUsed}</dt>
           <dd>{result.hintsUsed}</dd>
         </div>
         <div>
-          <dt>Time</dt>
+          <dt>{t.time}</dt>
           <dd>{formatElapsedTime(result.elapsedMs)}</dd>
         </div>
         <div>
-          <dt>XP earned</dt>
-          <dd>{result.score}</dd>
+          <dt>{t.xpEarned}</dt>
+          <dd>{result.score} {common.xp}</dd>
         </div>
       </dl>
 
@@ -82,18 +89,18 @@ export default function ChallengeResults({
                 className="btn-primary"
                 href={`/challenges/${nextChallengeId}`}
               >
-                Next challenge
+                {t.nextChallenge}
                 <ArrowRight size={15} aria-hidden="true" />
               </Link>
             )}
             <Link className="btn-outline" href="/challenges">
-              All challenges
+              {t.allChallenges}
             </Link>
           </>
         ) : (
           <button type="button" className="btn-primary" onClick={onRetry}>
             <RotateCcw size={15} aria-hidden="true" />
-            Retry
+            {t.retry}
           </button>
         )}
       </div>

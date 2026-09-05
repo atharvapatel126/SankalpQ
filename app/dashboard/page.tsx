@@ -189,13 +189,13 @@ export default function DashboardPage() {
     ...(progress.updatedAt
       ? [{
           key: 'course-progress',
-          label: `${dashboard.resuming}: ${resume.lesson.title}`,
+          label: `${dashboard.resuming}: ${dashboard.content?.lessons[resume.lesson.id] ?? resume.lesson.title}`,
           timestamp: progress.updatedAt,
         }]
       : []),
     ...challengeProgress.recentAttempts.map(attempt => ({
       key: attempt.id,
-      label: getChallenge(attempt.challengeId)?.title ?? 'Challenge attempt',
+      label: dashboard.content?.challenges[attempt.challengeId] ?? getChallenge(attempt.challengeId)?.title ?? dashboard.challenges,
       timestamp: attempt.submittedAt,
     })),
   ]
@@ -224,7 +224,7 @@ export default function DashboardPage() {
                 {courseComplete ? dashboard.learningPathComplete : dashboard.resuming}
               </span>
               <h2>
-                {courseComplete ? dashboard.allCourseLevelsCompleted : resume.lesson.title}
+                {courseComplete ? dashboard.allCourseLevelsCompleted : dashboard.content?.lessons[resume.lesson.id] ?? resume.lesson.title}
               </h2>
               <p>
                 {courseComplete

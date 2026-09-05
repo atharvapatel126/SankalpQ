@@ -11,6 +11,8 @@ export interface Language {
   dir?: 'rtl' | 'ltr'
 }
 
+export const LANGUAGE_STORAGE_KEY = 'sankalpq-language'
+
 export const LANGUAGES: Language[] = [
   { name: 'English',            native: 'English',             code: 'EN' },
   { name: 'Hindi',              native: 'हिन्दी',               code: 'HI' },

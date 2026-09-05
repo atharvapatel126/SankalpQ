@@ -54,6 +54,232 @@ export type TranslationSet = {
   }
   aiTutor: AiTutorTranslations
   dashboard: DashboardTranslations
+  student?: StudentTranslations
+}
+
+export type CourseContentTranslation = {
+  title: string
+  description: string
+}
+
+export type LessonContentTranslation = {
+  title: string
+}
+
+export type ChallengeContentTranslation = {
+  title: string
+  shortDescription: string
+  description: string
+  goal: string
+  availabilityNote?: string
+  options?: Record<string, string>
+  hints?: string[]
+  explanation?: string
+}
+
+export type StudentTranslations = {
+  common: {
+    level: string
+    levels: string
+    lesson: string
+    lessons: string
+    complete: string
+    completed: string
+    notStarted: string
+    inProgress: string
+    upcoming: string
+    previous: string
+    next: string
+    min: string
+    xp: string
+    close: string
+    cancel: string
+    reset: string
+    save: string
+    clear: string
+    run: string
+    undo: string
+    redo: string
+    and: string
+  }
+  courses: {
+    eyebrow: string
+    title: string
+    description: string
+    overall: string
+    continueLearning: string
+    continue: string
+    levels: string
+    curriculum: string
+    courseLevels: string
+    overallCompletion: string
+    reviewCourse: string
+    startCourse: string
+    continueCourse: string
+    quizSaved: string
+    quizUnlock: string
+    conceptIntroduction: string
+    startWithIdea: string
+    coreExplanation: string
+    howItWorks: string
+    interactiveExample: string
+    exampleSteps: string
+    tryItYourself: string
+    openIdea: string
+    openCircuit: string
+    knowledgeCheck: string
+    checkUnderstanding: string
+    chooseAnswer: string
+    correct: string
+    notQuite: string
+    checkAnswer: string
+    tryAgain: string
+    lessonProgress: (completed: number, total: number) => string
+    completionLabel: (name: string) => string
+    content: Record<string, CourseContentTranslation>
+    lessons: Record<string, LessonContentTranslation>
+  }
+  challenges: {
+    eyebrow: string
+    title: string
+    description: string
+    yourPractice: string
+    progress: string
+    completed: string
+    currentLevel: string
+    accuracy: string
+    bestScore: string
+    history: string
+    recent: string
+    retryNeeded: string
+    attempt: string
+    type: Record<string, string>
+    difficulty: Record<string, { title: string; description: string }>
+    status: Record<string, string>
+    challengeCount: (count: number) => string
+    best: (score: number) => string
+    content: Record<string, ChallengeContentTranslation>
+    goal: string
+    details: string
+    upTo: string
+    workspace: string
+    chooseExpectedOutput: string
+    chooseGate: string
+    buildCircuit: string
+    repairCircuit: string
+    selectAnswer: string
+    submitAnswer: string
+    allChallenges: string
+    backToChallenges: string
+    progressiveHints: string
+    hintsRevealed: (visible: number, total: number) => string
+    revealClue: (count: number) => string
+    allHintsRevealed: string
+    emptyHint: string
+    challengeComplete: string
+    notThereYet: string
+    computedDistribution: string
+    hintsUsed: string
+    time: string
+    xpEarned: string
+    nextChallenge: string
+    retry: string
+    openInCircuitBuilder: string
+    submitCircuit: string
+    circuitControls: string
+    circuitToAnalyze: string
+    stateTransformation: string
+    challengesCompletedAria: (level: string) => string
+    typeShort: Record<string, string>
+  }
+  simulator: {
+    eyebrow: string
+    title: string
+    description: string
+    localBackendReady: string
+    educationalMock: string
+    configure: string
+    setup: string
+    circuit: string
+    circuitSource: string
+    savedCircuits: string
+    exampleCircuits: string
+    executionSettings: string
+    shots: string
+    repeatedMeasurements: string
+    backend: string
+    available: string
+    comingSoon: string
+    runSimulation: string
+    runningSimulation: string
+    editInBuilder: string
+    completed: string
+    results: string
+    localNotice: string
+    execution: string
+    executionSummary: string
+    localCompute: string
+    outcomes: string
+    gateOperations: string
+    measurements: string
+    circuitDepth: string
+    beforeMeasurement: string
+    stateVector: string
+    distribution: string
+    measurementProbabilities: string
+    counts: string
+    measurementResults: string
+    outcome: string
+    frequency: string
+    whyThisHappened: string
+    resultExplanation: string
+    probabilityNote: string
+    singleQubit: string
+    blochVector: string
+  }
+  builder: {
+    title: string
+    description: string
+    hint: string
+    gatePalette: string
+    singleQubit: string
+    parameterized: string
+    multiQubit: string
+    measurement: string
+    clickTarget: string
+    clickCell: string
+    controlFirst: string
+    target: string
+    properties: string
+    selectGate: string
+    gateProperties: string
+    moment: string
+    controlQubit: string
+    targetQubit: string
+    classicalBit: string
+    angle: string
+    degrees: string
+    removeGate: string
+    circuitToolbar: string
+    circuitName: string
+    clickToRename: string
+    removeQubit: string
+    addQubit: string
+    clearGates: string
+    examples: string
+    starterCircuits: string
+    shots: string
+    running: string
+    simulator: string
+    saveCircuit: string
+    jsonModel: string
+    jsonRepresentation: string
+    qubits: (count: number) => string
+    operations: (count: number) => string
+    runningOn: (shots: string) => string
+    gates: Record<string, { label: string; description: string }>
+    starters: Record<string, string>
+  }
 }
 
 export type AiTutorTranslations = {
@@ -116,6 +342,26 @@ const HINDI_AI_TUTOR: AiTutorTranslations = {
   tryAgain: 'फिर कोशिश करें',
 }
 
+const MARATHI_AI_TUTOR: AiTutorTranslations = {
+  title: 'AI शिक्षक',
+  subtitle: 'तुमचा वैयक्तिक क्वांटम-कम्प्युटिंग शिकवणी सहाय्यक',
+  contextLabel: 'शिकण्याचा संदर्भ',
+  currentLesson: 'सध्याचा धडा',
+  noActiveLesson: 'अद्याप कोणताही सक्रिय धडा नाही',
+  student: 'विद्यार्थी',
+  tutor: 'AI शिक्षक',
+  placeholder: 'क्वांटम कम्प्युटिंगबद्दल प्रश्न विचारा…',
+  send: 'पाठवा',
+  welcomeTitle: 'तुम्हाला काय शोधायचे आहे?',
+  welcomeDescription: 'क्यूबिट्स, गेट्स, अल्गोरिदम किंवा सध्याच्या धड्याबद्दल काहीही विचारा.',
+  thinking: 'AI शिक्षक विचार करत आहे…',
+  clearConversation: 'संभाषण साफ करा',
+  messageListLabel: 'AI शिक्षकासोबतचे संभाषण',
+  requestError: 'आत्ता AI शिक्षकाशी जोडता आले नाही. कृपया थोड्या वेळाने पुन्हा प्रयत्न करा.',
+  authError: 'पुढे जाण्यासाठी साइन इन करा.',
+  tryAgain: 'पुन्हा प्रयत्न करा',
+}
+
 export type DashboardTranslations = {
   welcomeBack: (name: string) => string
   leftOff: string
@@ -159,6 +405,10 @@ export type DashboardTranslations = {
     scoredSuperposition: string
     startedQuantumEntanglement: string
     relativeDays: (days: number) => string
+  }
+  content?: {
+    lessons: Record<string, string>
+    challenges: Record<string, string>
   }
 }
 
@@ -253,6 +503,478 @@ const HINDI_DASHBOARD: DashboardTranslations = {
     relativeDays: days => `${days} दिन`,
   },
 }
+
+const ENGLISH_STUDENT: StudentTranslations = {
+  common: {
+    level: 'Level', levels: 'Levels', lesson: 'Lesson', lessons: 'Lessons', complete: 'Complete', completed: 'Completed',
+    notStarted: 'Not started', inProgress: 'In progress', upcoming: 'Upcoming', previous: 'Previous', next: 'Next', min: 'min', xp: 'XP',
+    close: 'Close', cancel: 'Cancel', reset: 'Reset', save: 'Save', clear: 'Clear', run: 'Run', undo: 'Undo', redo: 'Redo', and: 'and',
+  },
+  courses: {
+    eyebrow: 'Learning paths', title: 'Courses', description: 'Learn quantum computing in four guided levels, from qubits to practical algorithms.', overall: 'overall',
+    continueLearning: 'Continue learning', continue: 'Continue', levels: 'Levels', curriculum: 'Curriculum', courseLevels: 'Course levels', overallCompletion: 'Overall completion',
+    reviewCourse: 'Review course', startCourse: 'Start course', continueCourse: 'Continue learning', quizSaved: 'Your quiz result is saved locally with your lesson progress.', quizUnlock: 'Answer the knowledge check to unlock lesson completion.', conceptIntroduction: 'Concept introduction', startWithIdea: 'Start with the idea', coreExplanation: 'Core explanation', howItWorks: 'How it works', interactiveExample: 'Interactive example', exampleSteps: 'Example steps', tryItYourself: 'Try it yourself', openIdea: 'Open this idea in Circuit Builder', openCircuit: 'Open circuit', knowledgeCheck: 'Knowledge check', checkUnderstanding: 'Check your understanding', chooseAnswer: 'Choose one answer', correct: 'Correct', notQuite: 'Not quite', checkAnswer: 'Check answer', tryAgain: 'Try again', lessonProgress: (completed, total) => `${completed} of ${total} complete`,
+    completionLabel: name => `${name} progress`,
+    content: {
+      'course-fundamentals': { title: 'Quantum Fundamentals', description: 'Build a precise mental model of qubits, amplitudes, superposition, and measurement.' },
+      'course-gates': { title: 'Quantum Gates', description: 'Understand the operations that transform quantum states and compose useful circuits.' },
+      'course-circuits': { title: 'Quantum Circuits', description: 'Read, design, and reason about multi-qubit circuits, correlation, and entanglement.' },
+      'course-algorithms': { title: 'Quantum Algorithms', description: 'Connect quantum primitives to algorithmic patterns such as Deutsch–Jozsa and Grover.' },
+    },
+    lessons: {},
+  },
+  challenges: {
+    eyebrow: 'Your practice', title: 'Quantum Challenges', description: 'Apply each concept by building, repairing, and reasoning about circuits.', yourPractice: 'Your practice', progress: 'Challenge progress',
+    completed: 'Completed', currentLevel: 'Current level', accuracy: 'Accuracy', bestScore: 'Best score', history: 'History', recent: 'Recent challenges', retryNeeded: 'Retry needed',
+    attempt: 'Attempt', type: { 'build-circuit': 'Build the circuit', 'predict-output': 'Predict the output', 'fix-circuit': 'Fix the circuit', 'identify-gate': 'Identify the gate', algorithm: 'Algorithm challenge' },
+    difficulty: {
+      beginner: { title: 'Beginner', description: 'Single-qubit gates, superposition, and measurement.' },
+      intermediate: { title: 'Intermediate', description: 'Controlled gates, correlation, and Bell states.' },
+      advanced: { title: 'Advanced', description: 'Quantum algorithm construction and analysis.' },
+    },
+    status: { upcoming: 'Upcoming', completed: 'Completed', inProgress: 'In progress', notStarted: 'Not started' },
+    challengeCount: count => `${count} challenge${count === 1 ? '' : 's'}`, best: score => `Best ${score}`,
+    content: {
+      'build-superposition': { title: 'Build Equal Superposition', shortDescription: 'Prepare |+> from a qubit initialized in |0>.', description: 'Place gates on the wire so the final quantum state is (|0> + |1>)/sqrt(2). Equivalent circuits are accepted.', goal: 'Prepare |+>, giving 50% probability for both |0> and |1>.' },
+      'predict-hadamard-output': { title: 'Predict a Hadamard Measurement', shortDescription: 'Predict the output distribution of a one-qubit circuit.', description: 'The qubit begins in |0>, passes through the shown circuit, and is measured in the computational basis.', goal: 'Choose the measurement distribution produced by the circuit.' },
+      'identify-x-gate': { title: 'Identify the Bit-Flip Gate', shortDescription: 'Find the operation that maps |0> to |1>.', description: 'A single qubit starts in |0> and must finish in |1> with certainty. Identify the gate that performs this transformation.', goal: 'Select the gate that deterministically flips the computational basis value.' },
+      'build-bell-state': { title: 'Create a Bell State', shortDescription: 'Entangle two qubits into the Phi-plus Bell state.', description: 'Starting from |00>, build any equivalent circuit whose final state is (|00> + |11>)/sqrt(2).', goal: 'Prepare correlated outcomes: 50% |00>, 50% |11>, with the correct relative phase.' },
+      'fix-bell-state': { title: 'Repair the Bell Circuit', shortDescription: 'Correct a controlled gate that points the wrong way.', description: 'This circuit creates superposition but fails to entangle its qubits. Inspect the controlled operation and repair the circuit.', goal: 'Finish with the Phi-plus Bell state (|00> + |11>)/sqrt(2).' },
+      'grover-amplitude-amplification': { title: 'Grover Amplitude Amplification', shortDescription: 'Build an oracle and amplify a marked two-qubit state.', description: 'An advanced construction challenge covering phase oracles, diffusion, and amplitude amplification.', goal: 'Amplify a marked basis state using one Grover iteration.', availabilityNote: 'Upcoming with the Quantum Algorithms course level.' },
+    },
+    goal: 'Goal', details: 'Challenge details', upTo: 'Up to', workspace: 'Workspace', chooseExpectedOutput: 'Choose the expected output', chooseGate: 'Choose the gate', buildCircuit: 'Build your circuit', repairCircuit: 'Repair the circuit', selectAnswer: 'Select one answer', submitAnswer: 'Submit answer', allChallenges: 'All challenges', backToChallenges: 'Back to challenges', progressiveHints: 'Progressive hints', hintsRevealed: (visible, total) => `${visible} of ${total} revealed`, revealClue: count => `Reveal hint ${count}`, allHintsRevealed: 'All hints revealed', emptyHint: 'Reveal one clue at a time when you need it.', challengeComplete: 'Challenge complete', notThereYet: 'Not there yet', computedDistribution: 'Computed distribution', hintsUsed: 'Hints used', time: 'Time', xpEarned: 'XP earned', nextChallenge: 'Next challenge', retry: 'Retry', openInCircuitBuilder: 'Open in Circuit Builder', submitCircuit: 'Submit circuit', circuitControls: 'Challenge circuit controls', circuitToAnalyze: 'Circuit to analyze', stateTransformation: 'Quantum state transformation', challengesCompletedAria: level => `${level} challenges completed`, typeShort: { 'build-circuit': 'Build', 'predict-output': 'Predict', 'fix-circuit': 'Repair', 'identify-gate': 'Identify', algorithm: 'Algorithm' },
+  },
+  simulator: {
+    eyebrow: 'Quantum execution', title: 'Quantum Simulator', description: 'Run a circuit, inspect its measurement distribution, and connect the result to the underlying quantum state.', localBackendReady: 'Local backend ready', educationalMock: 'Educational mock', configure: 'Configure', setup: 'Simulation setup', circuit: 'Circuit', circuitSource: 'Circuit source', savedCircuits: 'Saved circuits', exampleCircuits: 'Example circuits', executionSettings: 'Execution settings', shots: 'Shots', repeatedMeasurements: 'Number of repeated measurements.', backend: 'Simulation backend', available: 'Available', comingSoon: 'Coming soon', runSimulation: 'Run Simulation', runningSimulation: 'Running simulation...', editInBuilder: 'Edit in Builder', completed: 'Completed', results: 'Simulation results', localNotice: 'These results were computed locally for learning. They are not Qiskit Aer or quantum hardware results.', execution: 'Execution', executionSummary: 'Execution summary', localCompute: 'Local compute', outcomes: 'Outcomes', gateOperations: 'Gate operations', measurements: 'Measurements', circuitDepth: 'Circuit depth', beforeMeasurement: 'Before measurement', stateVector: 'State vector', distribution: 'Distribution', measurementProbabilities: 'Measurement probabilities', counts: 'Counts', measurementResults: 'Measurement results', outcome: 'Outcome', frequency: 'Frequency', whyThisHappened: 'Why this happened', resultExplanation: 'Result explanation', probabilityNote: "The state vector stores probability amplitudes. Squaring each amplitude's magnitude gives its basis-state probability.", singleQubit: 'Single qubit', blochVector: 'Bloch vector',
+  },
+  builder: {
+    title: 'Circuit Builder', description: 'Build quantum circuits by placing gates on qubit wires.', hint: 'Select a gate from the palette, then click a cell to place it.', gatePalette: 'Gate Palette', singleQubit: 'Single Qubit', parameterized: 'Parameterized', multiQubit: 'Multi-Qubit', measurement: 'Measurement', clickTarget: 'Click target qubit', clickCell: 'Click a cell to place', controlFirst: 'For multi-qubit gates, click the control qubit first, then the target.', target: 'target', properties: 'Properties', selectGate: 'Select a gate to inspect it.', gateProperties: 'Gate properties', moment: 'Moment', controlQubit: 'Control qubit', targetQubit: 'Target qubit', classicalBit: 'Classical bit', angle: 'Angle', degrees: 'degrees', removeGate: 'Remove gate', circuitToolbar: 'Circuit toolbar', circuitName: 'Circuit name', clickToRename: 'Click to rename', removeQubit: 'Remove qubit', addQubit: 'Add qubit', clearGates: 'Clear all gates', examples: 'Examples', starterCircuits: 'Starter circuits', shots: 'Number of shots', running: 'Running…', simulator: 'Simulator', saveCircuit: 'Save circuit', jsonModel: 'Circuit JSON Model', jsonRepresentation: 'Circuit JSON representation', qubits: count => `${count} qubit${count === 1 ? '' : 's'}`, operations: count => `${count} ops`, runningOn: shots => `Running simulation on ${shots} shots…`,
+    gates: { H: { label: 'Hadamard', description: 'Creates superposition.' }, X: { label: 'Pauli-X', description: 'Flips the qubit state.' }, Y: { label: 'Pauli-Y', description: 'Combines bit and phase flip.' }, Z: { label: 'Pauli-Z', description: 'Applies a phase flip.' }, S: { label: 'S Gate (Phase)', description: 'Applies a π/2 phase shift.' }, T: { label: 'T Gate (π/8)', description: 'Applies a π/4 phase shift.' }, RX: { label: 'Rotation X', description: 'Rotates the qubit around the X axis.' }, RY: { label: 'Rotation Y', description: 'Rotates the qubit around the Y axis.' }, RZ: { label: 'Rotation Z', description: 'Rotates the qubit around the Z axis.' }, CNOT: { label: 'CNOT', description: 'Flips the target when the control is |1⟩.' }, CZ: { label: 'CZ Gate', description: 'Applies Z to the target when the control is |1⟩.' }, SWAP: { label: 'SWAP', description: 'Swaps the states of two qubits.' }, MEASURE: { label: 'Measure', description: 'Measures the qubit in the computational basis.' } },
+    starters: { 'starter-bell-state': 'Bell State', 'starter-superposition': 'Superposition', 'starter-basic-measurement': 'Basic Measurement', 'starter-entanglement': 'Entanglement Example', 'starter-not': 'Quantum NOT', 'starter-ghz': 'GHZ State', 'starter-phase-kickback': 'Phase Kickback' },
+  },
+}
+
+const MARATHI_STUDENT: StudentTranslations = {
+  common: {
+    level: 'स्तर', levels: 'स्तर', lesson: 'धडा', lessons: 'धडे', complete: 'पूर्ण', completed: 'पूर्ण झाले', notStarted: 'सुरू केलेले नाही', inProgress: 'प्रगतीपथावर', upcoming: 'लवकरच', previous: 'मागील', next: 'पुढील', min: 'मि.', xp: 'XP', close: 'बंद करा', cancel: 'रद्द करा', reset: 'पुन्हा सेट करा', save: 'जतन करा', clear: 'साफ करा', run: 'चालवा', undo: 'पूर्ववत करा', redo: 'पुन्हा करा', and: 'आणि',
+  },
+  courses: {
+    eyebrow: 'शिकण्याचे मार्ग', title: 'अभ्यासक्रम', description: 'क्यूबिट्सपासून उपयुक्त अल्गोरिदमपर्यंत चार मार्गदर्शित स्तरांमध्ये क्वांटम कम्प्युटिंग शिका.', overall: 'एकूण', continueLearning: 'शिकणे सुरू ठेवा', continue: 'पुढे सुरू ठेवा', levels: 'स्तर', curriculum: 'अभ्यासक्रम आराखडा', courseLevels: 'अभ्यासक्रमाचे स्तर', overallCompletion: 'एकूण पूर्णता', reviewCourse: 'अभ्यासक्रमाचा आढावा घ्या', startCourse: 'अभ्यासक्रम सुरू करा', continueCourse: 'शिकणे सुरू ठेवा', quizSaved: 'तुमचा क्विझ निकाल धड्याच्या प्रगतीसोबत स्थानिक पातळीवर जतन झाला आहे.', quizUnlock: 'धडा पूर्ण करण्यासाठी ज्ञान चाचणीचे उत्तर द्या.', conceptIntroduction: 'संकल्पनेचा परिचय', startWithIdea: 'कल्पनेपासून सुरुवात करा', coreExplanation: 'मूलभूत स्पष्टीकरण', howItWorks: 'हे कसे कार्य करते', interactiveExample: 'परस्परसंवादी उदाहरण', exampleSteps: 'उदाहरणातील पायऱ्या', tryItYourself: 'स्वतः करून पाहा', openIdea: 'ही कल्पना Circuit Builder मध्ये उघडा', openCircuit: 'सर्किट उघडा', knowledgeCheck: 'ज्ञान चाचणी', checkUnderstanding: 'तुमची समज तपासा', chooseAnswer: 'एक उत्तर निवडा', correct: 'बरोबर', notQuite: 'अजून बरोबर नाही', checkAnswer: 'उत्तर तपासा', tryAgain: 'पुन्हा प्रयत्न करा', lessonProgress: (completed, total) => `${total} पैकी ${completed} पूर्ण`, completionLabel: name => `${name} ची प्रगती`,
+    content: {
+      'course-fundamentals': { title: 'क्वांटम मूलतत्त्वे', description: 'क्यूबिट्स, अॅम्प्लिट्यूड, सुपरपोझिशन आणि मोजमाप यांचे स्पष्ट आकलन तयार करा.' },
+      'course-gates': { title: 'क्वांटम गेट्स', description: 'क्वांटम अवस्था बदलणाऱ्या क्रिया समजून घ्या आणि उपयुक्त सर्किट्स तयार करा.' },
+      'course-circuits': { title: 'क्वांटम सर्किट्स', description: 'बहु-क्यूबिट सर्किट्स, सहसंबंध आणि एंटॅंगलमेंट वाचा, तयार करा आणि समजून घ्या.' },
+      'course-algorithms': { title: 'क्वांटम अल्गोरिदम्स', description: 'Deutsch–Jozsa आणि Grover सारख्या अल्गोरिदम पद्धतींशी क्वांटम मूलभूत संकल्पना जोडा.' },
+    },
+    lessons: {
+      'quantum-fundamentals:introduction-to-quantum-computing': { title: 'क्वांटम कम्प्युटिंगचा परिचय' }, 'quantum-fundamentals:classical-bit-vs-qubit': { title: 'क्लासिकल बिट आणि क्यूबिट' }, 'quantum-fundamentals:qubit-states': { title: 'क्यूबिट अवस्था' }, 'quantum-fundamentals:superposition': { title: 'सुपरपोझिशन' }, 'quantum-fundamentals:quantum-measurement': { title: 'क्वांटम मोजमाप' },
+      'quantum-gates:introduction-to-quantum-gates': { title: 'क्वांटम गेट्सचा परिचय' }, 'quantum-gates:pauli-x-gate': { title: 'Pauli-X गेट' }, 'quantum-gates:pauli-y-gate': { title: 'Pauli-Y गेट' }, 'quantum-gates:pauli-z-gate': { title: 'Pauli-Z गेट' }, 'quantum-gates:hadamard-gate': { title: 'Hadamard गेट' }, 'quantum-gates:phase-gates': { title: 'फेज गेट्स' }, 'quantum-gates:rotation-gates': { title: 'रोटेशन गेट्स' },
+      'quantum-circuits:quantum-circuit-basics': { title: 'क्वांटम सर्किटची मूलतत्त्वे' }, 'quantum-circuits:multiple-qubits': { title: 'अनेक क्यूबिट्स' }, 'quantum-circuits:cnot-gate': { title: 'CNOT गेट' }, 'quantum-circuits:entanglement': { title: 'एंटॅंगलमेंट' }, 'quantum-circuits:bell-states': { title: 'Bell अवस्था' },
+      'quantum-algorithms:deutsch-jozsa-algorithm': { title: 'Deutsch–Jozsa अल्गोरिदम' }, 'quantum-algorithms:grovers-algorithm': { title: "Grover चा अल्गोरिदम" }, 'quantum-algorithms:quantum-fourier-transform': { title: 'क्वांटम Fourier Transform' },
+    },
+  },
+  challenges: {
+    eyebrow: 'तुमचा सराव', title: 'क्वांटम आव्हाने', description: 'सर्किट्स तयार करून, दुरुस्त करून आणि त्यांचा तर्क समजून प्रत्येक संकल्पना वापरा.', yourPractice: 'तुमचा सराव', progress: 'आव्हानांची प्रगती', completed: 'पूर्ण झाले', currentLevel: 'सध्याचा स्तर', accuracy: 'अचूकता', bestScore: 'सर्वोत्तम गुण', history: 'इतिहास', recent: 'अलीकडील आव्हाने', retryNeeded: 'पुन्हा प्रयत्न आवश्यक', attempt: 'प्रयत्न', type: { 'build-circuit': 'सर्किट तयार करा', 'predict-output': 'आउटपुटाचा अंदाज लावा', 'fix-circuit': 'सर्किट दुरुस्त करा', 'identify-gate': 'गेट ओळखा', algorithm: 'अल्गोरिदम आव्हान' }, difficulty: { beginner: { title: 'प्रारंभिक', description: 'सिंगल-क्यूबिट गेट्स, सुपरपोझिशन आणि मोजमाप.' }, intermediate: { title: 'मध्यम', description: 'कंट्रोल्ड गेट्स, सहसंबंध आणि Bell अवस्था.' }, advanced: { title: 'प्रगत', description: 'क्वांटम अल्गोरिदमची रचना आणि विश्लेषण.' } }, status: { upcoming: 'लवकरच', completed: 'पूर्ण झाले', inProgress: 'प्रगतीपथावर', notStarted: 'सुरू केलेले नाही' }, challengeCount: count => `${count} आव्हाने`, best: score => `सर्वोत्तम ${score}`,
+    content: {
+      'build-superposition': { title: 'समान Superposition तयार करा', shortDescription: '|0⟩ मध्ये सुरू केलेल्या क्यूबिटपासून |+⟩ तयार करा.', description: 'अंतिम क्वांटम अवस्था (|0⟩ + |1⟩)/√2 होण्यासाठी वायरवर गेट्स ठेवा. समतुल्य सर्किट्स स्वीकारली जातील.', goal: '|+⟩ तयार करा; |0⟩ आणि |1⟩ दोन्हीची संभाव्यता 50% असावी.' },
+      'predict-hadamard-output': { title: 'Hadamard मोजमापाचा अंदाज लावा', shortDescription: 'एका क्यूबिटच्या सर्किटचे आउटपुट वितरण ओळखा.', description: 'क्यूबिट |0⟩ पासून सुरू होतो, दाखवलेल्या सर्किटमधून जातो आणि computational basis मध्ये मोजला जातो.', goal: 'या सर्किटमधून मिळणारे मोजमाप वितरण निवडा.' },
+      'identify-x-gate': { title: 'Bit-Flip गेट ओळखा', shortDescription: '|0⟩ ला |1⟩ मध्ये बदलणारी क्रिया शोधा.', description: 'एक क्यूबिट |0⟩ पासून सुरू होतो आणि निश्चितपणे |1⟩ वर संपला पाहिजे. हे रूपांतर करणारे गेट ओळखा.', goal: 'computational basis मूल्य निश्चितपणे उलटवणारे गेट निवडा.' },
+      'build-bell-state': { title: 'Bell अवस्था तयार करा', shortDescription: 'दोन क्यूबिट्सना Phi-plus Bell अवस्थेत गुंतवा.', description: '|00⟩ पासून सुरू करून अंतिम अवस्था (|00⟩ + |11⟩)/√2 असलेले समतुल्य सर्किट तयार करा.', goal: 'सहसंबंधित परिणाम तयार करा: 50% |00⟩ आणि 50% |11⟩.' },
+      'fix-bell-state': { title: 'Bell सर्किट दुरुस्त करा', shortDescription: 'चुकीच्या दिशेने असलेले controlled गेट दुरुस्त करा.', description: 'या सर्किटमध्ये superposition तयार होते, पण क्यूबिट्स गुंतत नाहीत. controlled क्रिया तपासा आणि सर्किट दुरुस्त करा.', goal: 'Phi-plus Bell अवस्था (|00⟩ + |11⟩)/√2 मिळवा.' },
+      'grover-amplitude-amplification': { title: 'Grover Amplitude Amplification', shortDescription: 'Oracle तयार करून निवडलेल्या दोन-क्यूबिट अवस्थेचे amplitude वाढवा.', description: 'Phase oracle, diffusion आणि amplitude amplification यांचा समावेश असलेले प्रगत आव्हान.', goal: 'एक Grover iteration वापरून निवडलेल्या basis अवस्थेचे amplitude वाढवा.', availabilityNote: 'Quantum Algorithms अभ्यासक्रमाच्या स्तरासोबत लवकरच उपलब्ध होईल.' },
+    },
+    goal: 'उद्दिष्ट', details: 'आव्हानाचा तपशील', upTo: 'कमाल', workspace: 'कार्यस्थळ', chooseExpectedOutput: 'अपेक्षित आउटपुट निवडा', chooseGate: 'गेट निवडा', buildCircuit: 'तुमचे सर्किट तयार करा', repairCircuit: 'सर्किट दुरुस्त करा', selectAnswer: 'एक उत्तर निवडा', submitAnswer: 'उत्तर पाठवा', allChallenges: 'सर्व आव्हाने', backToChallenges: 'आव्हानांकडे परत', progressiveHints: 'क्रमिक सूचना', hintsRevealed: (visible, total) => `${total} पैकी ${visible} सूचना उघड`, revealClue: count => `सूचना ${count} उघडा`, allHintsRevealed: 'सर्व सूचना उघडल्या', emptyHint: 'गरज भासेल तेव्हा एका वेळी एक सूचना उघडा.', challengeComplete: 'आव्हान पूर्ण झाले', notThereYet: 'अजून पूर्ण झालेले नाही', computedDistribution: 'मोजलेले वितरण', hintsUsed: 'वापरलेल्या सूचना', time: 'वेळ', xpEarned: 'मिळवलेले XP', nextChallenge: 'पुढील आव्हान', retry: 'पुन्हा प्रयत्न करा', openInCircuitBuilder: 'Circuit Builder मध्ये उघडा', submitCircuit: 'सर्किट पाठवा', circuitControls: 'आव्हानाची सर्किट नियंत्रणे', circuitToAnalyze: 'विश्लेषणासाठी सर्किट', stateTransformation: 'क्वांटम अवस्था रूपांतर', challengesCompletedAria: level => `${level} आव्हाने पूर्ण झाली`, typeShort: { 'build-circuit': 'तयार करा', 'predict-output': 'अंदाज लावा', 'fix-circuit': 'दुरुस्त करा', 'identify-gate': 'ओळखा', algorithm: 'अल्गोरिदम' },
+  },
+  simulator: {
+    eyebrow: 'क्वांटम अंमलबजावणी', title: 'क्वांटम सिम्युलेटर', description: 'सर्किट चालवा, मोजमाप वितरण तपासा आणि परिणामाचा क्वांटम अवस्थेशी संबंध समजून घ्या.', localBackendReady: 'स्थानिक backend तयार आहे', educationalMock: 'शैक्षणिक नमुना', configure: 'कॉन्फिगर करा', setup: 'सिम्युलेशन सेटअप', circuit: 'सर्किट', circuitSource: 'सर्किटचा स्रोत', savedCircuits: 'जतन केलेली सर्किट्स', exampleCircuits: 'उदाहरण सर्किट्स', executionSettings: 'अंमलबजावणी सेटिंग्ज', shots: 'प्रयोगसंख्या', repeatedMeasurements: 'पुनरावृत्तीच्या मोजमापांची संख्या.', backend: 'सिम्युलेशन backend', available: 'उपलब्ध', comingSoon: 'लवकरच उपलब्ध', runSimulation: 'सिम्युलेशन चालवा', runningSimulation: 'सिम्युलेशन चालू आहे...', editInBuilder: 'Builder मध्ये संपादित करा', completed: 'पूर्ण झाले', results: 'सिम्युलेशनचे परिणाम', localNotice: 'हे परिणाम शिकण्यासाठी स्थानिक पातळीवर मोजले आहेत. हे Qiskit Aer किंवा प्रत्यक्ष quantum hardware चे परिणाम नाहीत.', execution: 'अंमलबजावणी', executionSummary: 'अंमलबजावणीचा सारांश', localCompute: 'स्थानिक गणना', outcomes: 'परिणाम', gateOperations: 'गेट क्रिया', measurements: 'मोजमाप', circuitDepth: 'सर्किटची खोली', beforeMeasurement: 'मोजमापापूर्वी', stateVector: 'अवस्था सदिश', distribution: 'वितरण', measurementProbabilities: 'मोजमापाच्या संभाव्यता', counts: 'संख्या', measurementResults: 'मोजमापाचे परिणाम', outcome: 'परिणाम', frequency: 'वारंवारता', whyThisHappened: 'असे का झाले', resultExplanation: 'परिणामाचे स्पष्टीकरण', probabilityNote: 'अवस्था सदिशात संभाव्यता amplitudes साठवलेले असतात. प्रत्येक amplitude च्या परिमाणाचा वर्ग घेतल्यास basis अवस्थेची संभाव्यता मिळते.', singleQubit: 'सिंगल क्यूबिट', blochVector: 'Bloch सदिश',
+  },
+  builder: {
+    title: 'सर्किट बिल्डर', description: 'क्यूबिटच्या वायर्सवर गेट्स ठेवून क्वांटम सर्किट्स तयार करा.', hint: 'palette मधून गेट निवडा आणि ते ठेवण्यासाठी सेलवर क्लिक करा.', gatePalette: 'गेट palette', singleQubit: 'सिंगल क्यूबिट', parameterized: 'पॅरामीटरयुक्त', multiQubit: 'बहु-क्यूबिट', measurement: 'मोजमाप', clickTarget: 'लक्ष्य क्यूबिटवर क्लिक करा', clickCell: 'गेट ठेवण्यासाठी सेलवर क्लिक करा', controlFirst: 'बहु-क्यूबिट गेटसाठी प्रथम control क्यूबिटवर, नंतर target वर क्लिक करा.', target: 'लक्ष्य', properties: 'गुणधर्म', selectGate: 'माहिती पाहण्यासाठी गेट निवडा.', gateProperties: 'गेटचे गुणधर्म', moment: 'क्षण', controlQubit: 'Control क्यूबिट', targetQubit: 'Target क्यूबिट', classicalBit: 'क्लासिकल बिट', angle: 'कोन', degrees: 'अंश', removeGate: 'गेट काढा', circuitToolbar: 'सर्किट toolbar', circuitName: 'सर्किटचे नाव', clickToRename: 'नाव बदलण्यासाठी क्लिक करा', removeQubit: 'क्यूबिट काढा', addQubit: 'क्यूबिट जोडा', clearGates: 'सर्व गेट्स साफ करा', examples: 'उदाहरणे', starterCircuits: 'सुरुवातीची सर्किट्स', shots: 'प्रयोगसंख्या', running: 'चालू आहे…', simulator: 'सिम्युलेटर', saveCircuit: 'सर्किट जतन करा', jsonModel: 'सर्किट JSON मॉडेल', jsonRepresentation: 'सर्किट JSON रूपरेषा', qubits: count => `${count} क्यूबिट`, operations: count => `${count} क्रिया`, runningOn: shots => `${shots} प्रयोगांवर सिम्युलेशन चालू आहे…`,
+    gates: { H: { label: 'Hadamard', description: 'Superposition तयार करते.' }, X: { label: 'Pauli-X', description: 'क्यूबिटची अवस्था उलटवते.' }, Y: { label: 'Pauli-Y', description: 'बिट आणि फेज flip एकत्र करते.' }, Z: { label: 'Pauli-Z', description: 'फेज flip लागू करते.' }, S: { label: 'S Gate (Phase)', description: 'π/2 फेज बदल लागू करते.' }, T: { label: 'T Gate (π/8)', description: 'π/4 फेज बदल लागू करते.' }, RX: { label: 'Rotation X', description: 'क्यूबिटला X अक्षाभोवती फिरवते.' }, RY: { label: 'Rotation Y', description: 'क्यूबिटला Y अक्षाभोवती फिरवते.' }, RZ: { label: 'Rotation Z', description: 'क्यूबिटला Z अक्षाभोवती फिरवते.' }, CNOT: { label: 'CNOT', description: 'Control |1⟩ असताना target उलटवते.' }, CZ: { label: 'CZ Gate', description: 'Control |1⟩ असताना target वर Z लागू करते.' }, SWAP: { label: 'SWAP', description: 'दोन क्यूबिट्सच्या अवस्था अदलाबदल करते.' }, MEASURE: { label: 'मोजा', description: 'Computational basis मध्ये क्यूबिटचे मोजमाप करते.' } },
+    starters: { 'starter-bell-state': 'Bell अवस्था', 'starter-superposition': 'Superposition', 'starter-basic-measurement': 'मूलभूत मोजमाप', 'starter-entanglement': 'Entanglement उदाहरण', 'starter-not': 'Quantum NOT', 'starter-ghz': 'GHZ अवस्था', 'starter-phase-kickback': 'Phase Kickback' },
+  },
+}
+
+const MARATHI_DASHBOARD: DashboardTranslations = {
+  welcomeBack: name => `पुन्हा स्वागत आहे, ${name}`,
+  leftOff: 'तुम्ही जिथे शिकणे थांबवले होते ते इथे आहे.',
+  learningPathComplete: 'शिकण्याचा मार्ग पूर्ण', resuming: 'पुन्हा सुरू', allCourseLevelsCompleted: 'अभ्यासक्रमाचे सर्व स्तर पूर्ण',
+  lessonsComplete: (completed, total) => `${total} पैकी ${completed} धडे पूर्ण`, lessonProgress: (current, total) => `धडा ${current} पैकी ${total}`,
+  reviewCourses: 'अभ्यासक्रमांचा आढावा घ्या', resume: 'पुन्हा सुरू करा', currentLearningProgress: 'सध्याची शिकण्याची प्रगती', modules: 'मॉड्यूल्स', streak: 'सातत्य', streakDays: days => `${days} दिवस`, circuitsBuilt: 'बांधलेली सर्किट्स', badges: 'बॅजेस', courses: 'अभ्यासक्रम', qubitsToAlgorithms: 'क्यूबिट्सपासून अल्गोरिदमपर्यंत', circuitBuilder: 'सर्किट बिल्डर', dragDropBuild: 'ओढा, सोडा, बांधा', simulator: 'सिम्युलेटर', runAndExplore: 'चालवा आणि शोधा', aiTutor: 'AI शिक्षक', askAnytime: 'कधीही विचारा', challenges: 'आव्हाने', testYourUnderstanding: 'तुमची समज तपासा', recommendedNext: 'पुढील शिफारसी', recentActivity: 'अलीकडील क्रिया', complete: 'पूर्ण', progressDialAriaLabel: completion => `${completion}% पूर्ण`, learningStatistics: 'शिकण्याची आकडेवारी', dashboardActivityAndModules: 'डॅशबोर्ड क्रिया आणि मॉड्यूल्स',
+  recommendations: { reviseEntanglement: 'पुनरावलोकन करा: एंटॅंगलमेंट', tryBellState: 'प्रयत्न करा: Bell-State आव्हान', continueDeutschJozsa: 'पुढे सुरू ठेवा: Deutsch-Jozsa अल्गोरिदम' },
+  activity: { completedQuantumGates: 'क्वांटम गेट्स पूर्ण केले', builtBellState: 'Bell State सर्किट बांधले', scoredSuperposition: 'Superposition वर 90% गुण', startedQuantumEntanglement: 'क्वांटम एंटॅंगलमेंट सुरू केले', relativeDays: days => `${days} दिवस` },
+  content: { lessons: { 'quantum-fundamentals:introduction-to-quantum-computing': 'क्वांटम कम्प्युटिंगचा परिचय' }, challenges: { 'build-superposition': 'समान Superposition तयार करा', 'build-bell-state': 'Bell State तयार करा' } },
+}
+
+
+const HINDI_STUDENT: StudentTranslations = {
+  common: {
+    level: 'स्तर',
+    levels: 'स्तर',
+    lesson: 'पाठ',
+    lessons: 'पाठ',
+    complete: 'पूर्ण',
+    completed: 'पूर्ण हुआ',
+    notStarted: 'शुरू नहीं हुआ',
+    inProgress: 'प्रगति पर',
+    upcoming: 'आगामी',
+    previous: 'पिछला',
+    next: 'अगला',
+    min: 'मिनट',
+    xp: 'XP',
+    close: 'बंद करें',
+    cancel: 'रद्द करें',
+    reset: 'रीसेट करें',
+    save: 'सहेजें',
+    clear: 'साफ़ करें',
+    run: 'चलाएँ',
+    undo: 'पूर्ववत करें',
+    redo: 'फिर से करें',
+    and: 'और',
+  },
+  courses: {
+    eyebrow: 'सीखने के मार्ग',
+    title: 'पाठ्यक्रम',
+    description: 'क्यूबिट से व्यावहारिक एल्गोरिदम तक, चार निर्देशित स्तरों में क्वांटम कंप्यूटिंग सीखें।',
+    overall: 'कुल',
+    continueLearning: 'सीखना जारी रखें',
+    continue: 'जारी रखें',
+    levels: 'स्तर',
+    curriculum: 'पाठ्यचर्या',
+    courseLevels: 'पाठ्यक्रम स्तर',
+    overallCompletion: 'कुल पूर्णता',
+    reviewCourse: 'पाठ्यक्रम की समीक्षा करें',
+    startCourse: 'पाठ्यक्रम शुरू करें',
+    continueCourse: 'सीखना जारी रखें',
+    quizSaved: 'आपका क्विज़ परिणाम पाठ की प्रगति के साथ स्थानीय रूप से सहेजा गया है।',
+    quizUnlock: 'पाठ पूर्ण करने के लिए ज्ञान जाँच का उत्तर दें।',
+    conceptIntroduction: 'अवधारणा परिचय',
+    startWithIdea: 'विचार से शुरू करें',
+    coreExplanation: 'मूल व्याख्या',
+    howItWorks: 'यह कैसे काम करता है',
+    interactiveExample: 'इंटरैक्टिव उदाहरण',
+    exampleSteps: 'उदाहरण के चरण',
+    tryItYourself: 'स्वयं आज़माएँ',
+    openIdea: 'इस विचार को Circuit Builder में खोलें',
+    openCircuit: 'सर्किट खोलें',
+    knowledgeCheck: 'ज्ञान जाँच',
+    checkUnderstanding: 'अपनी समझ की जाँच करें',
+    chooseAnswer: 'एक उत्तर चुनें',
+    correct: 'सही',
+    notQuite: 'पूरी तरह सही नहीं',
+    checkAnswer: 'उत्तर जाँचें',
+    tryAgain: 'पुनः प्रयास करें',
+    lessonProgress: (completed, total) => `${total} में से ${completed} पूर्ण`,
+    completionLabel: name => `${name} प्रगति`,
+    content: {
+      'course-fundamentals': {
+        title: 'क्वांटम मूलभूत सिद्धांत',
+        description: 'क्यूबिट, एम्प्लिट्यूड, सुपरपोजिशन और मापन की सटीक समझ विकसित करें।',
+      },
+      'course-gates': {
+        title: 'क्वांटम गेट्स',
+        description: 'क्वांटम अवस्थाओं को रूपांतरित करने वाले ऑपरेशनों को समझें और उपयोगी सर्किट बनाएँ।',
+      },
+      'course-circuits': {
+        title: 'क्वांटम सर्किट',
+        description: 'मल्टी-क्यूबिट सर्किट, सहसंबंध और एंटैंगलमेंट को पढ़ें, डिज़ाइन करें और समझें।',
+      },
+      'course-algorithms': {
+        title: 'क्वांटम एल्गोरिदम',
+        description: 'Deutsch–Jozsa और Grover जैसे एल्गोरिदम पैटर्न के साथ क्वांटम प्रिमिटिव्स को जोड़ें।',
+      },
+    },
+    lessons: {
+      'quantum-fundamentals:introduction-to-quantum-computing': { title: 'क्वांटम कंप्यूटिंग का परिचय' },
+      'quantum-fundamentals:classical-bit-vs-qubit': { title: 'क्लासिकल बिट बनाम क्यूबिट' },
+      'quantum-fundamentals:qubit-states': { title: 'क्यूबिट अवस्थाएँ' },
+      'quantum-fundamentals:superposition': { title: 'सुपरपोजिशन' },
+      'quantum-fundamentals:quantum-measurement': { title: 'क्वांटम मापन' },
+      'quantum-gates:introduction-to-quantum-gates': { title: 'क्वांटम गेट्स का परिचय' },
+      'quantum-gates:pauli-x-gate': { title: 'Pauli-X गेट' },
+      'quantum-gates:pauli-y-gate': { title: 'Pauli-Y गेट' },
+      'quantum-gates:pauli-z-gate': { title: 'Pauli-Z गेट' },
+      'quantum-gates:hadamard-gate': { title: 'Hadamard गेट' },
+      'quantum-gates:phase-gates': { title: 'फेज गेट्स' },
+      'quantum-gates:rotation-gates': { title: 'रोटेशन गेट्स' },
+      'quantum-circuits:quantum-circuit-basics': { title: 'क्वांटम सर्किट के मूलभूत सिद्धांत' },
+      'quantum-circuits:multiple-qubits': { title: 'मल्टीपल क्यूबिट्स' },
+      'quantum-circuits:cnot-gate': { title: 'CNOT गेट' },
+      'quantum-circuits:entanglement': { title: 'एंटैंगलमेंट' },
+      'quantum-circuits:bell-states': { title: 'Bell अवस्थाएँ' },
+      'quantum-algorithms:deutsch-jozsa-algorithm': { title: 'Deutsch–Jozsa एल्गोरिदम' },
+      'quantum-algorithms:grovers-algorithm': { title: 'Grover एल्गोरिदम' },
+      'quantum-algorithms:quantum-fourier-transform': { title: 'क्वांटम फूरियर ट्रांसफॉर्म' },
+    },
+  },
+  challenges: {
+    eyebrow: 'आपका अभ्यास',
+    title: 'क्वांटम चुनौतियाँ',
+    description: 'सर्किट बनाकर, ठीक करके और उनके तर्क को समझकर प्रत्येक अवधारणा को लागू करें।',
+    yourPractice: 'आपका अभ्यास',
+    progress: 'चुनौती प्रगति',
+    completed: 'पूर्ण',
+    currentLevel: 'वर्तमान स्तर',
+    accuracy: 'सटीकता',
+    bestScore: 'सर्वोच्च अंक',
+    history: 'इतिहास',
+    recent: 'हाल की चुनौतियाँ',
+    retryNeeded: 'पुनः प्रयास आवश्यक',
+    attempt: 'प्रयास',
+    type: {
+      'build-circuit': 'सर्किट बनाएँ',
+      'predict-output': 'आउटपुट का अनुमान लगाएँ',
+      'fix-circuit': 'सर्किट ठीक करें',
+      'identify-gate': 'गेट पहचानें',
+      algorithm: 'एल्गोरिदम चुनौती',
+    },
+    difficulty: {
+      beginner: { title: 'शुरुआती', description: 'सिंगल-क्यूबिट गेट्स, सुपरपोजिशन और मापन।' },
+      intermediate: { title: 'मध्यम', description: 'नियंत्रित गेट्स, सहसंबंध और Bell अवस्थाएँ।' },
+      advanced: { title: 'उन्नत', description: 'क्वांटम एल्गोरिदम निर्माण और विश्लेषण।' },
+    },
+    status: {
+      upcoming: 'आगामी',
+      completed: 'पूर्ण',
+      inProgress: 'प्रगति पर',
+      notStarted: 'शुरू नहीं हुआ',
+    },
+    challengeCount: count => `${count} चुनौतियाँ`,
+    best: score => `सर्वोच्च ${score}`,
+    content: {
+      'build-superposition': {
+        title: 'समान सुपरपोजिशन बनाएँ',
+        shortDescription: '|0⟩ में इनिशियलाइज़ किए गए क्यूबिट से |+⟩ तैयार करें।',
+        description: 'वायर पर गेट्स रखें ताकि अंतिम क्वांटम अवस्था (|0⟩ + |1⟩)/√2 हो। समतुल्य सर्किट स्वीकार किए जाते हैं।',
+        goal: '|+⟩ तैयार करें, जिससे |0⟩ और |1⟩ दोनों के लिए 50% संभावना मिले।',
+        hints: [
+          'Bit flip |0⟩ को |1⟩ में बदलता है, लेकिन यह दो आयाम नहीं बनाता।',
+          'ऐसा गेट ढूँढें जिसके विवरण में सुपरपोजिशन का उल्लेख हो।',
+          'q0 पर Hadamard गेट लागू करें। सत्यापन के लिए मापन वैकल्पिक है।',
+        ],
+        explanation: 'Hadamard ऑपरेशन |0⟩ को |+⟩ = (|0⟩ + |1⟩)/√2 में मैप करता है। किसी भी आयाम का वर्ग करने पर 1/2 मापन संभावना मिलती है।',
+      },
+      'predict-hadamard-output': {
+        title: 'Hadamard मापन का अनुमान लगाएँ',
+        shortDescription: 'एक-क्यूबिट सर्किट के आउटपुट वितरण का अनुमान लगाएँ।',
+        description: 'क्यूबिट |0⟩ से शुरू होता है, दिखाए गए सर्किट से गुजरता है, और कम्प्यूटेशनल बेसिस में मापा जाता है।',
+        goal: 'सर्किट द्वारा उत्पन्न मापन वितरण चुनें।',
+        options: {
+          'always-zero': 'हमेशा |0⟩',
+          'always-one': 'हमेशा |1⟩',
+          equal: '50% |0⟩ और 50% |1⟩',
+          'no-measurement': 'कोई परिणाम नहीं मिलता',
+        },
+        hints: [
+          'मापन से पहले गेट को बाएँ से दाएँ पढ़ें।',
+          'Hadamard बेसिस अवस्थाओं को समान-परिमाण सुपरपोजिशन में बदलता है।',
+          'दोनों आयामों का परिमाण 1/√2 है, इसलिए दोनों संभावनाएँ 1/2 हैं।',
+        ],
+        explanation: 'H|0⟩ = (|0⟩ + |1⟩)/√2। इसलिए कई शॉट्स पर मापन समान संभावना के साथ 0 या 1 लौटाता है।',
+      },
+      'identify-x-gate': {
+        title: 'Bit-Flip गेट पहचानें',
+        shortDescription: '|0⟩ को |1⟩ में मैप करने वाले ऑपरेशन को खोजें।',
+        description: 'एक एकल क्यूबिट |0⟩ से शुरू होता है और निश्चित रूप से |1⟩ पर समाप्त होना चाहिए। इस रूपांतरण को करने वाले गेट की पहचान करें।',
+        goal: 'कम्प्यूटेशनल बेसिस मान को निश्चित रूप से पलटने वाला गेट चुनें।',
+        options: {
+          h: 'Hadamard (H)',
+          x: 'Pauli-X (X)',
+          z: 'Pauli-Z (Z)',
+          s: 'Phase (S)',
+        },
+        hints: [
+          'आवश्यक ऑपरेशन क्लासिकल NOT का क्वांटम एनालॉग है।',
+          'केवल-फेज गेट 0 या 1 मापने की संभावना को बदल नहीं सकता।',
+          'Pauli-X मैट्रिक्स |0⟩ और |1⟩ आयामों की अदला-बदली करता है।',
+        ],
+        explanation: 'Pauli-X गेट एक बिट फ्लिप है: X|0⟩ = |1⟩ और X|1⟩ = |0⟩। Hadamard सुपरपोजिशन बनाता है, जबकि Z और S फेज बदलते हैं।',
+      },
+      'build-bell-state': {
+        title: 'Bell अवस्था बनाएँ',
+        shortDescription: 'दो क्यूबिट्स को Phi-plus Bell अवस्था में एंटैंगल करें।',
+        description: '|00⟩ से शुरू करके कोई भी समतुल्य सर्किट बनाएँ जिसकी अंतिम अवस्था (|00⟩ + |11⟩)/√2 हो।',
+        goal: 'सहसंबद्ध परिणाम तैयार करें: 50% |00⟩, 50% |11⟩, सही सापेक्ष फेज के साथ।',
+        hints: [
+          'पहले क्यूबिट की स्थिति बदलकर शुरुआत करें।',
+          'q1 को सहसंबंधित करने से पहले q0 पर सुपरपोजिशन बनाएँ।',
+          'q0 पर H लागू करें, फिर q1 को लक्षित करने वाले CNOT के कंट्रोल के रूप में q0 का उपयोग करें।',
+        ],
+        explanation: 'H (|00⟩ + |10⟩)/√2 बनाता है। CNOT फिर केवल |10⟩ शाखा में q1 को फ्लिप करता है, जिससे (|00⟩ + |11⟩)/√2 उत्पन्न होता है।',
+      },
+      'fix-bell-state': {
+        title: 'Bell सर्किट ठीक करें',
+        shortDescription: 'गलत दिशा में इंगित नियंत्रित गेट को सही करें।',
+        description: 'यह सर्किट सुपरपोजिशन बनाता है लेकिन अपने क्यूबिट्स को एंटैंगल करने में विफल रहता है। नियंत्रित ऑपरेशन का निरीक्षण करें और सर्किट को ठीक करें।',
+        goal: 'Phi-plus Bell अवस्था (|00⟩ + |11⟩)/√2 प्राप्त करें।',
+        hints: [
+          'Hadamard पहले से ही इच्छित क्यूबिट पर कार्य कर रहा है।',
+          'एक नियंत्रित गेट केवल तभी कार्य करता है जब उसका कंट्रोल क्यूबिट |1⟩ हो। किस क्यूबिट पर सुपरपोजिशन है?',
+          'वर्तमान CNOT हटाएँ, फिर q0 को कंट्रोल और q1 को टारगेट के रूप में उपयोग करें।',
+        ],
+        explanation: 'मूल CNOT ने q1 को अपने कंट्रोल के रूप में उपयोग किया, लेकिन q1 |0⟩ ही रहा, इसलिए यह कभी ट्रिगर नहीं हुआ। q0 पर कंट्रोल करने से q0 की शाखा की जानकारी q1 में स्थानांतरित होती है और एंटैंगलमेंट बनता है।',
+      },
+      'grover-amplitude-amplification': {
+        title: 'Grover Amplitude Amplification',
+        shortDescription: 'ओरेकल बनाएँ और चिह्नित दो-क्यूबिट अवस्था को एम्प्लीफाई करें।',
+        description: 'फेज ओरेकल, डिफ्यूजन और एम्प्लीच्यूड एम्प्लीफिकेशन को कवर करने वाली एक उन्नत निर्माण चुनौती।',
+        goal: 'एक Grover इटरेशन का उपयोग करके चिह्नित बेसिस अवस्था को एम्प्लीफाई करें।',
+        availabilityNote: 'क्वांटम एल्गोरिदम पाठ्यक्रम स्तर के साथ जल्द उपलब्ध होगा।',
+      },
+    },
+    goal: 'लक्ष्य',
+    details: 'चुनौती विवरण',
+    upTo: 'अधिकतम',
+    workspace: 'कार्यक्षेत्र',
+    chooseExpectedOutput: 'अपेक्षित आउटपुट चुनें',
+    chooseGate: 'गेट चुनें',
+    buildCircuit: 'अपना सर्किट बनाएँ',
+    repairCircuit: 'सर्किट ठीक करें',
+    selectAnswer: 'एक उत्तर चुनें',
+    submitAnswer: 'उत्तर सबमिट करें',
+    allChallenges: 'सभी चुनौतियाँ',
+    backToChallenges: 'चुनौतियों पर वापस जाएँ',
+    progressiveHints: 'प्रगतिशील संकेत',
+    hintsRevealed: (visible, total) => `${total} में से ${visible} संकेत दिखाए गए`,
+    revealClue: count => `संकेत ${count} देखें`,
+    allHintsRevealed: 'सभी संकेत दिखाए गए',
+    emptyHint: 'जब आवश्यकता हो, तब एक बार में एक संकेत देखें।',
+    challengeComplete: 'चुनौती पूर्ण हुई',
+    notThereYet: 'अभी पूरा नहीं हुआ',
+    computedDistribution: 'परिकलित वितरण',
+    hintsUsed: 'उपयोग किए गए संकेत',
+    time: 'समय',
+    xpEarned: 'अर्जित XP',
+    nextChallenge: 'अगली चुनौती',
+    retry: 'पुनः प्रयास करें',
+    openInCircuitBuilder: 'Circuit Builder में खोलें',
+    submitCircuit: 'सर्किट सबमिट करें',
+    circuitControls: 'चुनौती सर्किट नियंत्रण',
+    circuitToAnalyze: 'विश्लेषण के लिए सर्किट',
+    stateTransformation: 'क्वांटम स्थिति परिवर्तन',
+    challengesCompletedAria: level => `${level} चुनौतियाँ पूर्ण हुईं`,
+    typeShort: {
+      'build-circuit': 'बनाएँ',
+      'predict-output': 'अनुमान लगाएँ',
+      'fix-circuit': 'ठीक करें',
+      'identify-gate': 'पहचानें',
+      algorithm: 'एल्गोरिदम',
+    },
+  },
+  simulator: {
+    eyebrow: 'क्वांटम निष्पादन',
+    title: 'क्वांटम सिम्युलेटर',
+    description: 'सर्किट चलाएँ, इसके मापन वितरण का निरीक्षण करें और परिणाम को अंतर्निहित क्वांटम अवस्था से जोड़ें।',
+    localBackendReady: 'स्थानीय बैकएंड तैयार है',
+    educationalMock: 'शैक्षिक मॉक',
+    configure: 'कॉन्फ़िगर करें',
+    setup: 'सिमुलेशन सेटअप',
+    circuit: 'सर्किट',
+    circuitSource: 'सर्किट स्रोत',
+    savedCircuits: 'सहेजे गए सर्किट',
+    exampleCircuits: 'उदाहरण सर्किट',
+    executionSettings: 'निष्पादन सेटिंग्स',
+    shots: 'शॉट्स',
+    repeatedMeasurements: 'दोहराए गए मापों की संख्या।',
+    backend: 'सिमुलेशन बैकएंड',
+    available: 'उपलब्ध',
+    comingSoon: 'जल्द आ रहा है',
+    runSimulation: 'सिमुलेशन चलाएँ',
+    runningSimulation: 'सिमुलेशन चल रहा है...',
+    editInBuilder: 'Builder में संपादित करें',
+    completed: 'पूर्ण',
+    results: 'सिमुलेशन परिणाम',
+    localNotice: 'ये परिणाम सीखने के लिए स्थानीय रूप से परिकलित किए गए हैं। ये Qiskit Aer या वास्तविक क्वांटम हार्डवेयर के परिणाम नहीं हैं।',
+    execution: 'निष्पादन',
+    executionSummary: 'निष्पादन सारांश',
+    localCompute: 'स्थानीय गणना',
+    outcomes: 'परिणाम',
+    gateOperations: 'गेट ऑपरेशन्स',
+    measurements: 'मापन',
+    circuitDepth: 'सर्किट गहराई',
+    beforeMeasurement: 'मापन से पहले',
+    stateVector: 'स्टेट वेक्टर',
+    distribution: 'वितरण',
+    measurementProbabilities: 'मापन संभावनाएँ',
+    counts: 'गिनती',
+    measurementResults: 'मापन परिणाम',
+    outcome: 'परिणाम',
+    frequency: 'आवृत्ति',
+    whyThisHappened: 'ऐसा क्यों हुआ',
+    resultExplanation: 'परिणाम की व्याख्या',
+    probabilityNote: 'स्टेट वेक्टर संभावना आयामों को संग्रहीत करता है। प्रत्येक आयाम के परिमाण का वर्ग करने पर उसकी बेसिस-अवस्था संभावना मिलती है।',
+    singleQubit: 'सिंगल क्यूबिट',
+    blochVector: 'ब्लोच वेक्टर',
+  },
+  builder: {
+    title: 'सर्किट बिल्डर',
+    description: 'क्यूबिट तारों पर गेट्स रखकर क्वांटम सर्किट बनाएँ।',
+    hint: 'पैलेट से एक गेट चुनें, फिर उसे रखने के लिए सेल पर क्लिक करें।',
+    gatePalette: 'गेट पैलेट',
+    singleQubit: 'सिंगल क्यूबिट',
+    parameterized: 'पैरामीटरयुक्त',
+    multiQubit: 'मल्टी-क्यूबिट',
+    measurement: 'मापन',
+    clickTarget: 'टारगेट क्यूबिट पर क्लिक करें',
+    clickCell: 'रखने के लिए सेल पर क्लिक करें',
+    controlFirst: 'मल्टी-क्यूबिट गेट्स के लिए, पहले कंट्रोल क्यूबिट पर क्लिक करें, फिर टारगेट पर।',
+    target: 'टारगेट',
+    properties: 'गुणधर्म',
+    selectGate: 'निरीक्षण करने के लिए गेट चुनें।',
+    gateProperties: 'गेट गुणधर्म',
+    moment: 'मोमेंट',
+    controlQubit: 'कंट्रोल क्यूबिट',
+    targetQubit: 'टारगेट क्यूबिट',
+    classicalBit: 'क्लासिकल बिट',
+    angle: 'कोण',
+    degrees: 'डिग्री',
+    removeGate: 'गेट हटाएँ',
+    circuitToolbar: 'सर्किट टूलबार',
+    circuitName: 'सर्किट नाम',
+    clickToRename: 'नाम बदलने के लिए क्लिक करें',
+    removeQubit: 'क्यूबिट हटाएँ',
+    addQubit: 'क्यूबिट जोड़ें',
+    clearGates: 'सभी गेट्स हटाएँ',
+    examples: 'उदाहरण',
+    starterCircuits: 'शुरुआती सर्किट',
+    shots: 'शॉट्स की संख्या',
+    running: 'चल रहा है…',
+    simulator: 'सिमुलेटर',
+    saveCircuit: 'सर्किट सहेजें',
+    jsonModel: 'सर्किट JSON मॉडल',
+    jsonRepresentation: 'सर्किट JSON निरूपण',
+    qubits: count => `${count} क्यूबिट`,
+    operations: count => `${count} ऑपरेशन्स`,
+    runningOn: shots => `${shots} शॉट्स पर सिमुलेशन चल रहा है…`,
+    gates: {
+      H: { label: 'Hadamard', description: 'सुपरपोजिशन बनाता है।' },
+      X: { label: 'Pauli-X', description: 'क्यूबिट अवस्था को उलटता है।' },
+      Y: { label: 'Pauli-Y', description: 'बिट और फेज फ्लिप को जोड़ता है।' },
+      Z: { label: 'Pauli-Z', description: 'फेज फ्लिप लागू करता है।' },
+      S: { label: 'S Gate (Phase)', description: 'π/2 फेज शिफ्ट लागू करता है।' },
+      T: { label: 'T Gate (π/8)', description: 'π/4 फेज शिफ्ट लागू करता है।' },
+      RX: { label: 'Rotation X', description: 'क्यूबिट को X अक्ष के चारों ओर घुमाता है।' },
+      RY: { label: 'Rotation Y', description: 'क्यूबिट को Y अक्ष के चारों ओर घुमाता है।' },
+      RZ: { label: 'Rotation Z', description: 'क्यूबिट को Z अक्ष के चारों ओर घुमाता है।' },
+      CNOT: { label: 'CNOT', description: 'कंट्रोल |1⟩ होने पर टारगेट को उलटता है।' },
+      CZ: { label: 'CZ Gate', description: 'कंट्रोल |1⟩ होने पर टारगेट पर Z लागू करता है।' },
+      SWAP: { label: 'SWAP', description: 'दो क्यूबिट्स की अवस्थाओं की अदला-बदली करता है।' },
+      MEASURE: { label: 'Measure', description: 'कम्प्यूटेशनल बेसिस में क्यूबिट को मापता है।' },
+    },
+    starters: {
+      'starter-bell-state': 'Bell अवस्था',
+      'starter-superposition': 'सुपरपोजिशन',
+      'starter-basic-measurement': 'मूलभूत मापन',
+      'starter-entanglement': 'एंटैंगलमेंट उदाहरण',
+      'starter-not': 'क्वांटम NOT',
+      'starter-ghz': 'GHZ अवस्था',
+      'starter-phase-kickback': 'फेज किकबैक',
+    },
+  },
+}
+
+const STUDENT_TRANSLATIONS: Record<string, StudentTranslations> = { EN: ENGLISH_STUDENT, MR: MARATHI_STUDENT, HI: HINDI_STUDENT }
+
 
 const ENGLISH: TranslationSet = {
   header: {
@@ -409,8 +1131,8 @@ export const TRANSLATIONS: Record<string, TranslationSet> = {
     },
     stats: { activeLearners: 'सक्रिय विद्यार्थी', circuitsBuilt: 'तयार केलेली सर्किट्स', experimentsRun: 'चालवलेले प्रयोग', quantumConcepts: 'क्वांटम संकल्पना', learnerRating: 'विद्यार्थी रेटिंग' },
     app: { dashboard: 'डॅशबोर्ड', courses: 'अभ्यासक्रम', circuitBuilder: 'सर्किट बिल्डर', simulator: 'सिम्युलेटर', aiTutor: 'AI ट्यूटर', challenges: 'आव्हाने', dashboardNavigation: 'डॅशबोर्ड नेव्हिगेशन', closeNavigation: 'नेव्हिगेशन बंद करा', openNavigation: 'नेव्हिगेशन उघडा', dashboardHome: 'संकल्पQ डॅशबोर्ड', logOut: 'लॉग आउट' },
-    aiTutor: ENGLISH_AI_TUTOR,
-    dashboard: ENGLISH_DASHBOARD,
+    aiTutor: MARATHI_AI_TUTOR,
+    dashboard: MARATHI_DASHBOARD,
   },
   ZH: {
     header: {
@@ -509,6 +1231,12 @@ export const TRANSLATIONS: Record<string, TranslationSet> = {
   },
 }
 
-export function getTranslations(code: string): TranslationSet {
-  return TRANSLATIONS[code] ?? ENGLISH
+export type ResolvedTranslationSet = TranslationSet & { student: StudentTranslations }
+
+export function getTranslations(code: string): ResolvedTranslationSet {
+  const base = TRANSLATIONS[code] ?? ENGLISH
+  return {
+    ...base,
+    student: STUDENT_TRANSLATIONS[code] ?? ENGLISH_STUDENT,
+  }
 }

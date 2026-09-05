@@ -10,7 +10,7 @@ import FormField from '@/components/FormField'
 import SocialButtons from '@/components/SocialButtons'
 import LogoMark from '@/components/LogoMark'
 import { useLanguage } from '@/components/LanguageProvider'
-import { getSafeNextPath } from '@/lib/auth'
+import { getAuthRedirectForUser } from '@/lib/auth'
 import { getSupabaseBrowserClient } from '@/lib/supabase/client'
 
 interface LoginErrors {
@@ -29,10 +29,13 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false)
 
   useEffect(() => {
-    if (new URLSearchParams(window.location.search).get('error') === 'auth_unconfigured') {
+    const errorParam = new URLSearchParams(window.location.search).get('error')
+    if (errorParam === 'auth_unconfigured') {
       setErrors({ form: auth.authUnavailable })
+    } else if (errorParam === 'callback_failed') {
+      setErrors({ form: auth.callbackFailed })
     }
-  }, [auth.authUnavailable])
+  }, [auth.authUnavailable, auth.callbackFailed])
 
   const validate = () => {
     const newErrors: LoginErrors = {}
@@ -50,14 +53,52 @@ export default function LoginPage() {
     setLoading(true)
     setErrors({})
     try {
-      const { error } = await getSupabaseBrowserClient().auth.signInWithPassword({ email: email.trim(), password })
+      const { data, error } = await getSupabaseBrowserClient().auth.signInWithPassword({
+        email: email.trim(),
+        password,
+      })
+
       if (error) {
-        setErrors({ form: error.message.toLowerCase().includes('invalid login credentials') ? auth.invalidCredentials : auth.signInFailed })
+        const msg = (error.message || '').toLowerCase()
+        const status = error.status
+        const code = (error as { code?: string }).code
+
+        if (
+          code === 'email_not_confirmed' ||
+          msg.includes('email not confirmed') ||
+          msg.includes('not confirmed')
+        ) {
+          setErrors({ form: auth.emailNotConfirmed })
+        } else if (
+          status === 429 ||
+          code === 'over_request_rate_limit' ||
+          msg.includes('rate limit') ||
+          msg.includes('too many requests')
+        ) {
+          setErrors({ form: auth.rateLimited })
+        } else if (
+          code === 'invalid_credentials' ||
+          code === 'invalid_grant' ||
+          msg.includes('invalid login credentials') ||
+          msg.includes('invalid credentials')
+        ) {
+          setErrors({ form: auth.invalidCredentials })
+        } else {
+          setErrors({ form: error.message || auth.signInFailed })
+        }
         return
       }
-      const next = getSafeNextPath(new URLSearchParams(window.location.search).get('next'))
-      router.replace(next)
-      router.refresh()
+
+      if (data?.session && data?.user) {
+        const next = getAuthRedirectForUser(
+          data.user,
+          new URLSearchParams(window.location.search).get('next'),
+        )
+        router.replace(next)
+        router.refresh()
+      } else {
+        setErrors({ form: auth.signInFailed })
+      }
     } catch (error) {
       setErrors({ form: error instanceof Error && error.message.includes('environment') ? auth.authUnavailable : auth.signInFailed })
     } finally {
