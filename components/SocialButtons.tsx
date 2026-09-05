@@ -42,15 +42,13 @@ export default function SocialButtons() {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', width: '100%' }}>
-      {/* 
-        OAuth Placeholder Buttons — visual-only stubs for prototype.
-        Real authentication provider integration will be added in production.
-      */}
       <button
         type="button"
         className="btn-social"
-        onClick={e => e.preventDefault()}
-        aria-label={auth.continueGoogle}
+        disabled
+        title={auth.oauthComingSoon}
+        aria-label={`${auth.continueGoogle} - ${auth.oauthComingSoon}`}
+        style={{ opacity: 0.6, cursor: 'not-allowed' }}
       >
         <GoogleIcon />
         <span>{auth.continueGoogle}</span>
@@ -59,8 +57,10 @@ export default function SocialButtons() {
       <button
         type="button"
         className="btn-social"
-        onClick={e => e.preventDefault()}
-        aria-label={auth.continueGithub}
+        disabled
+        title={auth.oauthComingSoon}
+        aria-label={`${auth.continueGithub} - ${auth.oauthComingSoon}`}
+        style={{ opacity: 0.6, cursor: 'not-allowed' }}
       >
         <GitHubIcon />
         <span>{auth.continueGithub}</span>

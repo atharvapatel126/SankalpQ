@@ -21,6 +21,7 @@ import { useEffect, useState } from 'react'
 import LanguageSwitcher from '@/components/LanguageSwitcher'
 import LogoMark from '@/components/LogoMark'
 import ThemeToggle from '@/components/ThemeToggle'
+import { useInstructor } from '@/hooks/useInstructor'
 import { getSupabaseBrowserClient } from '@/lib/supabase/client'
 
 // ── Instructor navigation items ───────────────────────────────────────────────
@@ -42,7 +43,7 @@ interface InstructorShellProps {
 export default function InstructorShell({ children }: InstructorShellProps) {
   const pathname = usePathname()
   const [mobileOpen, setMobileOpen] = useState(false)
-  const [userName, setUserName] = useState('Instructor')
+  const { isInstructor, userName, loading } = useInstructor()
 
   useEffect(() => {
     document.body.style.overflow = mobileOpen ? 'hidden' : ''
@@ -52,20 +53,6 @@ export default function InstructorShell({ children }: InstructorShellProps) {
   useEffect(() => {
     setMobileOpen(false)
   }, [pathname])
-
-  useEffect(() => {
-    let active = true
-    getSupabaseBrowserClient().auth.getUser().then(({ data }) => {
-      if (!active || !data.user) return
-      const metadataName = data.user.user_metadata?.full_name
-      setUserName(
-        typeof metadataName === 'string' && metadataName.trim()
-          ? metadataName
-          : data.user.email ?? 'Instructor'
-      )
-    }).catch(() => {})
-    return () => { active = false }
-  }, [])
 
   const userInitials = userName === 'Instructor'
     ? 'IN'
@@ -77,6 +64,33 @@ export default function InstructorShell({ children }: InstructorShellProps) {
     } finally {
       window.location.assign('/')
     }
+  }
+
+  if (loading) {
+    return (
+      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--bg-primary, #0a0e17)' }}>
+        <div className="spinner" style={{ width: '28px', height: '28px', borderColor: 'var(--border-color, rgba(255,255,255,0.2))', borderTopColor: 'var(--accent, #6366f1)' }} />
+      </div>
+    )
+  }
+
+  if (!isInstructor) {
+    return (
+      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '24px', background: 'var(--bg-primary, #0a0e17)', color: 'var(--text-primary, #e6edf3)' }}>
+        <div style={{ maxWidth: '440px', width: '100%', textAlign: 'center', padding: '32px', background: 'var(--bg-secondary, #121824)', borderRadius: '12px', border: '1px solid var(--border-color, rgba(255,255,255,0.1))' }}>
+          <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '16px', color: 'var(--accent, #6366f1)' }}>
+            <LogoMark size={32} />
+          </div>
+          <h1 style={{ fontSize: '20px', fontWeight: 600, marginBottom: '8px' }}>Instructor Access Only</h1>
+          <p style={{ fontSize: '14px', color: 'var(--text-secondary, #8b949e)', lineHeight: 1.5, marginBottom: '24px' }}>
+            Your account does not have instructor privileges. Please return to the student dashboard.
+          </p>
+          <Link href="/dashboard" className="btn-primary" style={{ display: 'inline-flex', justifyContent: 'center', width: '100%' }}>
+            Go to Student Dashboard
+          </Link>
+        </div>
+      </div>
+    )
   }
 
   return (
