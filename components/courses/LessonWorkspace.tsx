@@ -40,7 +40,7 @@ export default function LessonWorkspace({
     completeLesson,
   } = useCourseProgress()
   const summary = getCourseProgressSummary(course, progress)
-  const adjacent = getAdjacentLessons(lesson.id)
+  const adjacent = getAdjacentLessons(course, lesson.id)
   const completed = progress.completedLessonIds.includes(lesson.id)
   const hasQuizAttempt =
     typeof progress.quizAnswers[lesson.id] === 'string'
@@ -130,7 +130,7 @@ export default function LessonWorkspace({
                 </h2>
                 <p>
                   {hasQuizAttempt
-                    ? t.quizSaved
+                    ? 'Your lesson progress is saved to your account.'
                     : t.quizUnlock}
                 </p>
               </div>

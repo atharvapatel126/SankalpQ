@@ -72,6 +72,7 @@ export interface Lesson {
 
 export interface Course {
   id: string
+  databaseId?: string
   slug: string
   level: number
   title: string
