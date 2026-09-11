@@ -1188,17 +1188,18 @@ export function getLessonById(
 }
 
 export function getAdjacentLessons(
+  course: Course,
   lessonId: string
 ): { previous: { course: Course; lesson: Lesson } | null; next: { course: Course; lesson: Lesson } | null } {
-  const index = ALL_LESSONS.findIndex(lesson => lesson.id === lessonId)
-  const previousLesson = index > 0 ? ALL_LESSONS[index - 1] : undefined
+  const index = course.lessons.findIndex(lesson => lesson.id === lessonId)
+  const previousLesson = index > 0 ? course.lessons[index - 1] : undefined
   const nextLesson =
-    index >= 0 && index < ALL_LESSONS.length - 1
-      ? ALL_LESSONS[index + 1]
+    index >= 0 && index < course.lessons.length - 1
+      ? course.lessons[index + 1]
       : undefined
 
   return {
-    previous: previousLesson ? getLessonById(previousLesson.id) ?? null : null,
-    next: nextLesson ? getLessonById(nextLesson.id) ?? null : null,
+    previous: previousLesson ? { course, lesson: previousLesson } : null,
+    next: nextLesson ? { course, lesson: nextLesson } : null,
   }
 }

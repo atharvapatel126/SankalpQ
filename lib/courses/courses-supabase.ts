@@ -82,7 +82,7 @@ function mergeCourseMetadata(rows: CourseMetadataViewRow[]): Course[] {
       const rightLevel = right[0].course_level ?? Number.MAX_SAFE_INTEGER
       return leftLevel - rightLevel
     })
-    .map(courseRows => {
+    .map((courseRows): Course | null => {
       const row = courseRows[0]
       const staticCourse = getCourseBySlug(row.course_slug)
       if (!staticCourse) return null
@@ -101,6 +101,7 @@ function mergeCourseMetadata(rows: CourseMetadataViewRow[]): Course[] {
       return {
         ...staticCourse,
         id: row.course_legacy_id,
+        databaseId: row.course_id,
         slug: row.course_slug,
         title: row.course_title,
         description: row.course_description ?? staticCourse.description,

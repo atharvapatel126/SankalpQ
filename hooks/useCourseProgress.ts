@@ -14,6 +14,8 @@ import {
 interface UseCourseProgressReturn {
   progress: CourseProgressState
   hydrated: boolean
+  progressStatus: 'loading' | 'success' | 'error'
+  progressError: unknown | null
   setCurrentLesson: (lessonId: string) => void
   recordQuizAnswer: (
     lessonId: string,
@@ -28,6 +30,10 @@ export function useCourseProgress(): UseCourseProgressReturn {
     EMPTY_COURSE_PROGRESS
   )
   const [hydrated, setHydrated] = useState(false)
+  const [progressStatus, setProgressStatus] = useState<
+    'loading' | 'success' | 'error'
+  >('loading')
+  const [progressError, setProgressError] = useState<unknown | null>(null)
 
   /*
    * Load lesson progress from Supabase.
@@ -66,12 +72,16 @@ export function useCourseProgress(): UseCourseProgressReturn {
         }))
 
         setHydrated(true)
+        setProgressError(null)
+        setProgressStatus('success')
       } catch (error) {
         console.error('Failed to load course progress:', error)
 
         if (!cancelled) {
           setProgress(EMPTY_COURSE_PROGRESS)
           setHydrated(true)
+          setProgressError(error)
+          setProgressStatus('error')
         }
       }
     }
@@ -152,6 +162,8 @@ export function useCourseProgress(): UseCourseProgressReturn {
   return {
     progress,
     hydrated,
+    progressStatus,
+    progressError,
     setCurrentLesson,
     recordQuizAnswer,
     completeLesson,

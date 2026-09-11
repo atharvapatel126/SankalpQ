@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
-import LessonWorkspace from '@/components/courses/LessonWorkspace'
+import EnrollmentGate from '@/components/courses/EnrollmentGate'
 import {
   COURSES,
   getLessonBySlug,
@@ -37,5 +37,5 @@ export default function LessonPage({ params }: LessonPageProps) {
   const match = getLessonBySlug(params.courseSlug, params.lessonSlug)
   if (!match) notFound()
 
-  return <LessonWorkspace course={match.course} lesson={match.lesson} />
+  return <EnrollmentGate course={match.course} lesson={match.lesson} />
 }
