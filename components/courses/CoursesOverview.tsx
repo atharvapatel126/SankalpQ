@@ -1,5 +1,6 @@
 'use client'
 
+import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { ArrowRight, BookOpen, CheckCircle2, Layers } from 'lucide-react'
 import AppShell from '@/components/AppShell'
@@ -7,20 +8,53 @@ import CourseGrid from './CourseGrid'
 import CourseProgress from './CourseProgress'
 import { useCourseProgress } from '@/hooks/useCourseProgress'
 import { useLanguage } from '@/components/LanguageProvider'
-import { ALL_LESSONS, COURSES } from '@/lib/courses/course-data'
+import { fetchPublishedCourseCatalog } from '@/lib/courses/courses-supabase'
+import type { Course } from '@/lib/courses/types'
 import {
   getOverallCompletion,
   getResumeLesson,
 } from '@/lib/courses/progress'
+
+type CatalogState =
+  | { status: 'loading' }
+  | { status: 'success'; courses: Course[] }
+  | { status: 'error'; error: unknown }
 
 export default function CoursesOverview() {
   const { progress, hydrated } = useCourseProgress()
   const { translations } = useLanguage()
   const t = translations.student.courses
   const common = translations.student.common
+  const [catalogState, setCatalogState] = useState<CatalogState>({
+    status: 'loading',
+  })
+
+  useEffect(() => {
+    let active = true
+
+    void fetchPublishedCourseCatalog()
+      .then(courses => {
+        if (active) setCatalogState({ status: 'success', courses })
+      })
+      .catch(error => {
+        console.error('Failed to load course catalogue:', error)
+        if (active) setCatalogState({ status: 'error', error })
+      })
+
+    return () => {
+      active = false
+    }
+  }, [])
+
   const resume = getResumeLesson(progress)
   const overallCompletion = getOverallCompletion(progress)
   const completedCount = progress.completedLessonIds.length
+  const catalogCourses =
+    catalogState.status === 'success' ? catalogState.courses : []
+  const catalogLessonCount = catalogCourses.reduce(
+    (total, course) => total + course.lessons.length,
+    0
+  )
   const resumeHref =
     '/courses/' + resume.course.slug + '/' + resume.lesson.slug
 
@@ -28,7 +62,7 @@ export default function CoursesOverview() {
     <AppShell>
       <div
         className="courses-page"
-        aria-busy={!hydrated}
+        aria-busy={!hydrated || catalogState.status === 'loading'}
         data-hydrated={hydrated}
       >
         <header className="courses-page-header">
@@ -71,14 +105,14 @@ export default function CoursesOverview() {
           <div className="courses-summary-stat">
             <Layers size={17} aria-hidden="true" />
             <span>
-              <strong>{COURSES.length}</strong>
+              <strong>{catalogCourses.length}</strong>
               {t.levels}
             </span>
           </div>
           <div className="courses-summary-stat">
             <BookOpen size={17} aria-hidden="true" />
             <span>
-              <strong>{ALL_LESSONS.length}</strong>
+              <strong>{catalogLessonCount}</strong>
               {common.lessons}
             </span>
           </div>
@@ -100,9 +134,26 @@ export default function CoursesOverview() {
               </span>
               <h2 id="course-levels">{t.courseLevels}</h2>
             </div>
-            <span>{ALL_LESSONS.length} {common.lessons.toLowerCase()}</span>
+            <span>{catalogLessonCount} {common.lessons.toLowerCase()}</span>
           </div>
-          <CourseGrid courses={COURSES} progress={progress} />
+          {catalogState.status === 'loading' && (
+            <p className="courses-section-intro" role="status">
+              Loading courses…
+            </p>
+          )}
+          {catalogState.status === 'error' && (
+            <p className="courses-section-intro" role="alert">
+              We couldn’t load the course catalogue right now.
+            </p>
+          )}
+          {catalogState.status === 'success' && catalogCourses.length === 0 && (
+            <p className="courses-section-intro">
+              No published courses are available yet.
+            </p>
+          )}
+          {catalogState.status === 'success' && catalogCourses.length > 0 && (
+            <CourseGrid courses={catalogCourses} progress={progress} />
+          )}
         </section>
       </div>
     </AppShell>
